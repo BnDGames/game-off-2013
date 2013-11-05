@@ -44,12 +44,11 @@ function moveScene ( scene, time ) {
 			
 	for ( var i = 0; i < scene.projectiles.length; i++ )
 		moveProjectile ( scene.projectiles[i], time );
-		
-	sceneCheckDeadProj ( scene );
 }
 
 //Function to check for dead projectiles in scene
 function sceneCheckDeadProj ( scene ) {
-	for ( var i = 0; i < scene.projectiles.length; i++ )
+	for ( var i = 0; i < scene.projectiles.length; i++ ){
 		if (scene.projectiles[i].dead) scene.projectiles.splice ( i--, 1 );
+	}
 }

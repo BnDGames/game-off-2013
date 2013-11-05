@@ -33,7 +33,7 @@ var Projectile = function () {
 }
 
 //Function to move a projectile
-function moveProjectile ( projectile, time ) {
+function projectileMove ( projectile, time ) {
 	projectile.position = vSum ( projectile.position, vMult ( projectile.speed, time ) );
 	projectile.distance += vModule ( projectile.speed ) * time;
 	

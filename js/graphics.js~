@@ -177,7 +177,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 
 //Function to draw the current game state
 function draw () {
-	context.globalAlpha = 1;
+	context.globalAlpha = 0.3;
 	context.fillStyle = canvas.style.backgroundColor;
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	context.globalAlpha = 1;

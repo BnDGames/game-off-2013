@@ -13,6 +13,6 @@
 	"fill": "#606060",
 	
 	"modifiers": [
-		{ "which": 0, "draw": ["rect", -52, -6, 40, 12, [ "gradient", 35, 0, "#000000", "#E4EEF0" ] ] }
+		{ "which": 0, "draw": ["rect", -52, -6, 40, 12, [ "gradient", 40, 0, "#000000", "#E4EEF0" ] ] }
 	]
 }

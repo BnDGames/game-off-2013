@@ -10,7 +10,7 @@
 var keyStates = [ false, false, false, false, false ];
 
 //Key codes for keys
-var keyCodes = [ 87, 65, 83, 68, 32 ];
+var keyCodes = [ 87, 65, 83, 68 ];
 
 //Functions to handle key events
 document.onkeydown = function ( event ) {
@@ -42,7 +42,5 @@ function applyInput () {
 		
 		if (keyStates[0] || keyStates[1] || keyStates[2] || keyStates[3]) inputBoundUnit.gfxModifiers[gfxMod_engineOn] = true;
 		else inputBoundUnit.gfxModifiers[gfxMod_engineOn] = false;
-		
-		if (keyStates[4]) inputBoundUnit.shoot();
 	}
 }

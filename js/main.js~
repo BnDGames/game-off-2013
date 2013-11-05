@@ -20,11 +20,9 @@ function setup () {
 	});
 }
 
-var speed = 1;
-
 //Loop function
 function loop () {
 	applyInput();
 	
-	moveScene ( s, speed );
+	moveScene ( s, 1 );
 }
