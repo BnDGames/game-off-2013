@@ -13,6 +13,7 @@ function setup () {
 	
 	loadParts( function() {
 		inputBoundUnit = addUnitToScene ( loadUnit ( "data/units/test.json" ), s );
+		inputBoundUnit.position = [ 500, 500 ];
 		
 		setInterval ( loop, 15 );
 		setInterval ( draw, 15 );

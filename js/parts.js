@@ -20,6 +20,9 @@ var Part = function () {
 	this.mirrorX = false;
 	this.mirrorY = false;
 	
+	//Actions
+	this.actions = new Array();
+	
 	//Part graphics
 	this.fill = "#808080";
 	
@@ -27,6 +30,7 @@ var Part = function () {
 	this.border = "#FFFFFF";
 	
 	this.draw = new Array();
+	this.modifiers = new Array();
 
 	//Unit statistics belong to its parts
 	//and are calculated summing the stats
@@ -105,6 +109,10 @@ function getPart ( id ) {
 					
 			if (parts[i].modifiers != undefined)
 				result.modifiers = parts[i].modifiers;
+				
+			if (parts[i].actions != undefined)
+				for ( var l = 0; l < parts[i].actions.length; l++ )
+					result.actions.push ( parts[i].actions[l] );
 			
 			return result;
 		}

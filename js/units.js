@@ -45,6 +45,9 @@ var Unit = function () {
 	
 	//Shooting action
 	this.shoot = function () {
+		for ( var i = 0; i < this.parts.length; i++ ) {
+			if ( this.parts[i].actions ) { }
+		}
 	}
 }
 

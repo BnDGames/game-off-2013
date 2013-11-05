@@ -122,36 +122,22 @@ function drawUnit ( context, unit, offset ) {
 }
 
 //Function to draw a scene
-function drawScene ( context, scene, offset, grid, gridSize ) {
+function drawScene ( context, scene, offset, grid, gridInfo ) {
 	if (grid != undefined && grid){
-		context.strokeStyle = "#101010";
-		for (var i = 0; i < 4 * canvas.width / gridSize + 1; i++){
-			context.beginPath ();
-			context.moveTo ( gridSize / 4 * i, 0 );
-			context.lineTo ( gridSize / 4 * i, canvas.height );
-			context.stroke ();
-		}
 		
-		for (var i = 0; i < 4 * canvas.height / gridSize + 1; i++){
-			context.beginPath ();
-			context.moveTo ( 0, gridSize * i / 4 );
-			context.lineTo ( canvas.width, gridSize * i / 4 );
-			context.stroke ();
-		}
-		
-		context.strokeStyle = "#202020";	
-		for (var i = 0; i < canvas.width / gridSize + 1; i++){
-			context.beginPath ();
-			context.moveTo ( gridSize * i, 0 );
-			context.lineTo ( gridSize * i, canvas.height );
-			context.stroke ();
-		}
-		
-		for (var i = 0; i < canvas.height / gridSize + 1; i++){
-			context.beginPath ();
-			context.moveTo ( 0, gridSize * i);
-			context.lineTo ( canvas.width, gridSize * i);
-			context.stroke ();
+		for (var i = 0; i <= gridInfo.squareSize * gridInfo.gridSize; i += gridInfo.squareSize / gridInfo.divisions){
+			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) context.strokeStyle = "#202020";
+			else context.strokeStyle = "#101010";
+			
+			context.beginPath();
+			context.moveTo ( 0, i );
+			context.lineTo ( gridInfo.squareSize * gridInfo.gridSize, i );
+			context.stroke();
+			
+			context.beginPath();
+			context.moveTo ( i, 0 );
+			context.lineTo ( i, gridInfo.squareSize * gridInfo.gridSize );
+			context.stroke();
 		}
 	}
 	
@@ -171,11 +157,9 @@ function draw () {
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	context.globalAlpha = 1;
 	
-	/*context.translate ( -u.position[0] + canvas.width / 2, -u.position[1] + canvas.height / 2 );
-	context.rotate ( -u.angle );*/
+	context.translate ( -inputBoundUnit.position[0] + canvas.width / 2, -inputBoundUnit.position[1] + canvas.height / 2 );
 	
-	drawScene ( context, s, [400,300], true, 64 );
+	drawScene ( context, s, [0,0], true, { gridSize: 30, divisions: 4, squareSize: 64 } );
 	
-	/*context.rotate ( u.angle );
-	context.translate ( u.position[0] - canvas.width / 2, u.position[1] - canvas.height / 2 );*/
+	context.translate ( inputBoundUnit.position[0] - canvas.width / 2, inputBoundUnit.position[1] - canvas.height / 2 );
 }

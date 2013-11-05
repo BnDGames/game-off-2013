@@ -16,7 +16,10 @@
 	
 	"actions": [
 		{
-			"type": "shoot"
+			"type": "shoot",
+			"projectiles": [
+				
+			]
 		}
 	],
 	
