@@ -32,13 +32,11 @@ function applyInput () {
 		var force = vRotate ( [ getStat ( inputBoundUnit, stat_engine ), 0 ], inputBoundUnit.angle );
 		var turn = getStat ( inputBoundUnit, stat_maneuvrability );
 		
-		if (keyStates[0]) inputBoundUnit.force = force;
-		else if (keyStates[2]) inputBoundUnit.force = vMult ( force, -1 );
-		else inputBoundUnit.force = [0,0];
+		if (keyStates[0]) inputBoundUnit.applyForce(inputBoundUnit.position, force);
+		else if (keyStates[2]) inputBoundUnit.applyForce(inputBoundUnit.position, vMult(force, -1))
 		
-		if (keyStates[1]) inputBoundUnit.momentum = -turn;
-		else if (keyStates[3]) inputBoundUnit.momentum = turn;
-		else inputBoundUnit.momentum = 0;
+		if (keyStates[1]) inputBoundUnit.applyMomentum (-turn);
+		else if (keyStates[3]) inputBoundUnit.applyMomentum (turn);
 		
 		if (keyStates[0] || keyStates[1] || keyStates[2] || keyStates[3]) inputBoundUnit.gfxModifiers[gfxMod_engineOn] = true;
 		else inputBoundUnit.gfxModifiers[gfxMod_engineOn] = false;

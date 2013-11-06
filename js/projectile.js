@@ -17,6 +17,9 @@ var Projectile = function () {
 	//Projectile parent scene
 	this.parent = 0;
 
+	//Projectile mass
+	this.mass = 0;
+
 	//Projectile positional data
 	this.distance = 0;
 	this.position = [0,0];

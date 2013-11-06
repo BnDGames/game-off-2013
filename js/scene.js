@@ -14,7 +14,7 @@ var Scene = function () {
 	this.projectiles = new Array();
 	
 	//Scene damping factor
-	this.dRot = 0.2;
+	this.dRot = 1000;
 	this.dTr = 0.15;
 }
 
@@ -46,10 +46,22 @@ function moveScene ( scene, time ) {
 		moveProjectile ( scene.projectiles[i], time );
 		
 	sceneCheckDeadProj ( scene );
+	sceneCheckCollisions ( scene );
 }
 
 //Function to check for dead projectiles in scene
 function sceneCheckDeadProj ( scene ) {
 	for ( var i = 0; i < scene.projectiles.length; i++ )
 		if (scene.projectiles[i].dead) scene.projectiles.splice ( i--, 1 );
+}
+
+//Function to check for collisions in scene
+function sceneCheckCollisions ( scene ) {
+	for ( var i = 0; i + 1 < scene.units.length; i++ ){
+		for ( var j = i + 1; j < scene.units.length; j++ ){
+			var collision = unitsCollide ( scene.units[i], scene.units[j] );
+			
+			if (collision) handleUnitCollision ( scene.units[i], scene.units[j], collision );
+		}
+	}
 }
