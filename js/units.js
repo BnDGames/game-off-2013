@@ -39,11 +39,16 @@ var Unit = function () {
 	this.alpha = 0;
 	this.momentum = 0;
 	
-	//Unit physics
-	//Unit physics depend on unit parts
+	//Unit statistics
+	//Unit stats depend on unit parts
 	//Thus, they should be recalculated any time parts are changed
 	this.inertia = 1;
 	this.mass = 1;
+	
+	this.health = 1;
+	this.maxHealth = 1;
+	this.armor = 1;
+	this.maxArmor = 1;
 	
 	//Unit graphics
 	this.colors = new Array();
@@ -84,6 +89,8 @@ var Unit = function () {
 					for ( var m = 0; m < action.projectiles.length; m++){
 						var projectile = new Projectile();
 					
+						projectile.owner = this;
+						
 						projectile.position = vSum ( this.position, vRotate ( vSum ( this.parts[i].position, action.projectiles[m].position ), this.angle ) );
 						
 						projectile.speed = vSum ( this.speed, vRotate ( action.projectiles[m].speed, this.angle ) );
@@ -106,7 +113,7 @@ var Unit = function () {
 	}
 	
 	//Function to calc physics
-	this.calcPhysics = function () {
+	this.calcStats = function () {
 		this.mass = getStat ( this, stat_mass );
 		
 		//Calculates inertia summing the inertia values of all parts
@@ -126,6 +133,14 @@ var Unit = function () {
 			
 			this.inertia += polyInertia ( v, this.parts[i].stats[stat_mass] );
 		}
+		
+		//Calculates health and max health
+		this.health = getStat ( this, stat_health );
+		this.maxHealth = this.health;
+		
+		//Calculates armor
+		this.armor = getStat ( this, stat_armor );
+		this.maxArmor = this.armor;
 	}
 }
 
@@ -149,7 +164,7 @@ function loadUnit ( sourcefile ) {
 						unit.parts.push ( p );
 					}
 					
-					unit.calcPhysics();
+					unit.calcStats();
 					unit.loaded = true;
 				}
 	);
@@ -185,6 +200,29 @@ function getStat ( unit, stat ) {
 		result += unit.parts[i].stats[stat];
 	
 	return result;
+}
+
+//Function to check if a point is inside an unit
+function pointInUnit ( point, a ) {
+	for (var i = 0; i < a.parts.length; i++ ){
+		var v1 = new Array();
+			
+		for (var n = 0; n < a.parts[i].vertices.length; n++){
+			v1.push ( vCopy ( a.parts[i].vertices[n] ) );
+			
+			if ( a.parts[i].mirrorX ) v1[n][0] *= -1;
+			if ( a.parts[i].mirrorY ) v1[n][1] *= -1;
+			
+			v1[n] = vRotate ( v1[n], a.parts[i].angle );
+			v1[n] = vSum ( v1[n], a.parts[i].position );
+			v1[n] = vRotate ( v1[n], a.angle );
+			v1[n] = vSum ( v1[n], a.position );
+		}
+		
+		if (pointInsidePoly ( point, v1 ) ) return true;
+	}
+	
+	return false;
 }
 
 //Function to check collision between units
@@ -249,16 +287,13 @@ function handleUnitCollision ( a, b, collision ) {
 	var rA = vDot ( vPerp ( vSubt ( cPoint , a.position ) ), normal );
 	var rB = vDot ( vPerp ( vSubt ( cPoint , b.position ) ), normal );
 	
-	//If units are bumping
-	//if ( cSpeed < 0 ){
-		//Calculates impulse
-		var j = -0.05 * cSpeed / (vDot ( normal, vMult ( normal, 1 / a.mass + 1 / b.mass ) ) + Math.pow ( rA, 2 ) / a.inertia + Math.pow( rB, 2 ) / b.inertia );
+	//Calculates impulse
+	var j = -0.05 * cSpeed / (vDot ( normal, vMult ( normal, 1 / a.mass + 1 / b.mass ) ) + Math.pow ( rA, 2 ) / a.inertia + Math.pow( rB, 2 ) / b.inertia );
 		
-		//Impulse vector
-		var impulse = vSetModule ( normal, j * 100 );
+	//Impulse vector
+	var impulse = vSetModule ( normal, j * 100 );
 		
-		//Applies impulse
-		a.applyImpulse ( cPoint, impulse );
-		b.applyImpulse ( cPoint, vMult ( impulse, -1 ) );
-	//}
+	//Applies impulse
+	a.applyImpulse ( cPoint, impulse );
+	b.applyImpulse ( cPoint, vMult ( impulse, -1 ) );
 }

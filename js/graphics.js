@@ -190,8 +190,8 @@ function draw () {
 	context.globalAlpha = 1;
 	
 	context.translate ( -inputBoundUnit.position[0] + canvas.width / 2, -inputBoundUnit.position[1] + canvas.height / 2 );
-	
 	drawScene ( context, s, [0,0], true, { gridSize: 30, divisions: 4, squareSize: 64 } );
-	
 	context.translate ( inputBoundUnit.position[0] - canvas.width / 2, inputBoundUnit.position[1] - canvas.height / 2 );
+	
+	if (currentUI) printControl ( context, currentUI, [0,0] );
 }

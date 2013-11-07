@@ -10,6 +10,7 @@ var u = 0;
 
 //Setup function
 function setup () {
+	initUI();
 	graphicsSetup();
 	
 	loadParts( function() {
@@ -32,4 +33,5 @@ var speed = 1;
 function loop () {
 	applyInput();	
 	moveScene ( s, speed );
+	updateUI( inputBoundUnit );
 }

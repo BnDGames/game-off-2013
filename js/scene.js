@@ -14,8 +14,8 @@ var Scene = function () {
 	this.projectiles = new Array();
 	
 	//Scene damping factor
-	this.dRot = 1000;
-	this.dTr = 0.15;
+	this.dRot = 5000;
+	this.dTr = 0.45;
 }
 
 //Function to add an unit to a scene
@@ -45,12 +45,23 @@ function moveScene ( scene, time ) {
 	for ( var i = 0; i < scene.projectiles.length; i++ )
 		moveProjectile ( scene.projectiles[i], time );
 		
-	sceneCheckDeadProj ( scene );
+	sceneCheckProj ( scene );
 	sceneCheckCollisions ( scene );
 }
 
-//Function to check for dead projectiles in scene
-function sceneCheckDeadProj ( scene ) {
+//Function to check for dead projectiles and projectile collisions in scene
+function sceneCheckProj ( scene ) {
+	for ( var i = 0; i < scene.projectiles.length; i++ ){
+		for ( var j = 0; j < scene.units.length; j++ ){
+			if ( scene.projectiles[i].owner == scene.units[j] ) continue;
+			
+			if (pointInUnit ( scene.projectiles[i].position, scene.units[j] ) ) {
+				scene.units[j].applyImpulse ( scene.projectiles[i].position, vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass ) );
+				scene.projectiles[i].dead = true;
+			}
+		}
+	}
+
 	for ( var i = 0; i < scene.projectiles.length; i++ )
 		if (scene.projectiles[i].dead) scene.projectiles.splice ( i--, 1 );
 }
