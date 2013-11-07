@@ -49,9 +49,12 @@ var Unit = function () {
 	this.maxHealth = 1;
 	this.armor = 1;
 	this.maxArmor = 1;
+
+	this.dead = false;
 	
 	//Unit graphics
 	this.colors = new Array();
+	this.printOpacity = 1;
 	
 	//Graphical modifiers
 	this.gfxModifiers = new Array();
@@ -139,8 +142,23 @@ var Unit = function () {
 		this.maxHealth = this.health;
 		
 		//Calculates armor
-		this.armor = getStat ( this, stat_armor );
-		this.maxArmor = this.armor;
+		this.armor = 1 + getStat ( this, stat_armor );
+	}
+	
+	//Function to damage the unit
+	this.damage = function ( damage ) {
+		this.health -= damage / this.armor;
+		if (this.health <= 0) this.destroy();
+	}
+	
+	//Function to destroy the unit
+	this.destroy = function () {
+		this.health = 0;
+		
+		for ( var i = 0; i < this.parts.length; i++ ) {
+			this.parts[i].omega = 0;
+			this.parts[i].speed = vSetModule ( this.parts[i].position, fx_destructionSpeed );
+		}
 	}
 }
 
@@ -154,6 +172,8 @@ function loadUnit ( sourcefile ) {
 					
 					for ( var i = 0; i < data.parts.length; i++){
 						var p = getPart ( data.parts[i].source );
+						
+						p.parent = unit;
 						
 						p.position = vSum ( p.position, data.parts[i].translate );
 						p.angle += data.parts[i].angle * Math.PI;
@@ -190,6 +210,13 @@ function moveUnit ( unit, time ) {
 	
 	unit.force = [0,0];
 	unit.momentum = 0;
+	
+	//Moves individual parts
+	for ( var i = 0; i < unit.parts.length; i++ )
+		movePart ( unit.parts[i], time );
+		
+	if ( unit.health <= 0 ) unit.printOpacity -= 0.01;
+	if ( unit.printOpacity <= 0){ unit.dead = true; unit.printOpacity = 0; }
 }
 
 //Function to get the value of a stat of an unit

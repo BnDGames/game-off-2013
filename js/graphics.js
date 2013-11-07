@@ -124,6 +124,7 @@ function drawPart ( context, part, offset, modifiers, colorset ) {
 
 //Function to draw an unit
 function drawUnit ( context, unit, offset ) {
+	context.globalAlpha = unit.printOpacity;
 	offset = vSum ( offset, unit.position );
 	
 	context.translate ( offset[0], offset[1] );
@@ -134,6 +135,7 @@ function drawUnit ( context, unit, offset ) {
 		
 	context.rotate ( -unit.angle );
 	context.translate ( -offset[0], -offset[1] );
+	context.globalAlpha = 1;
 }
 
 //Function to draw a projectile

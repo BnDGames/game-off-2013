@@ -7,14 +7,24 @@
 
 //Unit part object
 var Part = function () {
+	//Part parent unit
+	this.parent = 0;
+	
 	//Part vertices
 	//Part is composed by an array of vectors, each representing a vertex
 	this.vertices = new Array();
 	
-	//Position and rotation are relative to the unit
-	//owning the part
-	this.position = [0, 0];
+	//Unit positional data
+	this.position = [ 0, 0 ];
+	this.speed = [ 0, 0 ];
+	this.acceleration = [ 0, 0 ];
+	this.force = [ 0, 0 ];
+	
+	//Unit rotational data
 	this.angle = 0;
+	this.omega = 0;
+	this.alpha = 0;
+	this.momentum = 0;
 	
 	//Mirroring
 	this.mirrorX = false;
@@ -43,6 +53,10 @@ var Part = function () {
 	
 	this.stats = new Array();
 	for (var i = 0; i < stats_total; i++) this.stats[i] = 0;
+	
+	//Physics
+	this.mass = 1;
+	this.inertia = 1;
 }
 
 //Parts array
@@ -65,6 +79,9 @@ function loadParts ( done ) {
 					for (var i = 0; i < data.length; i++){
 						$.getJSON ( data[i],
 									function ( d ) {
+										d.mass = d.stats[stat_mass];
+										d.inertia = polyInertia ( d.vertices );
+										
 										parts.push ( d );
 										partsLoaded++;
 										
@@ -119,4 +136,24 @@ function getPart ( id ) {
 	}
 	
 	return 0;
+}
+
+//Function to move a part for given time
+function movePart ( part, time ) {	
+	//If unit has parent, applies damping
+	if (part.parent && part.parent.parent){
+		part.force = vSubt ( part.force, vMult ( part.speed, part.parent.parent.debrisDTr ) );
+		part.momentum -= part.omega * part.parent.parent.debrisDRot;
+	}
+	
+	part.position = vSum ( part.position, vSum ( vMult ( part.speed, time), vMult ( part.acceleration, 0.5 * time * time ) ) );
+	part.speed = vSum ( part.speed, vMult ( part.acceleration, time ) );
+	part.acceleration = vMult ( part.force, 1 / part.mass );
+	
+	part.angle += part.omega * time + part.alpha * 0.5 * time * time;
+	part.omega += part.alpha * time;
+	part.alpha = part.momentum / part.inertia;
+	
+	part.force = [0,0];
+	part.momentum = 0;
 }
