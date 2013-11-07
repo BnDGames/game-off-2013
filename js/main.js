@@ -15,9 +15,11 @@ function setup () {
 	loadParts( function() {
 		inputBoundUnit = addUnitToScene ( loadUnit ( "data/units/test.json" ), s );
 		inputBoundUnit.position = [ 500, 500 ];
+		inputBoundUnit.colors.push ( "#C83737" );
 		
 		u = addUnitToScene ( loadUnit ( "data/units/test.json" ), s );
 		u.position = [ 1000, 800 ];
+		u.colors.push ( "#3771C8" );
 		
 		setInterval ( loop, 15 );
 		setInterval ( draw, 15 );

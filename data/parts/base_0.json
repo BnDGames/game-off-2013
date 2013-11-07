@@ -17,6 +17,6 @@
 		[ "rect", -10, -20, 50, 10, [ "plain", "#FFFFFF" ] ],
 		[ "rect", -10, 10, 50, 10, [ "plain", "#FFFFFF" ] ],
 		[ "circle", 0, 0, 24, [ "plain", "#FFFFFF" ] ],
-		[ "circle", 0, 0, 20, [ "plain", "#C83737" ] ]
+		[ "circle", 0, 0, 20, [ "plain", "$0" ] ]
 	]
 }

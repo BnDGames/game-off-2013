@@ -15,27 +15,34 @@ function centerCanvas () {
 }
 
 //Function to set fill style according to settings array
-function setFill ( settings ) {
-	if (settings[0] == "plain")
-		context.fillStyle = settings[1];
+function setFill ( settings, colorset ) {
+	if (settings[0] == "plain"){
+		if (settings[1].charAt(0) == "$") context.fillStyle = colorset[ settings[1].substring(1) ];
+		else context.fillStyle = settings[1];
+	}
 		
 	if (settings[0] == "gradient"){
 		var gradient = context.createLinearGradient ( 0, 0, settings[1], settings[2] );
-		gradient.addColorStop ( 0, settings[3] );
-		gradient.addColorStop ( 1, settings[4] );
+		
+		if (colorset && settings[3].charAt(0) == "$") gradient.addColorStop ( 0, colorset[ settings[3].substring(1) ] );
+		else gradient.addColorStop ( 0, settings[3] );
+		
+		if (colorset && settings[4].charAt(0) == "$") gradient.addColorStop ( 1, colorset[ settings[4].substring(1) ] );
+		else gradient.addColorStop ( 1, settings[4] );
+		
 		context.fillStyle = gradient;
 	}
 		
 }
 
 //Function to draw a primitive according to array
-function drawPrimitive ( prim ) {
+function drawPrimitive ( prim, colorset ) {
 	if ( prim[0] == "circle" ){
 		context.translate ( prim[1], prim[2] );
 		
 		context.beginPath();
 		context.arc ( 0, 0, prim[3], 0, Math.PI * 2 );
-		setFill ( prim[4] );
+		setFill ( prim[4], colorset );
 		context.fill();
 		
 		context.translate ( -prim[1], -prim[2] );
@@ -44,7 +51,7 @@ function drawPrimitive ( prim ) {
 	if ( prim[0] == "rect" ) {
 		context.translate ( prim[1], prim[2] );
 		
-		setFill ( prim[5] );
+		setFill ( prim[5], colorset );
 		context.fillRect ( 0, 0, prim[3], prim[4] );
 		
 		context.translate ( -prim[1], -prim[2] );
@@ -64,7 +71,7 @@ function graphicsSetup () {
 
 //Function to draw a part on drawing context
 //Offset is a vector 
-function drawPart ( context, part, offset, modifiers ) {
+function drawPart ( context, part, offset, modifiers, colorset ) {
 	if (part.vertices.length == 0) return;
 	
 	offset = vSum ( offset, part.position );
@@ -92,7 +99,7 @@ function drawPart ( context, part, offset, modifiers ) {
 	//Draws primitives
 	if ( part.draw != undefined )
 		for ( var i = 0; i < part.draw.length; i++ )
-			drawPrimitive(part.draw[i]);
+			drawPrimitive(part.draw[i], colorset);
 	
 	//Draws border
 	if (part.borderWidth > 0){
@@ -105,7 +112,7 @@ function drawPart ( context, part, offset, modifiers ) {
 	if ( modifiers != undefined && part.modifiers != undefined ) 
 		for ( var i = 0; i < part.modifiers.length; i++ ) 
 			if ( modifiers[part.modifiers[i].which] )
-				drawPrimitive ( part.modifiers[i].draw );
+				drawPrimitive ( part.modifiers[i].draw, colorset );
 	
 	//Resets canvas status
 	if (part.mirrorY) context.scale ( 1, -1 );
@@ -123,7 +130,7 @@ function drawUnit ( context, unit, offset ) {
 	context.rotate ( unit.angle );
 	
 	for (var i = 0; i < unit.parts.length; i++)
-		drawPart ( context, unit.parts[i], [0, 0], unit.gfxModifiers );
+		drawPart ( context, unit.parts[i], [0, 0], unit.gfxModifiers, unit.colors );
 		
 	context.rotate ( -unit.angle );
 	context.translate ( -offset[0], -offset[1] );

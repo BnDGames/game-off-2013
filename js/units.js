@@ -45,6 +45,9 @@ var Unit = function () {
 	this.inertia = 1;
 	this.mass = 1;
 	
+	//Unit graphics
+	this.colors = new Array();
+	
 	//Graphical modifiers
 	this.gfxModifiers = new Array();
 	for (var i = 0; i < gfxMod_total; i++) this.gfxModifiers[i] = false;
@@ -247,7 +250,7 @@ function handleUnitCollision ( a, b, collision ) {
 	var rB = vDot ( vPerp ( vSubt ( cPoint , b.position ) ), normal );
 	
 	//If units are bumping
-	if ( cSpeed < 0 ){
+	//if ( cSpeed < 0 ){
 		//Calculates impulse
 		var j = -0.05 * cSpeed / (vDot ( normal, vMult ( normal, 1 / a.mass + 1 / b.mass ) ) + Math.pow ( rA, 2 ) / a.inertia + Math.pow( rB, 2 ) / b.inertia );
 		
@@ -257,5 +260,5 @@ function handleUnitCollision ( a, b, collision ) {
 		//Applies impulse
 		a.applyImpulse ( cPoint, impulse );
 		b.applyImpulse ( cPoint, vMult ( impulse, -1 ) );
-	}
+	//}
 }
