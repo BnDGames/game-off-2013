@@ -83,30 +83,34 @@ function drawPart ( context, part, offset, modifiers, colorset ) {
 	if (part.mirrorX) context.scale ( -1, 1 );
 	if (part.mirrorY) context.scale ( 1, -1 );
 	
-	//Basic drawing
-	context.beginPath();
+	if ( part.vertices.length == 1 ) {
+		drawPrimitive ( [ "circle", part.vertices[0][0], part.vertices[0][1], 5, ["plain", part.fill] ], colorset );
+	}
 	
-	context.moveTo ( part.vertices[0][0], part.vertices[0][1] );
+	else if ( part.vertices.length == 2){
+		drawPrimitive ( [ "circle", part.vertices[0][0], part.vertices[0][1], 5, ["plain", part.fill] ], colorset );
+		drawPrimitive ( [ "circle", part.vertices[1][0], part.vertices[1][1], 5, ["plain", part.fill] ], colorset );
+	}
 	
-	for (var i = 0; i < part.vertices.length; i++)
-		context.lineTo ( part.vertices[i][0], part.vertices[i][1] );
+	else {
+		//Basic drawing
+		context.beginPath();
 	
-	context.closePath();
+		context.moveTo ( part.vertices[0][0], part.vertices[0][1] );
 	
-	context.fillStyle = part.fill;
-	context.fill();
+		for (var i = 0; i < part.vertices.length; i++)
+			context.lineTo ( part.vertices[i][0], part.vertices[i][1] );
+	
+		context.closePath();
+	
+		context.fillStyle = part.fill;
+		context.fill();
+	}
 	
 	//Draws primitives
 	if ( part.draw != undefined )
 		for ( var i = 0; i < part.draw.length; i++ )
 			drawPrimitive(part.draw[i], colorset);
-	
-	//Draws border
-	if (part.borderWidth > 0){
-		context.strokeStyle = part.border;
-		context.lineWidth = part.borderWidth;
-		context.stroke();
-	}
 	
 	//Draws possible status-related primitives
 	if ( modifiers != undefined && part.modifiers != undefined ) 
@@ -155,19 +159,26 @@ function drawProjectile ( context, projectile, offset ) {
 //Function to draw a scene
 function drawScene ( context, scene, offset, grid, gridInfo ) {
 	if (grid != undefined && grid){
-		
-		for (var i = 0; i <= gridInfo.squareSize * gridInfo.gridSize; i += gridInfo.squareSize / gridInfo.divisions){
+		var oX = offset[0] % (gridInfo.squareSize);
+		var oY = offset[1] % (gridInfo.squareSize);
+				
+		for (var i = -gridInfo.squareSize * 2; i <= canvas.height + gridInfo.squareSize * 2; i += gridInfo.squareSize / gridInfo.divisions){
 			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) context.strokeStyle = "#202020";
 			else context.strokeStyle = "#101010";
 			
 			context.beginPath();
-			context.moveTo ( 0, i );
-			context.lineTo ( gridInfo.squareSize * gridInfo.gridSize, i );
+			context.moveTo ( 0, oY + i );
+			context.lineTo ( canvas.width, oY + i );
 			context.stroke();
+		}
+		
+		for (var i = -gridInfo.squareSize * 2; i <= canvas.width + gridInfo.squareSize * 2; i += gridInfo.squareSize / gridInfo.divisions){
+			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) context.strokeStyle = "#202020";
+			else context.strokeStyle = "#101010";
 			
 			context.beginPath();
-			context.moveTo ( i, 0 );
-			context.lineTo ( i, gridInfo.squareSize * gridInfo.gridSize );
+			context.moveTo ( oX + i, 0 );
+			context.lineTo ( oX + i, canvas.height );
 			context.stroke();
 		}
 	}
@@ -184,6 +195,37 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 	context.translate ( -offset[0], -offset[1] );
 }
 
+//Function to draw indicators for enemy units
+function drawArrows ( scene, unit, viewport ) {
+	for ( var i = 0; i < scene.units.length; i++ ){
+		if ( scene.units[i] == unit ) continue;
+		
+		var distance = vSubt ( scene.units[i].position, unit.position );
+		
+		var dX = vMult ( distance, (viewport[0] / 2) / Math.abs(distance[0]) );
+		var dY = vMult ( distance, (viewport[1] / 2) / Math.abs(distance[1]) );
+		
+		var d = vModule(dX) < vModule(dY) ? dX : dY;
+		
+		if (distance[0] < viewport[0] / 2 && distance[1] < viewport[1] / 2) return;
+
+		context.fillStyle = "#3771C8";
+			
+		context.translate ( viewport[0] / 2 + d[0], viewport[1] / 2 + d[1] );
+		context.rotate ( vAngle(d) );
+	
+		context.beginPath();
+		context.moveTo ( 0, 0 );
+		context.lineTo ( -20, 8 );
+		context.lineTo ( -20, -8 );
+		context.lineTo ( 0, 0 );
+		context.fill();
+		
+		context.rotate ( -vAngle(d) );
+		context.translate ( -viewport[0] / 2 - d[0], -viewport[1] / 2 - d[1] );
+	}
+}
+
 //Function to draw the current game state
 function draw () {
 	context.globalAlpha = 1;
@@ -191,9 +233,8 @@ function draw () {
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	context.globalAlpha = 1;
 	
-	context.translate ( -inputBoundUnit.position[0] + canvas.width / 2, -inputBoundUnit.position[1] + canvas.height / 2 );
-	drawScene ( context, s, [0,0], true, { gridSize: 30, divisions: 4, squareSize: 64 } );
-	context.translate ( inputBoundUnit.position[0] - canvas.width / 2, inputBoundUnit.position[1] - canvas.height / 2 );
+	drawScene ( context, s, [-inputBoundUnit.position[0] + canvas.width / 2, -inputBoundUnit.position[1] + canvas.height / 2], true, { divisions: 4, squareSize: 64 } );
+	drawArrows ( s, inputBoundUnit, [canvas.width ,canvas.height - 40] );
 	
 	if (currentUI) printControl ( context, currentUI, [0,0] );
 }

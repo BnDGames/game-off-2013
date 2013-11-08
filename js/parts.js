@@ -7,6 +7,9 @@
 
 //Unit part object
 var Part = function () {
+	//Part identifier
+	this.id = "";
+	
 	//Part parent unit
 	this.parent = 0;
 	
@@ -57,6 +60,16 @@ var Part = function () {
 	//Physics
 	this.mass = 1;
 	this.inertia = 1;
+}
+
+//Function to get a part from json
+function partFromJson ( json ) {
+	var p = new Part();
+	
+	for (prop in p)
+		if ( json[prop] ) p[prop] = json[prop];
+		
+	return p;
 }
 
 //Parts array

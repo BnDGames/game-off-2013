@@ -32,7 +32,7 @@ function pointInsidePoly ( point, polygon ) {
 //Function to check collision between two polygons
 //Two polygons collide if at least one vertex of any of the two
 //is inside the other.
-function polyCollide ( a, b ) {	
+function polyCollide ( a, b ) {
 	var result = new Array();
 	
 	for ( var i = 0; i < a.length; i++)

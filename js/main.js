@@ -33,5 +33,7 @@ var speed = 1;
 function loop () {
 	applyInput();	
 	moveScene ( s, speed );
+	
+	if (currentUI) animateControl ( currentUI, speed );
 	updateUI( inputBoundUnit );
 }

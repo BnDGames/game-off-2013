@@ -52,6 +52,12 @@ var Unit = function () {
 
 	this.dead = false;
 	
+	//Player specific information
+	this.score = 0;
+	
+	//Misc
+	this.scoreValue = 0;//Score given when destroying
+	
 	//Unit graphics
 	this.colors = new Array();
 	this.printOpacity = 1;
@@ -183,6 +189,8 @@ function loadUnit ( sourcefile ) {
 						
 						unit.parts.push ( p );
 					}
+					
+					unit.scoreValue = data.scoreValue;
 					
 					unit.calcStats();
 					unit.loaded = true;
