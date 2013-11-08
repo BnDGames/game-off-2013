@@ -1,0 +1,41 @@
+{
+	"parts" : [
+		{
+			"source" : "wing_0",
+			"translate" : [ 0, -55 ],
+			"angle" : 0,
+			"mirrorX" : false,
+			"mirrorY" : false
+		},
+		
+		{
+			"source" : "wing_0",
+			"translate" : [ 0, 55 ],
+			"angle" : 0,
+			"mirrorX" : false,
+			"mirrorY" : true
+		},
+		
+		{
+			"source" : "engine_0",
+			"translate" : [-50, 0],
+			"angle" : 0
+		},
+		
+		{
+			"source" : "cannon_0",
+			"translate" : [ 50, 0],
+			"angle" : 0
+		},
+		
+		{
+			"source" : "base_0",
+			"translate" : [ 0, 0 ],
+			"angle" : 0,
+			"mirrorX" : false,
+			"mirrorY" : false
+		}
+	],
+	
+	"scoreValue": 10
+}
