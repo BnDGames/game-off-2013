@@ -25,7 +25,15 @@ var Unit = function () {
 	this.parent = 0;
 	
 	//Parts composing the unit
+	this.parts_static = new Array();
+	this.parts_current = 0;
+	
+	this.parts_heavy = new Array();
+	this.parts_light = new Array();
+	
 	this.parts = new Array();
+	
+	this.status = "light";
 	
 	//Unit positional data
 	this.position = [ 0, 0 ];
@@ -123,6 +131,11 @@ var Unit = function () {
 	
 	//Function to calc physics
 	this.calcStats = function () {
+		this.parts.splice (0, this.parts.length);
+		
+		for ( var i = 0; i < this.parts_current.length; i++ ) this.parts.push ( this.parts_current[i] );
+		for ( var i = 0; i < this.parts_static.length; i++ ) this.parts.push ( this.parts_static[i] );
+		
 		this.mass = getStat ( this, stat_mass );
 		
 		//Calculates inertia summing the inertia values of all parts
@@ -166,6 +179,15 @@ var Unit = function () {
 			this.parts[i].speed = vSetModule ( this.parts[i].position, fx_destructionSpeed );
 		}
 	}
+	
+	//Function to change parts
+	this.changeParts = function ( to ) {
+		if ( to == "heavy" ) this.parts_current = this.parts_heavy;
+		else if ( to == "light" ) this.parts_current = this.parts_light;
+		
+		this.status = to;		
+		this.calcStats();
+	}
 }
 
 //Function to load a unit from JSON file
@@ -176,21 +198,51 @@ function loadUnit ( sourcefile ) {
 				function ( data ) {
 					while ( partsLoaded < partsCount ) { };
 					
-					for ( var i = 0; i < data.parts.length; i++){
-						var p = getPart ( data.parts[i].source );
+					for ( var i = 0; i < data.parts_static.length; i++){
+						var p = getPart ( data.parts_static[i].source );
 						
 						p.parent = unit;
 						
-						p.position = vSum ( p.position, data.parts[i].translate );
-						p.angle += data.parts[i].angle * Math.PI;
+						p.position = vSum ( p.position, data.parts_static[i].translate );
+						p.angle += data.parts_static[i].angle * Math.PI;
 						
-						p.mirrorX = data.parts[i].mirrorX;
-						p.mirrorY = data.parts[i].mirrorY;
+						p.mirrorX = data.parts_static[i].mirrorX;
+						p.mirrorY = data.parts_static[i].mirrorY;
 						
-						unit.parts.push ( p );
+						unit.parts_static.push ( p );
+					}
+					
+					for ( var i = 0; i < data.parts_light.length; i++){
+						var p = getPart ( data.parts_light[i].source );
+						
+						p.parent = unit;
+						
+						p.position = vSum ( p.position, data.parts_light[i].translate );
+						p.angle += data.parts_light[i].angle * Math.PI;
+						
+						p.mirrorX = data.parts_light[i].mirrorX;
+						p.mirrorY = data.parts_light[i].mirrorY;
+						
+						unit.parts_light.push ( p );
+					}
+					
+					for ( var i = 0; i < data.parts_heavy.length; i++){
+						var p = getPart ( data.parts_heavy[i].source );
+						
+						p.parent = unit;
+						
+						p.position = vSum ( p.position, data.parts_heavy[i].translate );
+						p.angle += data.parts_heavy[i].angle * Math.PI;
+						
+						p.mirrorX = data.parts_heavy[i].mirrorX;
+						p.mirrorY = data.parts_heavy[i].mirrorY;
+						
+						unit.parts_heavy.push ( p );
 					}
 					
 					unit.scoreValue = data.scoreValue;
+					
+					unit.parts_current = unit.parts_light;
 					
 					unit.calcStats();
 					unit.loaded = true;

@@ -188,3 +188,101 @@ var NumLabel = function () {
 	}
 }
 NumLabel.prototype = new Control();
+
+//Checkbox list
+var CheckBoxList = function () {
+	//Checkbox list data
+	this.length = 3;
+	this.checked = 0;
+	
+	//Graphical data
+	this.innerColor = "#606060";
+	this.checkedColor = "#909090";
+	this.borderSize = 4;
+	
+	this.textColor = "#FFFFFF";
+	
+	this.borderColor = "#FFFFFF";
+	
+	this.checkedOffset = 0;
+	
+	//Drawing function
+	this.print = function ( context ) {
+		if ( this.borderSize > 0 ){
+			context.fillStyle = this.borderColor;
+			context.beginPath();
+			context.moveTo ( this.area[0] - this.borderSize * 1.414, this.area[1] + this.area[3] / 2 );
+			context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] - this.borderSize );
+			context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] - this.borderSize );
+			context.lineTo ( this.area[0] + this.area[2] + this.borderSize * 1.414, this.area[1] + this.area[3] / 2 );
+			context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] + this.area[3] + this.borderSize );
+			context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] + this.borderSize );
+			context.closePath();
+			context.fill();
+		}
+		
+		context.fillStyle = this.innerColor;
+		context.beginPath();
+		context.moveTo ( this.area[0] , this.area[1] + this.area[3] / 2 );
+		context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] );
+		context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] );
+		context.lineTo ( this.area[0] + this.area[2], this.area[1] + this.area[3] / 2 );
+		context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] + this.area[3] );
+		context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] );
+		context.closePath();
+		context.fill();
+		
+		if ( this.checked == 0 ) {
+			context.fillStyle = this.checkedColor;
+			context.beginPath();
+			context.moveTo ( this.checkedOffset + this.area[0] , this.area[1] + this.area[3] / 2 );
+			context.lineTo ( this.checkedOffset + this.area[0] + this.area[3] / 2, this.area[1] );
+			context.lineTo ( this.checkedOffset + this.area[0] + this.area[2] / this.length, this.area[1] );
+			context.lineTo ( this.checkedOffset + this.area[0] + this.area[2] / this.length, this.area[1] + this.area[3] );
+			context.lineTo ( this.checkedOffset + this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] );
+			context.closePath();
+			context.fill();
+		}
+		
+		else if ( this.checked == this.length - 1 ) {
+			context.fillStyle = this.checkedColor;
+			context.beginPath();
+			context.moveTo ( this.checkedOffset + this.area[0] , this.area[1]);
+			context.lineTo ( this.checkedOffset + this.area[0] + this.area[2] / this.length - this.area[3] / 2, this.area[1]);
+			context.lineTo ( this.checkedOffset + this.area[0] + this.area[2] / this.length, this.area[1] + this.area[3] / 2 );
+			context.lineTo ( this.checkedOffset + this.area[0] + this.area[2] / this.length - this.area[3] / 2, this.area[1] + this.area[3] );
+			context.lineTo ( this.checkedOffset + this.area[0], this.area[1] + this.area[3] );
+			context.closePath();
+			context.fill();
+		}
+		
+		else {
+			context.fillStyle = this.checkedColor;
+			context.fillRect ( this.checkedOffset + this.area[0], this.area[1], this.area[2] / this.length, this.area[3] );
+		}
+		
+		if ( this.borderSize > 0 ){
+			context.fillStyle = this.borderColor;
+			
+			for ( var i = 0; i < this.length - 1; i++ )
+				context.fillRect ( this.area[0] + (1 + i) * this.area[2] / this.length - this.borderSize / 2, this.area[1], this.borderSize, this.area[3] );
+		}
+		
+		for ( var i = 0; i < this.length; i++ ) {
+			context.translate ( this.area[0] + (i + 0.5) * this.area[2] / this.length + (i == 0 ? this.area[2] / this.length * 0.07 : 0) + (i == this.length - 1 ? -this.area[2] / this.length * 0.07 : 0), this.area[1] + this.area[3] / 2 );
+			if ( this.prints[i] ) this.prints[i](context);
+			context.translate ( -this.area[0] - (i + 0.5) * this.area[2] / this.length - (i == 0 ? this.area[2] / this.length * 0.07 : 0) - (i == this.length - 1 ? -this.area[2] / this.length * 0.07 : 0), -this.area[1] - this.area[3] / 2 );
+		}
+	}
+	
+	//Individual drawing functions
+	this.prints = new Array();
+	
+	//Animation
+	this.animate = function ( time ) {
+		var d = this.checkedOffset - this.checked * this.area[2] / this.length;
+		
+		this.checkedOffset -= d * time / 10;
+	}
+}
+CheckBoxList.prototype = new Control();

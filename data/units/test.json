@@ -1,5 +1,15 @@
 {
-	"parts" : [
+	"parts_static" : [
+		{
+			"source" : "base_0",
+			"translate" : [ 0, 0 ],
+			"angle" : 0,
+			"mirrorX" : false,
+			"mirrorY" : false
+		}
+	],
+
+	"parts_light" : [
 		{
 			"source" : "wing_0",
 			"translate" : [ 0, -55 ],
@@ -26,14 +36,36 @@
 			"source" : "cannon_0",
 			"translate" : [ 50, 0],
 			"angle" : 0
+		}
+	],
+	
+	"parts_heavy" : [
+		{
+			"source" : "wing_1",
+			"translate" : [ 0, -55 ],
+			"angle" : 0,
+			"mirrorX" : false,
+			"mirrorY" : true
 		},
 		
 		{
-			"source" : "base_0",
-			"translate" : [ 0, 0 ],
+			"source" : "wing_1",
+			"translate" : [ 0, 55 ],
 			"angle" : 0,
 			"mirrorX" : false,
 			"mirrorY" : false
+		},
+		
+		{
+			"source" : "engine_0",
+			"translate" : [-50, 0],
+			"angle" : 0
+		},
+		
+		{
+			"source" : "cannon_0",
+			"translate" : [ 50, 0],
+			"angle" : 0
 		}
 	],
 	

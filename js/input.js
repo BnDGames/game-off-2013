@@ -7,10 +7,10 @@
 
 //Key states
 //0 = up, 1 = left, 2 = down, 3 = right
-var keyStates = [ false, false, false, false, false ];
+var keyStates = [ false, false, false, false, false, false, false, false ];
 
 //Key codes for keys
-var keyCodes = [ 87, 65, 83, 68, 32 ];
+var keyCodes = [ 87, 65, 83, 68, 32, 66, 78, 77 ];
 
 //Functions to handle key events
 document.onkeydown = function ( event ) {
@@ -42,5 +42,11 @@ function applyInput () {
 		else inputBoundUnit.gfxModifiers[gfxMod_engineOn] = false;
 		
 		if (keyStates[4]) inputBoundUnit.shoot();
+		
+		if (keyStates[5]) inputBoundUnit.changeParts ( "light" );
+		
+		if (keyStates[6]) inputBoundUnit.changeParts ( "middle" );
+		
+		if (keyStates[7]) inputBoundUnit.changeParts ( "heavy" );
 	}
 }

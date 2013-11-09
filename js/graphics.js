@@ -134,8 +134,11 @@ function drawUnit ( context, unit, offset ) {
 	context.translate ( offset[0], offset[1] );
 	context.rotate ( unit.angle );
 	
-	for (var i = 0; i < unit.parts.length; i++)
-		drawPart ( context, unit.parts[i], [0, 0], unit.gfxModifiers, unit.colors );
+	for (var i = 0; i < unit.parts_current.length; i++)
+		drawPart ( context, unit.parts_current[i], [0, 0], unit.gfxModifiers, unit.colors );
+		
+	for (var i = 0; i < unit.parts_static.length; i++)
+		drawPart ( context, unit.parts_static[i], [0, 0], unit.gfxModifiers, unit.colors );
 		
 	context.rotate ( -unit.angle );
 	context.translate ( -offset[0], -offset[1] );
@@ -198,7 +201,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 //Function to draw indicators for enemy units
 function drawArrows ( scene, unit, viewport ) {
 	for ( var i = 0; i < scene.units.length; i++ ){
-		if ( scene.units[i] == unit ) continue;
+		if ( scene.units[i] == unit || scene.units[i].health <= 0 ) continue;
 		
 		var distance = vSubt ( scene.units[i].position, unit.position );
 		
@@ -207,7 +210,7 @@ function drawArrows ( scene, unit, viewport ) {
 		
 		var d = vModule(dX) < vModule(dY) ? dX : dY;
 		
-		if (distance[0] < viewport[0] / 2 && distance[1] < viewport[1] / 2) return;
+		if (Math.abs(distance[0]) < viewport[0] / 2 && Math.abs(distance[1]) < viewport[1] / 2) return;
 
 		context.fillStyle = "#3771C8";
 			
