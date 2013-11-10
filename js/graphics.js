@@ -56,6 +56,18 @@ function drawPrimitive ( prim, colorset ) {
 		
 		context.translate ( -prim[1], -prim[2] );
 	}
+	
+	if ( prim[0] == "poly" ) {
+		context.beginPath ();
+		
+		context.moveTo ( prim[1][0], prim[1][1] );
+		for ( var i = 2; i < prim.length - 1; i++ )
+			context.lineTo ( prim[i][0], prim[i][1] );
+		
+		setFill ( prim[i], colorset );
+		
+		context.fill();
+	}
 }
 
 //Graphics setup function
@@ -134,11 +146,11 @@ function drawUnit ( context, unit, offset ) {
 	context.translate ( offset[0], offset[1] );
 	context.rotate ( unit.angle );
 	
-	for (var i = 0; i < unit.parts_current.length; i++)
-		drawPart ( context, unit.parts_current[i], [0, 0], unit.gfxModifiers, unit.colors );
-		
-	for (var i = 0; i < unit.parts_static.length; i++)
-		drawPart ( context, unit.parts_static[i], [0, 0], unit.gfxModifiers, unit.colors );
+	for (var i = 0; i < unit.putOff.length; i++)
+		drawPart ( context, unit.putOff[i], [0, 0], [], unit.colors );
+	
+	for (var i = 0; i < unit.parts.length; i++)
+		drawPart ( context, unit.parts[i], [0, 0], unit.gfxModifiers, unit.colors );
 		
 	context.rotate ( -unit.angle );
 	context.translate ( -offset[0], -offset[1] );

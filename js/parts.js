@@ -60,6 +60,9 @@ var Part = function () {
 	//Physics
 	this.mass = 1;
 	this.inertia = 1;
+	
+	this.target = [0,0];
+	this.moveToTarget = false;
 }
 
 //Function to get a part from json
@@ -93,7 +96,7 @@ function loadParts ( done ) {
 						$.getJSON ( data[i],
 									function ( d ) {
 										d.mass = d.stats[stat_mass];
-										d.inertia = polyInertia ( d.vertices );
+										d.inertia = polyInertia ( d.vertices, d.mass );
 										
 										parts.push ( d );
 										partsLoaded++;
@@ -141,8 +144,12 @@ function getPart ( id ) {
 				result.modifiers = parts[i].modifiers;
 				
 			if (parts[i].actions != undefined)
-				for ( var l = 0; l < parts[i].actions.length; l++ )
-					result.actions.push ( parts[i].actions[l] );
+				for ( var l = 0; l < parts[i].actions.length; l++ ){
+					var action = { type:0,reload:0,projectiles:0 };					
+					for (p in parts[i].actions[l]) action[p] = parts[i].actions[l][p];
+					
+					result.actions.push(action);
+				}
 			
 			return result;
 		}
@@ -152,9 +159,15 @@ function getPart ( id ) {
 }
 
 //Function to move a part for given time
-function movePart ( part, time ) {	
-	//If unit has parent, applies damping
-	if (part.parent && part.parent.parent){
+function movePart ( part, time ) {
+	//If part has target, sets force
+	if (part.moveToTarget){
+		var d = vSubt ( part.target, part.position );
+		part.force = vSum ( part.force, vMult ( d, 1 / 100 ) );
+	}
+
+	//If part has parent, applies damping
+	if (part.parent && part.parent.parent && part.parent.health > 0){
 		part.force = vSubt ( part.force, vMult ( part.speed, part.parent.parent.debrisDTr ) );
 		part.momentum -= part.omega * part.parent.parent.debrisDRot;
 	}

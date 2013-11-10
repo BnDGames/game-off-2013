@@ -23,7 +23,7 @@ function setup () {
 		u.colors.push ( "#3771C8" );
 		
 		setInterval ( loop, 15 );
-		setInterval ( draw, 15 );
+		setInterval ( draw, 0 );
 	});
 }
 

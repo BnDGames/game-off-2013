@@ -51,8 +51,8 @@ function polyInertia ( poly, mass ) {
 	var den = 0;//Fraction denominator
 	
 	for ( var i = 0; i + 1 < poly.length; i++){
-		num += vCross ( poly[i + 1], poly[i] ) * ( vDot ( poly[i + 1], poly[i + 1] ) + vDot ( poly[i + 1], poly[i] ) + vDot ( poly[i], poly[i] ) );
-		den += vCross ( poly[i + 1], poly[i] );
+		num += Math.abs(vCross ( poly[i + 1], poly[i] )) * ( vDot ( poly[i + 1], poly[i + 1] ) + vDot ( poly[i + 1], poly[i] ) + vDot ( poly[i], poly[i] ) );
+		den += Math.abs(vCross ( poly[i + 1], poly[i] ));
 	}
 	
 	return (mass / 6) * (num / den);

@@ -54,6 +54,6 @@ function updateUI ( unit ) {
 	hud.children.scoreLabel.value = unit.score;
 	
 	if (unit.status == "light") hud.children.stateCheck.checked = 0;
-	if (unit.status == "middle") hud.children.stateCheck.checked = 1;
+	if (unit.status == "mid") hud.children.stateCheck.checked = 1;
 	if (unit.status == "heavy") hud.children.stateCheck.checked = 2;
 }

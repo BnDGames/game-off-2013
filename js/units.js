@@ -29,9 +29,11 @@ var Unit = function () {
 	this.parts_current = 0;
 	
 	this.parts_heavy = new Array();
+	this.parts_mid = new Array();
 	this.parts_light = new Array();
 	
 	this.parts = new Array();
+	this.putOff = new Array();
 	
 	this.status = "light";
 	
@@ -100,7 +102,7 @@ var Unit = function () {
 			for ( var l = 0; l < this.parts[i].actions.length; l++ ) {
 				var action = this.parts[i].actions[l];
 				
-				if (action.ready == false) continue;
+				if (Date.now() - action.time < action.reload) continue;
 				
 				if (action.type == "shoot"){
 					for ( var m = 0; m < action.projectiles.length; m++){
@@ -108,9 +110,12 @@ var Unit = function () {
 					
 						projectile.owner = this;
 						
-						projectile.position = vSum ( this.position, vRotate ( vSum ( this.parts[i].position, action.projectiles[m].position ), this.angle ) );
+						projectile.position = vSum ( this.position, vRotate ( vSum ( this.parts[i].position, action.projectiles[m].position ), this.angle + this.parts[i].angle ) );
 						
-						projectile.speed = vSum ( this.speed, vRotate ( action.projectiles[m].speed, this.angle ) );
+						var pS = vRotate ( action.projectiles[m].speed, this.angle + this.parts[i].angle );
+						var speedComponent = vDot ( this.speed, vSetModule (pS, 1 ) );
+						
+						projectile.speed = vSum ( speedComponent > 0 ? vSetModule ( this.speed, speedComponent ) : [0,0], pS );
 						projectile.range = action.projectiles[m].range;
 						projectile.mass = action.projectiles[m].mass;
 						
@@ -122,8 +127,7 @@ var Unit = function () {
 							this.applyImpulse ( this.position, vMult ( projectile.speed, -projectile.mass ) );
 					}
 					
-					action.ready = false;
-					setTimeout ( function () { action.ready = true; }, action.reload );
+					action.time = Date.now();
 				}
 			}
 		}
@@ -162,6 +166,17 @@ var Unit = function () {
 		
 		//Calculates armor
 		this.armor = 1 + getStat ( this, stat_armor );
+		
+		//Finds the furthest vertex
+		this.r = 0;
+		for ( var i = 0; i < this.parts.length; i++ ) {
+			for ( var l = 0; l < this.parts[i].vertices.length; l++ ) {
+				var v = vSum ( this.parts[i].position, this.parts[i].vertices[l] );
+				var d = vModule ( v );
+				
+				if ( d > this.r ) this.r = d;
+			}
+		}
 	}
 	
 	//Function to damage the unit
@@ -180,12 +195,51 @@ var Unit = function () {
 		}
 	}
 	
+	//Function to put off parts
+	this.putOffParts = function ( which ) {		
+		//this.putOff.splice ( 0, this.putOff.length );
+	
+		if ( which == "heavy" ) this.putOff = this.parts_heavy;
+		if ( which == "mid" ) this.putOff = this.parts_mid;
+		if ( which == "light" ) this.putOff = this.parts_light;
+		
+		for ( var i = 0; i < this.putOff.length; i++ ) {
+			if (this.putOff[i].target[0] == 0 && this.putOff[i].target[1] == 0) this.putOff[i].oldPos = this.putOff[i].position.slice(0);
+			else this.putOff[i].oldPos = this.putOff[i].target.slice(0);
+			
+			this.putOff[i].target = [0,0];
+			this.putOff[i].moveToTarget = true;
+		}
+	}
+	
+	//Function to put out parts
+	this.putOutParts = function ( which ) {
+		var p;
+		
+		if ( which == "heavy" ) p = this.parts_heavy;
+		if ( which == "mid" ) p = this.parts_mid;
+		if ( which == "light" ) p = this.parts_light;
+		
+		for ( var i = 0; i < p.length; i++ ){
+			if ( p[i].oldPos == undefined ) p[i].oldPos = p[i].position.slice(0);
+			
+			p[i].target = p[i].oldPos.slice(0);
+			if ( p[i].position[0] == p[i].oldPos[0] && p[i].position[1] == p[i].oldPos[1]) p[i].position = [0,0];
+			p[i].moveToTarget = true;
+		}
+	}
+	
 	//Function to change parts
 	this.changeParts = function ( to ) {
+		if (to != this.status) this.putOffParts ( this.status );
+		
 		if ( to == "heavy" ) this.parts_current = this.parts_heavy;
+		else if (to == "mid" ) this.parts_current = this.parts_mid;
 		else if ( to == "light" ) this.parts_current = this.parts_light;
 		
-		this.status = to;		
+		if (to != this.status) this.putOutParts ( to );
+		
+		this.status = to;
 		this.calcStats();
 	}
 }
@@ -212,7 +266,7 @@ function loadUnit ( sourcefile ) {
 						unit.parts_static.push ( p );
 					}
 					
-					for ( var i = 0; i < data.parts_light.length; i++){
+					if ( data.parts_light ) for ( var i = 0; i < data.parts_light.length; i++){
 						var p = getPart ( data.parts_light[i].source );
 						
 						p.parent = unit;
@@ -226,7 +280,21 @@ function loadUnit ( sourcefile ) {
 						unit.parts_light.push ( p );
 					}
 					
-					for ( var i = 0; i < data.parts_heavy.length; i++){
+					if ( data.parts_mid ) for ( var i = 0; i < data.parts_mid.length; i++){
+						var p = getPart ( data.parts_mid[i].source );
+						
+						p.parent = unit;
+						
+						p.position = vSum ( p.position, data.parts_mid[i].translate );
+						p.angle += data.parts_mid[i].angle * Math.PI;
+						
+						p.mirrorX = data.parts_mid[i].mirrorX;
+						p.mirrorY = data.parts_mid[i].mirrorY;
+						
+						unit.parts_mid.push ( p );
+					}
+					
+					if ( data.parts_heavy ) for ( var i = 0; i < data.parts_heavy.length; i++){
 						var p = getPart ( data.parts_heavy[i].source );
 						
 						p.parent = unit;
@@ -274,6 +342,9 @@ function moveUnit ( unit, time ) {
 	//Moves individual parts
 	for ( var i = 0; i < unit.parts.length; i++ )
 		movePart ( unit.parts[i], time );
+		
+	for ( var i = 0; i < unit.putOff.length; i++ )
+		movePart ( unit.putOff[i], time );
 		
 	if ( unit.health <= 0 ) unit.printOpacity -= 0.01;
 	if ( unit.printOpacity <= 0){ unit.dead = true; unit.printOpacity = 0; }

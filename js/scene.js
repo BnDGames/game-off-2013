@@ -14,12 +14,12 @@ var Scene = function () {
 	this.projectiles = new Array();
 	
 	//Scene damping factor
-	this.dRot = 5000;
+	this.dRot = 1800;
 	this.dTr = 0.45;
 	
 	//Scene damping factors applied to debris
-	this.debrisDRot = 0;
-	this.debrisDTr = 0;
+	this.debrisDRot = 600;
+	this.debrisDTr = 0.15;
 }
 
 //Function to add an unit to a scene
@@ -60,6 +60,9 @@ function sceneCheckProj ( scene ) {
 			if ( scene.projectiles[i].owner == scene.units[j] ) continue;
 			if ( scene.units[j].dead || scene.units[j].health <= 0 ) continue;
 			
+			var dist = vSubt ( scene.units[j].position, scene.projectiles[i].position );
+			if ( vModule ( dist ) > scene.units[j].r ) continue;
+			
 			if (pointInUnit ( scene.projectiles[i].position, scene.units[j] ) ) {
 				scene.units[j].applyImpulse ( scene.projectiles[i].position, vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass ) );
 				scene.units[j].damage ( scene.projectiles[i].mass );
@@ -82,6 +85,7 @@ function sceneCheckCollisions ( scene ) {
 		
 		for ( var j = i + 1; j < scene.units.length; j++ ){
 			if ( scene.units[j].dead || scene.units[j].health <= 0 ) continue;
+			if ( vModule ( vSubt ( scene.units[j].position, scene.units[i].position ) ) > scene.units[j].r + scene.units[i].r ) continue;
 			
 			var collision = unitsCollide ( scene.units[i], scene.units[j] );
 			

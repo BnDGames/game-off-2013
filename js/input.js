@@ -45,7 +45,7 @@ function applyInput () {
 		
 		if (keyStates[5]) inputBoundUnit.changeParts ( "light" );
 		
-		if (keyStates[6]) inputBoundUnit.changeParts ( "middle" );
+		if (keyStates[6]) inputBoundUnit.changeParts ( "mid" );
 		
 		if (keyStates[7]) inputBoundUnit.changeParts ( "heavy" );
 	}
