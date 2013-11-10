@@ -59,6 +59,8 @@ var Unit = function () {
 	this.maxHealth = 1;
 	this.armor = 1;
 	this.maxArmor = 1;
+	
+	this.maxSpeed = 1;
 
 	this.dead = false;
 	
@@ -161,8 +163,10 @@ var Unit = function () {
 		}
 		
 		//Calculates health and max health
-		this.health = getStat ( this, stat_health );
-		this.maxHealth = this.health;
+		var n = this.maxHealth;
+		
+		this.maxHealth = getStat ( this, stat_health );
+		this.health = this.maxHealth * this.health / n;
 		
 		//Calculates armor
 		this.armor = 1 + getStat ( this, stat_armor );
@@ -177,6 +181,10 @@ var Unit = function () {
 				if ( d > this.r ) this.r = d;
 			}
 		}
+		
+		//Calculates max speed
+		if ( this.parent )
+			this.maxSpeed = getStat ( this, stat_engine ) / this.parent.dTr;
 	}
 	
 	//Function to damage the unit

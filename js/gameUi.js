@@ -7,6 +7,9 @@
 //Hud control
 var hud = 0;
 
+//Loading screen
+var loading = 0;
+
 //Current UI root control
 var currentUI = 0;
 
@@ -15,11 +18,17 @@ function initUI () {
 	hud = new Control();
 	
 	var hpFillbar = new Fillbar();
-	hpFillbar.area = [12, 564, 300, 12];
+	hpFillbar.area = [12, 562, 300, 16];
 	hpFillbar.innerColor = "#C83737";
 	
+	var speedFillbar = new Fillbar();
+	speedFillbar.area = [12, 571, 300, 7];
+	speedFillbar.borderSize = 2;
+	speedFillbar.innerColor = "#71C837";
+	
+	
 	var scoreLabel = new NumLabel();
-	scoreLabel.area = [ hpFillbar.area[0] + hpFillbar.area[2] - 4, hpFillbar.area[1] - 10, 100, 32 ];
+	scoreLabel.area = [ hpFillbar.area[0] + hpFillbar.area[2] - 4, hpFillbar.area[1] - 8, 100, 32 ];
 	scoreLabel.content = "00000";
 	
 	var stateCheck = new CheckBoxList();
@@ -36,24 +45,42 @@ function initUI () {
 	hud.children.waveLabel = waveLabel;
 	hud.children.scoreLabel = scoreLabel;
 	hud.children.hpFillbar = hpFillbar;
+	hud.children.speedFillbar = speedFillbar;
 	
 	hud.print = function () {
 		context.fillStyle = "#FFFFFF";
 		context.fillRect ( 0, 568, 800, 4 );
 		
-		context.fillStyle = "#404040";
+		context.fillStyle = "#202020";
 		context.fillRect ( 0, 572, 800, 28 );
 	}
 	
-	currentUI = hud;
+	loading = new Control();
+	
+	var progressBar = new Fillbar();
+	progressBar.area = [ 150, 284, 500, 32 ];
+	progressBar.innerColor = "#C83737";
+	
+	loading.children.progressBar = progressBar;
+	
+	currentUI = loading;
 }
 
 //Function to update UI with unit data
-function updateUI ( unit ) {
+function updateHud ( unit ) {
 	hud.children.hpFillbar.fill = unit.health / unit.maxHealth;
+	
+	if (unit.maxSpeed > 0) hud.children.speedFillbar.fill = vModule(unit.speed) / unit.maxSpeed;
+	else hud.children.speedFillbar.fill = 0;
+	
 	hud.children.scoreLabel.value = unit.score;
 	
 	if (unit.status == "light") hud.children.stateCheck.checked = 0;
 	if (unit.status == "mid") hud.children.stateCheck.checked = 1;
 	if (unit.status == "heavy") hud.children.stateCheck.checked = 2;
+}
+
+//Function to update loading screen
+function updateLoading () {
+	loading.children.progressBar.fill = partsLoaded / partsCount;
 }

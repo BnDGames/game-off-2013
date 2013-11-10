@@ -243,13 +243,13 @@ function drawArrows ( scene, unit, viewport ) {
 
 //Function to draw the current game state
 function draw () {
-	context.globalAlpha = 1;
 	context.fillStyle = canvas.style.backgroundColor;
 	context.fillRect(0, 0, canvas.width, canvas.height);
-	context.globalAlpha = 1;
 	
-	drawScene ( context, s, [-inputBoundUnit.position[0] + canvas.width / 2, -inputBoundUnit.position[1] + canvas.height / 2], true, { divisions: 4, squareSize: 64 } );
-	drawArrows ( s, inputBoundUnit, [canvas.width ,canvas.height - 40] );
+	if (state_current == state_game){
+		drawScene ( context, s, [-inputBoundUnit.position[0] + canvas.width / 2, -inputBoundUnit.position[1] + canvas.height / 2], true, { divisions: 4, squareSize: 64 } );
+		drawArrows ( s, inputBoundUnit, [canvas.width ,canvas.height - 40] );
+	}
 	
 	if (currentUI) printControl ( context, currentUI, [0,0] );
 }

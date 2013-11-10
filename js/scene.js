@@ -28,6 +28,8 @@ function addUnitToScene ( unit, scene ) {
 	unit.parent = scene;
 	scene.units.push ( unit );
 	
+	if (unit.loaded) unit.calcStats();
+	
 	return unit;
 }
 
