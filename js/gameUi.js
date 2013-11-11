@@ -82,5 +82,6 @@ function updateHud ( unit ) {
 
 //Function to update loading screen
 function updateLoading () {
-	loading.children.progressBar.fill = partsLoaded / partsCount;
+	if (partsCount > 0) loading.children.progressBar.fill = partsLoaded / partsCount;
+	else loading.children.progressBar.fill = 0;
 }

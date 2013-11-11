@@ -101,7 +101,7 @@ function loadParts ( done ) {
 										parts.push ( d );
 										partsLoaded++;
 										
-										if (partsLoaded >= partsCount) done();//Calls done function when done
+										if (partsLoaded >= partsCount && done) done();//Calls done function when done
 									}
 						);
 					}
