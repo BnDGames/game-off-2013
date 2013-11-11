@@ -252,80 +252,106 @@ var Unit = function () {
 	}
 }
 
+var units = new Array();
+var unitsLoaded = 0;
+var unitsCount = 0;
+
+//Function to load a unit from json data
+function loadUnitFromJSON ( data, unit ) {	
+	while ( partsLoaded < partsCount ) { };
+					
+	for ( var i = 0; i < data.parts_static.length; i++){
+		var p = getPart ( data.parts_static[i].source );
+		
+		p.parent = unit;
+		
+		p.position = vSum ( p.position, data.parts_static[i].translate );
+		p.angle += data.parts_static[i].angle * Math.PI;
+		
+		p.mirrorX = data.parts_static[i].mirrorX;
+		p.mirrorY = data.parts_static[i].mirrorY;
+		
+		unit.parts_static.push ( p );
+	}
+	
+	if ( data.parts_light ) for ( var i = 0; i < data.parts_light.length; i++){
+		var p = getPart ( data.parts_light[i].source );
+		
+		p.parent = unit;
+		
+		p.position = vSum ( p.position, data.parts_light[i].translate );
+		p.angle += data.parts_light[i].angle * Math.PI;
+		
+		p.mirrorX = data.parts_light[i].mirrorX;
+		p.mirrorY = data.parts_light[i].mirrorY;
+		
+		unit.parts_light.push ( p );
+	}
+	
+	if ( data.parts_mid ) for ( var i = 0; i < data.parts_mid.length; i++){
+		var p = getPart ( data.parts_mid[i].source );
+		
+		p.parent = unit;
+		
+		p.position = vSum ( p.position, data.parts_mid[i].translate );
+		p.angle += data.parts_mid[i].angle * Math.PI;
+		
+		p.mirrorX = data.parts_mid[i].mirrorX;
+		p.mirrorY = data.parts_mid[i].mirrorY;
+		
+		unit.parts_mid.push ( p );
+	}
+	
+	if ( data.parts_heavy ) for ( var i = 0; i < data.parts_heavy.length; i++){
+		var p = getPart ( data.parts_heavy[i].source );
+		
+		p.parent = unit;
+		
+		p.position = vSum ( p.position, data.parts_heavy[i].translate );
+		p.angle += data.parts_heavy[i].angle * Math.PI;
+		
+		p.mirrorX = data.parts_heavy[i].mirrorX;
+		p.mirrorY = data.parts_heavy[i].mirrorY;
+		
+		unit.parts_heavy.push ( p );
+	}
+	
+	unit.scoreValue = data.scoreValue;
+	
+	unit.parts_current = unit.parts_light;
+	
+	unit.calcStats();
+	unit.loaded = true;
+}
+
 //Function to load a unit from JSON file
 function loadUnit ( sourcefile ) {
 	var unit = new Unit();
 	
-	$.getJSON ( sourcefile, 
-				function ( data ) {
-					while ( partsLoaded < partsCount ) { };
-					
-					for ( var i = 0; i < data.parts_static.length; i++){
-						var p = getPart ( data.parts_static[i].source );
-						
-						p.parent = unit;
-						
-						p.position = vSum ( p.position, data.parts_static[i].translate );
-						p.angle += data.parts_static[i].angle * Math.PI;
-						
-						p.mirrorX = data.parts_static[i].mirrorX;
-						p.mirrorY = data.parts_static[i].mirrorY;
-						
-						unit.parts_static.push ( p );
-					}
-					
-					if ( data.parts_light ) for ( var i = 0; i < data.parts_light.length; i++){
-						var p = getPart ( data.parts_light[i].source );
-						
-						p.parent = unit;
-						
-						p.position = vSum ( p.position, data.parts_light[i].translate );
-						p.angle += data.parts_light[i].angle * Math.PI;
-						
-						p.mirrorX = data.parts_light[i].mirrorX;
-						p.mirrorY = data.parts_light[i].mirrorY;
-						
-						unit.parts_light.push ( p );
-					}
-					
-					if ( data.parts_mid ) for ( var i = 0; i < data.parts_mid.length; i++){
-						var p = getPart ( data.parts_mid[i].source );
-						
-						p.parent = unit;
-						
-						p.position = vSum ( p.position, data.parts_mid[i].translate );
-						p.angle += data.parts_mid[i].angle * Math.PI;
-						
-						p.mirrorX = data.parts_mid[i].mirrorX;
-						p.mirrorY = data.parts_mid[i].mirrorY;
-						
-						unit.parts_mid.push ( p );
-					}
-					
-					if ( data.parts_heavy ) for ( var i = 0; i < data.parts_heavy.length; i++){
-						var p = getPart ( data.parts_heavy[i].source );
-						
-						p.parent = unit;
-						
-						p.position = vSum ( p.position, data.parts_heavy[i].translate );
-						p.angle += data.parts_heavy[i].angle * Math.PI;
-						
-						p.mirrorX = data.parts_heavy[i].mirrorX;
-						p.mirrorY = data.parts_heavy[i].mirrorY;
-						
-						unit.parts_heavy.push ( p );
-					}
-					
-					unit.scoreValue = data.scoreValue;
-					
-					unit.parts_current = unit.parts_light;
-					
-					unit.calcStats();
-					unit.loaded = true;
-				}
-	);
+	$.getJSON ( sourcefile, function (data) { loadUnitFromJSON(data, unit); } );
 	
 	return unit;
+}
+
+//Function to load all units listed in data/units/list.json
+function loadUnits () {
+	$.getJSON ( "data/units/list.json", function (data) {
+		unitsCount = data.length;
+		
+		for (var i = 0; i < data.length; i++){
+			$.getJSON ( data[i], function (data) { units.push(data); unitsLoaded++; } );
+		}
+	});
+}
+
+//Function to get a loaded unit by id
+function getUnit ( id ) {
+	for ( var i = 0; i < units.length; i++ )
+		if ( units[i].id == id ){
+			var u = new Unit();
+			loadUnitFromJSON ( units[i], u );
+			return u;
+		}
 }
 
 //Function to move a unit for given time

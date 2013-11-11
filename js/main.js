@@ -17,7 +17,8 @@ function setup () {
 	canvas.onmouseup = uiCheckEvents;
 	canvas.onmousemove = uiCheckEvents;
 	
-	loadParts ( 0 );
+	loadParts ();
+	loadUnits ();
 	
 	setInterval ( loop, 15 );
 	setInterval ( draw, 0 );
@@ -40,12 +41,12 @@ function loop () {
 	if (state_current == state_loading){
 		updateLoading ();
 		
-		if (partsCount > 0 && partsLoaded >= partsCount && loading.children.progressBar.shownFill > 0.99) {
-			inputBoundUnit = addUnitToScene ( loadUnit ( "data/units/test.json" ), s );
+		if (partsCount > 0 && partsLoaded >= partsCount && unitsLoaded >= unitsCount && loading.children.progressBar.shownFill > 0.99) {
+			inputBoundUnit = addUnitToScene(getUnit("test"),s);
 			inputBoundUnit.position = [ 500, 500 ];
 			inputBoundUnit.colors.push ( "#C83737" );
 		
-			u = addUnitToScene ( loadUnit ( "data/units/test.json" ), s );
+			u = addUnitToScene(getUnit("test"),s);
 			u.position = [ 1000, 800 ];
 			u.colors.push ( "#3771C8" );
 			

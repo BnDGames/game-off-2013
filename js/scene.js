@@ -14,7 +14,7 @@ var Scene = function () {
 	this.projectiles = new Array();
 	
 	//Scene damping factor
-	this.dRot = 1800;
+	this.dRot = 1250;
 	this.dTr = 0.45;
 	
 	//Scene damping factors applied to debris

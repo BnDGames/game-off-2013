@@ -34,13 +34,13 @@ function initUI () {
 	hud.children.speedFillbar.innerColor = "#3771C8";	
 	
 	hud.children.stateCheck = new CheckBoxList();
-	hud.children.stateCheck.area = [ 424, 554, 188, 32 ];
+	hud.children.stateCheck.area = [ 600, 554, 188, 32 ];
 	hud.children.stateCheck.prints[0] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.moveTo ( 10, 0 ); ctx.lineTo ( -10, -10 ); ctx.lineTo ( -10, 10 ); ctx.fill(); }
 	hud.children.stateCheck.prints[1] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.arc ( 0,0,10, 0, Math.PI * 2 ); ctx.fill(); }
 	hud.children.stateCheck.prints[2] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-10, -10, 20, 20); }
 	
 	hud.children.waveLabel = new Label();
-	hud.children.waveLabel.area = [ 628, 554, 160, 32 ];
+	hud.children.waveLabel.area = [ 628, 14, 160, 32 ];
 	hud.children.waveLabel.content = "WAVE 1";
 	
 	hud.children.pause = new Label();
@@ -135,7 +135,10 @@ function updateHud ( unit ) {
 
 //Function to update loading screen
 function updateLoading () {
-	if (partsCount > 0) loading.children.progressBar.fill = partsLoaded / partsCount;
+	var progressTot = partsCount + unitsCount;
+	var progressVal = partsLoaded + unitsLoaded;
+	
+	if (progressTot > 0) loading.children.progressBar.fill = progressVal / progressTot;
 	else loading.children.progressBar.fill = 0;
 	
 	loading.children.label.content = Math.round(loading.children.progressBar.shownFill * 100) + "%";

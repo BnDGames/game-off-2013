@@ -85,8 +85,7 @@ var parts = new Array();
 //Automatically loads all parts listed inside data/parts/list.json
 //All parts MUST have the property 'type' set to 'unit_part'
 //or they will be discarded
-//Once all parts have been loaded, the function done is called
-function loadParts ( done ) {
+function loadParts () {
 	$.getJSON ( "data/parts/list.json?" + Date.now(),
 	
 				function (data) {
@@ -100,8 +99,6 @@ function loadParts ( done ) {
 										
 										parts.push ( d );
 										partsLoaded++;
-										
-										if (partsLoaded >= partsCount && done) done();//Calls done function when done
 									}
 						);
 					}

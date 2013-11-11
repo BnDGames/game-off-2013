@@ -1,4 +1,6 @@
 {
+	"id": "test",
+
 	"parts_static" : [
 		{
 			"source" : "base_0",
