@@ -53,6 +53,7 @@ function moveScene ( scene, time ) {
 		
 	sceneCheckProj ( scene );
 	sceneCheckCollisions ( scene );
+	sceneCheckDead ( scene );
 }
 
 //Function to check for dead projectiles and projectile collisions in scene
@@ -94,4 +95,10 @@ function sceneCheckCollisions ( scene ) {
 			if (collision) handleUnitCollision ( scene.units[i], scene.units[j], collision );
 		}
 	}
+}
+
+//Function to check for dead units
+function sceneCheckDead ( scene ) {
+	for ( var i = 0; i < scene.units.length; i++ )
+		if ( scene.units[i].dead ) scene.units.splice ( i--, 1 );
 }

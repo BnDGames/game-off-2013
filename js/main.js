@@ -13,6 +13,10 @@ function setup () {
 	initUI();
 	graphicsSetup();
 	
+	canvas.onmousedown = uiCheckEvents;
+	canvas.onmouseup = uiCheckEvents;
+	canvas.onmousemove = uiCheckEvents;
+	
 	loadParts ( 0 );
 	
 	setInterval ( loop, 15 );
@@ -20,14 +24,17 @@ function setup () {
 }
 
 var speed = 1;
+var pause = false;
 
 //Loop function
 function loop () {
 	if (state_current == state_game){
-		applyInput();	
-		moveScene ( s, speed );
-		
-		updateHud( inputBoundUnit );
+		if (!pause){
+			applyInput();	
+			moveScene ( s, speed );
+			
+			updateHud( inputBoundUnit );
+		}
 	}
 	
 	if (state_current == state_loading){
@@ -42,10 +49,10 @@ function loop () {
 			u.position = [ 1000, 800 ];
 			u.colors.push ( "#3771C8" );
 			
-			state_current = state_game;
-			currentUI = hud;
+			state_current = state_menu;
+			currentUI = menu;
 		}
 	}
 	
-	if (currentUI) animateControl ( currentUI, speed );
+	if (currentUI && !pause) animateControl ( currentUI, speed );
 }

@@ -24,6 +24,15 @@ var Control = function () {
 	//Animate function
 	//with prototype function ( time )
 	this.animate = 0;
+	
+	//Status (0 = normal, 1 = hover, 2 = pressed)
+	this.status = 0;
+	
+	//Standard events
+	this.onmousein = 0;
+	this.onmouseout = 0;
+	this.onmousedown = 0;
+	this.onmouseup = 0;
 }
 
 //Function to print control and its children
@@ -45,6 +54,30 @@ function animateControl ( control, time ) {
 	
 	for (c in control.children)
 		animateControl ( control.children[c], time );
+}
+
+//Function to check mouse state
+function checkMouse ( control, event, offset ) {
+	var mX = event.clientX - offset[0];
+	var mY = event.clientY - offset[1];
+	
+	for (c in control.children)
+		checkMouse (control.children[c], event, vSum ( offset, control.area ) );
+	
+	var oldstatus = control.status;
+	
+	if (mX > control.area[0] && mX < control.area[0] + control.area[2] && mY > control.area[1] && mY < control.area[1] + control.area[3]){
+		if (event.type == "mousedown") control.status = 2;
+		else if (event.type == "mouseup" && control.status == 2) control.status = 1;
+		else if (control.status != 2) control.status = 1;
+	}
+	
+	else control.status = 0;
+	
+	if (oldstatus != 2 && control.status == 2 && control.onmousedown) control.onmousedown ();
+	if (oldstatus == 2 && control.status == 1 && control.onmouseup) control.onmouseup ();
+	if (oldstatus == 0 && control.status == 1 && control.onmousein) control.onmousein ();
+	if ((oldstatus == 1 || oldstatus == 2) && control.status == 0 && control.onmouseout) control.onmouseout ();
 }
 
 //Fillbar control
@@ -96,39 +129,44 @@ var Label = function () {
 	
 	this.borderColor = "#FFFFFF";
 	
+	this.printFrame = true;
+	
+	this.fontStyle = "24px League Gothic";
+	
 	//Drawing function
 	this.print = function ( context ) {
-		if ( this.borderSize > 0 ){
-			context.fillStyle = this.borderColor;
+		if ( this.printFrame ){
+			if ( this.borderSize > 0 ){
+				context.fillStyle = this.borderColor;
+				context.beginPath();
+				context.moveTo ( this.area[0] - this.borderSize * 1.414, this.area[1] + this.area[3] / 2 );
+				context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] - this.borderSize );
+				context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] - this.borderSize );
+				context.lineTo ( this.area[0] + this.area[2] + this.borderSize * 1.414, this.area[1] + this.area[3] / 2 );
+				context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] + this.area[3] + this.borderSize );
+				context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] + this.borderSize );
+				context.closePath();		
+				context.fill();
+			}
+		
+			context.fillStyle = this.innerColor;
 			context.beginPath();
-			context.moveTo ( this.area[0] - this.borderSize * 1.414, this.area[1] + this.area[3] / 2 );
-			context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] - this.borderSize );
-			context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] - this.borderSize );
-			context.lineTo ( this.area[0] + this.area[2] + this.borderSize * 1.414, this.area[1] + this.area[3] / 2 );
-			context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] + this.area[3] + this.borderSize );
-			context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] + this.borderSize );
-			context.closePath();		
+			context.moveTo ( this.area[0] , this.area[1] + this.area[3] / 2 );
+			context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] );
+			context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] );
+			context.lineTo ( this.area[0] + this.area[2], this.area[1] + this.area[3] / 2 );
+			context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] + this.area[3] );
+			context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] );
+			context.closePath();
 			context.fill();
 		}
 		
-		context.fillStyle = this.innerColor;
-		context.beginPath();
-		context.moveTo ( this.area[0] , this.area[1] + this.area[3] / 2 );
-		context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] );
-		context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] );
-		context.lineTo ( this.area[0] + this.area[2], this.area[1] + this.area[3] / 2 );
-		context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] + this.area[3] );
-		context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] );
-		context.closePath();
-		context.fill();
-		
-		context.font = "20px Verdana";
+		context.font = this.fontStyle;
 		context.textAlign = "center";
 		context.textBaseline = "middle";
 		context.fillStyle = this.textColor;
 		context.fillText ( this.content, this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] / 2);
-	}
-	
+	}	
 }
 Label.prototype = new Control();
 
@@ -148,6 +186,8 @@ var NumLabel = function () {
 	
 	this.digits = 5;
 	
+	this.fontStyle = "24px League Gothic";
+	
 	//Drawing function
 	this.print = function ( context ) {
 		if ( this.borderSize > 0 ){
@@ -174,11 +214,11 @@ var NumLabel = function () {
 		context.closePath();
 		context.fill();
 		
-		context.font = "20px Verdana";
+		context.font = this.fontStyle;
 		context.textAlign = "center";
 		context.textBaseline = "middle";
 		context.fillStyle = this.textColor;
-		context.fillText ( pad ( this.shownValue.toString(), "0", 5 ), this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] / 2);
+		context.fillText ( this.shownValue.toString(), this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] / 2);
 	}
 	
 	//Animate function
@@ -199,8 +239,6 @@ var CheckBoxList = function () {
 	this.innerColor = "#606060";
 	this.checkedColor = "#909090";
 	this.borderSize = 4;
-	
-	this.textColor = "#FFFFFF";
 	
 	this.borderColor = "#FFFFFF";
 	

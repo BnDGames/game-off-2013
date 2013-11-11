@@ -129,6 +129,26 @@ function drawPart ( context, part, offset, modifiers, colorset ) {
 		for ( var i = 0; i < part.modifiers.length; i++ ) 
 			if ( modifiers[part.modifiers[i].which] )
 				drawPrimitive ( part.modifiers[i].draw, colorset );
+				
+	//Basic drawing
+	if ( part.parent.printOpacity < 1){
+		context.beginPath();
+	
+		context.moveTo ( part.vertices[0][0], part.vertices[0][1] );
+	
+		for (var i = 0; i < part.vertices.length; i++)
+			context.lineTo ( part.vertices[i][0], part.vertices[i][1] );
+	
+		context.closePath();
+	
+		context.fillStyle = canvas.style.backgroundColor;
+		context.globalAlpha = 1 - part.parent.printOpacity;
+		context.lineWidth = 2;
+		context.stroke();
+		context.lineWidth = 1;
+		context.fill();
+		context.globalAlpha = 1;
+	}
 	
 	//Resets canvas status
 	if (part.mirrorY) context.scale ( 1, -1 );
@@ -140,7 +160,6 @@ function drawPart ( context, part, offset, modifiers, colorset ) {
 
 //Function to draw an unit
 function drawUnit ( context, unit, offset ) {
-	context.globalAlpha = unit.printOpacity;
 	offset = vSum ( offset, unit.position );
 	
 	context.translate ( offset[0], offset[1] );
@@ -154,7 +173,6 @@ function drawUnit ( context, unit, offset ) {
 		
 	context.rotate ( -unit.angle );
 	context.translate ( -offset[0], -offset[1] );
-	context.globalAlpha = 1;
 }
 
 //Function to draw a projectile
@@ -217,16 +235,16 @@ function drawArrows ( scene, unit, viewport ) {
 		
 		var distance = vSubt ( scene.units[i].position, unit.position );
 		
-		var dX = vMult ( distance, (viewport[0] / 2) / Math.abs(distance[0]) );
-		var dY = vMult ( distance, (viewport[1] / 2) / Math.abs(distance[1]) );
+		var dX = vMult ( distance, (viewport[2] / 2) / Math.abs(distance[0]) );
+		var dY = vMult ( distance, (viewport[3] / 2) / Math.abs(distance[1]) );
 		
 		var d = vModule(dX) < vModule(dY) ? dX : dY;
 		
-		if (Math.abs(distance[0]) < viewport[0] / 2 && Math.abs(distance[1]) < viewport[1] / 2) return;
+		if (Math.abs(distance[0]) < viewport[2] / 2 && Math.abs(distance[1]) < viewport[3] / 2) return;
 
 		context.fillStyle = "#3771C8";
 			
-		context.translate ( viewport[0] / 2 + d[0], viewport[1] / 2 + d[1] );
+		context.translate ( viewport[0] + viewport[2] / 2 + d[0], viewport[1] + viewport[3] / 2 + d[1] );
 		context.rotate ( vAngle(d) );
 	
 		context.beginPath();
@@ -237,7 +255,7 @@ function drawArrows ( scene, unit, viewport ) {
 		context.fill();
 		
 		context.rotate ( -vAngle(d) );
-		context.translate ( -viewport[0] / 2 - d[0], -viewport[1] / 2 - d[1] );
+		context.translate ( -viewport[0] - viewport[2] / 2 - d[0], -viewport[1] - viewport[3] / 2 - d[1] );
 	}
 }
 
@@ -248,7 +266,7 @@ function draw () {
 	
 	if (state_current == state_game){
 		drawScene ( context, s, [-inputBoundUnit.position[0] + canvas.width / 2, -inputBoundUnit.position[1] + canvas.height / 2], true, { divisions: 4, squareSize: 64 } );
-		drawArrows ( s, inputBoundUnit, [canvas.width ,canvas.height - 40] );
+		drawArrows ( s, inputBoundUnit, [10, 40, canvas.width - 20 ,canvas.height - 80] );
 	}
 	
 	if (currentUI) printControl ( context, currentUI, [0,0] );
