@@ -20,6 +20,9 @@ var Scene = function () {
 	//Scene damping factors applied to debris
 	this.debrisDRot = 600;
 	this.debrisDTr = 0.15;
+	
+	//Wave counter
+	this.wave = 0;
 }
 
 //Function to add an unit to a scene
@@ -123,4 +126,5 @@ function spawnWave ( scene, unit, minDistance, maxDistance, count, color ) {
 	}
 	
 	scene.spawnCount = count;
+	scene.wave++;
 }

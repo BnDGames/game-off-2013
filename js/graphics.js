@@ -38,6 +38,7 @@ function setFill ( settings, colorset ) {
 //Function to draw a primitive according to array
 function drawPrimitive ( prim, colorset ) {
 	if ( prim[0] == "circle" ){
+		context.save();
 		context.translate ( prim[1], prim[2] );
 		
 		context.beginPath();
@@ -45,16 +46,17 @@ function drawPrimitive ( prim, colorset ) {
 		setFill ( prim[4], colorset );
 		context.fill();
 		
-		context.translate ( -prim[1], -prim[2] );
+		context.restore();
 	}
 	
 	if ( prim[0] == "rect" ) {
+		context.save();
 		context.translate ( prim[1], prim[2] );
 		
 		setFill ( prim[5], colorset );
 		context.fillRect ( 0, 0, prim[3], prim[4] );
 		
-		context.translate ( -prim[1], -prim[2] );
+		context.restore();
 	}
 	
 	if ( prim[0] == "poly" ) {
@@ -87,6 +89,8 @@ function drawPart ( context, part, offset, modifiers, colorset ) {
 	if (part.vertices.length == 0) return;
 	
 	offset = vSum ( offset, part.position );
+
+	context.save();
 
 	//Transforms canvas
 	context.translate ( offset[0], offset[1] );
@@ -154,14 +158,14 @@ function drawPart ( context, part, offset, modifiers, colorset ) {
 	if (part.mirrorY) context.scale ( 1, -1 );
 	if (part.mirrorX) context.scale ( -1, 1 );
 	
-	context.rotate ( -part.angle );
-	context.translate ( -offset[0], -offset[1] );
+	context.restore();
 }
 
 //Function to draw an unit
 function drawUnit ( context, unit, offset ) {
 	offset = vSum ( offset, unit.position );
 	
+	context.save();
 	context.translate ( offset[0], offset[1] );
 	context.rotate ( unit.angle );
 	
@@ -171,22 +175,21 @@ function drawUnit ( context, unit, offset ) {
 	for (var i = 0; i < unit.parts.length; i++)
 		drawPart ( context, unit.parts[i], [0, 0], unit.gfxModifiers, unit.colors );
 		
-	context.rotate ( -unit.angle );
-	context.translate ( -offset[0], -offset[1] );
+	context.restore();
 }
 
 //Function to draw a projectile
 function drawProjectile ( context, projectile, offset ) {
 	offset = vSum ( offset, projectile.position );
 	
+	context.save();
 	context.translate ( offset[0], offset[1] );
 	context.rotate ( vAngle ( projectile.speed ) );
 	
 	for ( var i = 0; i < projectile.draw.length; i++)
 		drawPrimitive ( projectile.draw[i] );
 		
-	context.rotate ( -vAngle ( projectile.speed ) );
-	context.translate ( -offset[0], -offset[1] );
+	context.restore();
 }
 
 //Function to draw a scene
@@ -216,6 +219,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 		}
 	}
 	
+	context.save();
 	context.translate ( offset[0], offset[1] );
 	
 	for ( var i = 0; i < scene.projectiles.length; i++)
@@ -225,7 +229,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 		if (scene.units[i].loaded)
 			drawUnit ( context, scene.units[i], [0, 0] );
 	
-	context.translate ( -offset[0], -offset[1] );
+	context.restore();
 }
 
 //Function to draw indicators for enemy units
@@ -244,6 +248,7 @@ function drawArrows ( scene, unit, viewport ) {
 
 		context.fillStyle = scene.units[i].colors[0];
 			
+		context.save();
 		context.translate ( viewport[0] + viewport[2] / 2 + d[0], viewport[1] + viewport[3] / 2 + d[1] );
 		context.rotate ( vAngle(d) );
 	
@@ -254,8 +259,7 @@ function drawArrows ( scene, unit, viewport ) {
 		context.lineTo ( 0, 0 );
 		context.fill();
 		
-		context.rotate ( -vAngle(d) );
-		context.translate ( -viewport[0] - viewport[2] / 2 - d[0], -viewport[1] - viewport[3] / 2 - d[1] );
+		context.restore();
 	}
 }
 

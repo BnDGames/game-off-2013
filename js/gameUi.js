@@ -175,6 +175,8 @@ function updateHud ( unit ) {
 	
 	hud.children.enemies.content = (unit.parent.units.length - 1) + "/" + unit.parent.spawnCount;
 	
+	hud.children.waveLabel.content = "WAVE " + unit.parent.wave;
+	
 	if (unit.status == "light") hud.children.stateCheck.checked = 0;
 	if (unit.status == "mid") hud.children.stateCheck.checked = 1;
 	if (unit.status == "heavy") hud.children.stateCheck.checked = 2;
