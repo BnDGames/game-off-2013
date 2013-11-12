@@ -133,18 +133,20 @@ var Label = function () {
 	
 	this.fontStyle = "24px League Gothic";
 	
+	this.cornerFactor = 0.5;//EXPERIMENTAL
+	
 	//Drawing function
 	this.print = function ( context ) {
 		if ( this.printFrame ){
 			if ( this.borderSize > 0 ){
 				context.fillStyle = this.borderColor;
 				context.beginPath();
-				context.moveTo ( this.area[0] - this.borderSize * 1.414, this.area[1] + this.area[3] / 2 );
-				context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] - this.borderSize );
-				context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] - this.borderSize );
-				context.lineTo ( this.area[0] + this.area[2] + this.borderSize * 1.414, this.area[1] + this.area[3] / 2 );
-				context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] + this.area[3] + this.borderSize );
-				context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] + this.borderSize );
+				context.moveTo ( this.area[0] - this.borderSize * (1 + this.cornerFactor), this.area[1] + this.area[3] / 2 );
+				context.lineTo ( this.area[0] + this.area[3] * this.cornerFactor, this.area[1] - this.borderSize );
+				context.lineTo ( this.area[0] + this.area[2] - this.area[3] * this.cornerFactor, this.area[1] - this.borderSize );
+				context.lineTo ( this.area[0] + this.area[2] + this.borderSize * (1 + this.cornerFactor), this.area[1] + this.area[3] / 2 );
+				context.lineTo ( this.area[0] + this.area[2] - this.area[3]  * this.cornerFactor, this.area[1] + this.area[3] + this.borderSize );
+				context.lineTo ( this.area[0] + this.area[3]  * this.cornerFactor, this.area[1] + this.area[3] + this.borderSize );
 				context.closePath();		
 				context.fill();
 			}
@@ -152,11 +154,11 @@ var Label = function () {
 			context.fillStyle = this.innerColor;
 			context.beginPath();
 			context.moveTo ( this.area[0] , this.area[1] + this.area[3] / 2 );
-			context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] );
-			context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] );
+			context.lineTo ( this.area[0] + this.area[3]  * this.cornerFactor, this.area[1] );
+			context.lineTo ( this.area[0] + this.area[2] - this.area[3] * this.cornerFactor, this.area[1] );
 			context.lineTo ( this.area[0] + this.area[2], this.area[1] + this.area[3] / 2 );
-			context.lineTo ( this.area[0] + this.area[2] - this.area[3] / 2, this.area[1] + this.area[3] );
-			context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] );
+			context.lineTo ( this.area[0] + this.area[2] - this.area[3] * this.cornerFactor, this.area[1] + this.area[3] );
+			context.lineTo ( this.area[0] + this.area[3]  * this.cornerFactor, this.area[1] + this.area[3] );
 			context.closePath();
 			context.fill();
 		}

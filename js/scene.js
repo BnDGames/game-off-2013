@@ -14,7 +14,7 @@ var Scene = function () {
 	this.projectiles = new Array();
 	
 	//Scene damping factor
-	this.dRot = 1250;
+	this.dRot = 1500;
 	this.dTr = 0.45;
 	
 	//Scene damping factors applied to debris
@@ -101,4 +101,26 @@ function sceneCheckCollisions ( scene ) {
 function sceneCheckDead ( scene ) {
 	for ( var i = 0; i < scene.units.length; i++ )
 		if ( scene.units[i].dead ) scene.units.splice ( i--, 1 );
+}
+
+//Function to spawn a wave in scene
+function spawnWave ( scene, unit, minDistance, maxDistance, count, color ) {
+	for ( var i = 0; i < count; i++ ) {
+		var index = Math.floor(Math.random() * units.length);
+		
+		var u = new Unit(); loadUnitFromJSON ( units[ index ], u );
+		addUnitToScene ( u, scene );
+		u.position = vSum ( unit.position, [Math.random() * maxDistance / 1.414, Math.random() * maxDistance / 1.414] );
+		u.colors.push ( color );
+		
+		var d = vModule ( vSubt ( u.position, unit.position ) );
+		while ( d < minDistance ){
+			u.position = vSum ( unit.position, [Math.random() * maxDistance / 1.414, Math.random() * maxDistance / 1.414] );
+			d = vModule ( vSubt ( u.position, unit.position ) )
+		}
+		
+		u.angle = vAngle(vSubt(u.position, unit.position));
+	}
+	
+	scene.spawnCount = count;
 }

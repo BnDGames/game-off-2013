@@ -461,7 +461,7 @@ function handleUnitCollision ( a, b, collision ) {
 	//For collision handling the two units are approximated
 	//to circles for simplicity (physical realism is not our
 	//aim)
-	var normal = vSetModule ( vSubt ( a.position, b.position ), 1 );
+	var normal = vSetModule(vSubt ( a.position, b.position ),1);
 	
 	//Collision point (average between colliding points in array collision)
 	var cPoint = [0,0];
@@ -480,12 +480,14 @@ function handleUnitCollision ( a, b, collision ) {
 	var rB = vDot ( vPerp ( vSubt ( cPoint , b.position ) ), normal );
 	
 	//Calculates impulse
-	var j = -0.05 * cSpeed / (vDot ( normal, vMult ( normal, 1 / a.mass + 1 / b.mass ) ) + Math.pow ( rA, 2 ) / a.inertia + Math.pow( rB, 2 ) / b.inertia );
+	var j = -2 * cSpeed / (vDot ( normal, vMult ( normal, 1 / a.mass + 1 / b.mass ) ) + Math.pow ( rA, 2 ) / a.inertia + Math.pow( rB, 2 ) / b.inertia );
 		
 	//Impulse vector
-	var impulse = vSetModule ( normal, j * 100 );
-		
-	//Applies impulse
-	a.applyImpulse ( cPoint, impulse );
-	b.applyImpulse ( cPoint, vMult ( impulse, -1 ) );
+	var impulse = vMult ( normal, j );
+	
+	if (cSpeed < 0){
+		//Applies impulse
+		a.applyImpulse ( cPoint, impulse );
+		b.applyImpulse ( cPoint, vMult ( impulse, -1 ) );
+	}
 }

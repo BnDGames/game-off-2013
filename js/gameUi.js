@@ -26,41 +26,86 @@ function initUI () {
 	
 	hud.children.hpFillbar = new Fillbar();
 	hud.children.hpFillbar.area = [12, 562, 300, 16];
-	hud.children.hpFillbar.innerColor = "#C83737";
+	hud.children.hpFillbar.innerColor = colors_barFill1;
 	
 	hud.children.speedFillbar = new Fillbar();
 	hud.children.speedFillbar.area = [12, 571, 300, 7];
 	hud.children.speedFillbar.borderSize = 2;
-	hud.children.speedFillbar.innerColor = "#3771C8";	
+	hud.children.speedFillbar.innerColor = colors_barFill2;	
 	
 	hud.children.stateCheck = new CheckBoxList();
 	hud.children.stateCheck.area = [ 600, 554, 188, 32 ];
 	hud.children.stateCheck.prints[0] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.moveTo ( 10, 0 ); ctx.lineTo ( -10, -10 ); ctx.lineTo ( -10, 10 ); ctx.fill(); }
 	hud.children.stateCheck.prints[1] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.arc ( 0,0,10, 0, Math.PI * 2 ); ctx.fill(); }
 	hud.children.stateCheck.prints[2] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-10, -10, 20, 20); }
+	hud.children.stateCheck.checkedColor = colors_buttonActive;
 	
 	hud.children.waveLabel = new Label();
 	hud.children.waveLabel.area = [ 628, 14, 160, 32 ];
 	hud.children.waveLabel.content = "WAVE 1";
 	
+	hud.children.enemies = new Label();
+	hud.children.enemies.area = [ 516, 18, 100, 24 ];
+	
 	hud.children.pause = new Label();
-	hud.children.pause.area = [ 12, 14, 64, 32 ];
+	hud.children.pause.area = [ 12, 14, 48, 32 ];
 	hud.children.pause.content = "II";
+	hud.children.pause.cornerFactor = 0.5;
 	hud.children.pause.onmousein = labelOnMouseIn;
 	hud.children.pause.onmouseout = labelOnMouseOut;
 	hud.children.pause.onmousedown = function() {
-		if (!pause){ pause = true; this.innerColor = "#3771C8"; this.onmouseout = 0; this.onmousein = 0; }
-		else { pause = false; this.innerColor = "#606060"; this.onmouseout = labelOnMouseOut; this.onmousein = labelOnMouseIn; }
+		if (!pause){ pause = true; this.innerColor = colors_buttonActive; this.onmouseout = 0; this.onmousein = 0; }
+		else {
+			pause = false;
+			this.innerColor = colors_buttonHover;
+			this.onmouseout = labelOnMouseOut;this.onmousein = labelOnMouseIn;
+		}
 	}
 	
 	hud.print = function () {
 		context.fillStyle = "#FFFFFF";
-		context.fillRect ( -1, 568, 802, 4 );
-		context.fillRect ( -1, 28, 802, 4 );
+		context.fillRect ( -1, 568, canvas.width + 2, 4 );
+		context.fillRect ( -1, 28, canvas.width + 2, 4 );
 		
-		context.fillStyle = "#202020";
-		context.fillRect ( -1, 572, 802, 29 );
-		context.fillRect ( -1, -1, 802, 29 );
+		context.fillStyle = colors[0];
+		context.fillRect ( -1, 572, canvas.width + 2, 29 );
+		context.fillRect ( -1, -1, canvas.width + 2, 29 );
+		
+		if ( this.blinkingText ) {
+			context.fillStyle = "#FFFFFF";
+			context.textAlign = "center";
+			context.textBaseline = "middle";
+			context.font = "160px League Gothic";
+			context.fillText ( this.blinkingTextContent, canvas.width / 2, canvas.height / 2 );
+		}
+	}
+	
+	hud.blinkingTextContent = "";
+	hud.blinkText = function ( text, times, done, update ) {
+		this.blinkingText = true;
+		this.blinkingTextContent = text;
+		this.blinkingTextTimes = times;
+		this.blinkingTextTime = Date.now();
+		this.blinkingTextDone = done;
+		this.blinkingTextUpdate = update;
+	}
+	
+	hud.animate = function ( time ) {
+		if (this.blinkingTextContent != "" && Date.now() - this.blinkingTextTime > 300){
+			if (this.blinkingTextTimes > 0.5){
+				this.blinkingText = !this.blinkingText;
+				this.blinkingTextTimes -= 0.5;
+				this.blinkingTextTime = Date.now();
+				
+				if (this.blinkingText && this.blinkingTextUpdate)
+					this.blinkingTextUpdate();
+			}
+			
+			else {
+				this.blinkingTextContent = "";
+				if (this.blinkingTextDone) this.blinkingTextDone();
+			}
+		}
 	}
 	
 	
@@ -69,7 +114,7 @@ function initUI () {
 	
 	loading.children.progressBar = new Fillbar();
 	loading.children.progressBar.area = [ 150, 284, 500, 32 ];
-	loading.children.progressBar.innerColor = "#C83737";
+	loading.children.progressBar.innerColor = colors_barFill1;
 	
 	loading.children.label = new Label();
 	loading.children.label.area = [ 150, 284, 500, 32 ];
@@ -97,9 +142,9 @@ function initUI () {
 	menu.children.play.fontStyle = "36px League Gothic";
 	menu.children.play.onmousein = labelOnMouseIn;
 	menu.children.play.onmouseout = labelOnMouseOut;
-	menu.children.play.onmousedown = function () { this.innerColor = "#3771C8"; }
+	menu.children.play.onmousedown = function () { this.innerColor = colors_buttonActive; }
 	menu.children.play.onmouseup = function () {
-		this.innerColor = "#909090";
+		this.innerColor = colors_buttonHover;
 		state_current = state_game;
 		currentUI = hud;
 	}
@@ -128,6 +173,8 @@ function updateHud ( unit ) {
 	
 	hud.children.scoreLabel.value = unit.score;
 	
+	hud.children.enemies.content = (unit.parent.units.length - 1) + "/" + unit.parent.spawnCount;
+	
 	if (unit.status == "light") hud.children.stateCheck.checked = 0;
 	if (unit.status == "mid") hud.children.stateCheck.checked = 1;
 	if (unit.status == "heavy") hud.children.stateCheck.checked = 2;
@@ -151,5 +198,5 @@ function uiCheckEvents ( event ) {
 }
 
 //Label standard event functions
-function labelOnMouseIn () { this.innerColor = "#909090"; }
-function labelOnMouseOut () { this.innerColor = "#606060"; }
+function labelOnMouseIn () { this.innerColor = colors_buttonHover; }
+function labelOnMouseOut () { this.innerColor = colors_buttonStd; }

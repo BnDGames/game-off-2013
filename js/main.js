@@ -35,6 +35,10 @@ function loop () {
 			moveScene ( s, speed );
 			
 			updateHud( inputBoundUnit );
+			
+			if (s.units.length == 1 && hud.blinkingTextContent == ""){
+				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( s, inputBoundUnit, canvas.width, canvas.width * 5, 3, colors_enemy ); } ); } );
+			}
 		}
 	}
 	
@@ -44,16 +48,14 @@ function loop () {
 		if (partsCount > 0 && partsLoaded >= partsCount && unitsLoaded >= unitsCount && loading.children.progressBar.shownFill > 0.99) {
 			inputBoundUnit = addUnitToScene(getUnit("test"),s);
 			inputBoundUnit.position = [ 500, 500 ];
-			inputBoundUnit.colors.push ( "#C83737" );
+			inputBoundUnit.colors.push ( colors_player );
 		
-			u = addUnitToScene(getUnit("test"),s);
-			u.position = [ 1000, 800 ];
-			u.colors.push ( "#3771C8" );
+			spawnWave ( s, inputBoundUnit, canvas.width, canvas.width * 5, 3, colors_enemy );
 			
 			state_current = state_menu;
 			currentUI = menu;
 		}
 	}
 	
-	if (currentUI && !pause) animateControl ( currentUI, speed );
+	if (currentUI) animateControl ( currentUI, speed );
 }

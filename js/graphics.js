@@ -224,7 +224,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 	for ( var i = 0; i < scene.units.length; i++)
 		if (scene.units[i].loaded)
 			drawUnit ( context, scene.units[i], [0, 0] );
-		
+	
 	context.translate ( -offset[0], -offset[1] );
 }
 
@@ -240,9 +240,9 @@ function drawArrows ( scene, unit, viewport ) {
 		
 		var d = vModule(dX) < vModule(dY) ? dX : dY;
 		
-		if (Math.abs(distance[0]) < viewport[2] / 2 && Math.abs(distance[1]) < viewport[3] / 2) return;
+		if (Math.abs(distance[0]) < viewport[2] / 2 && Math.abs(distance[1]) < viewport[3] / 2) continue;
 
-		context.fillStyle = "#3771C8";
+		context.fillStyle = scene.units[i].colors[0];
 			
 		context.translate ( viewport[0] + viewport[2] / 2 + d[0], viewport[1] + viewport[3] / 2 + d[1] );
 		context.rotate ( vAngle(d) );
