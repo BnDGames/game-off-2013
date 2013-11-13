@@ -455,13 +455,14 @@ function unitsCollide ( a, b ) {
 	return false;
 }
 
+var f = true;
 //Function to handle collision between two units
 function handleUnitCollision ( a, b, collision ) {
 	//Collision normal
 	//For collision handling the two units are approximated
 	//to circles for simplicity (physical realism is not our
 	//aim)
-	var normal = vSetModule(vSubt ( a.position, b.position ),1);
+	var normal = vSetModule(vSubt ( a.position, b.position ), 1);
 	
 	//Collision point (average between colliding points in array collision)
 	var cPoint = [0,0];
@@ -469,7 +470,7 @@ function handleUnitCollision ( a, b, collision ) {
 	cPoint = vMult ( cPoint, 1 / collision.length );
 	
 	//Linear speeds at cPoint on a and b units, relative to normal
-	var cSpeedA = vDot ( vSum ( a.speed, vMult ( vPerp ( vSubt ( cPoint, a.position ) ), a.omega ) ), normal);
+	/*var cSpeedA = vDot ( vSum ( a.speed, vMult ( vPerp ( vSubt ( cPoint, a.position ) ), a.omega ) ), normal);
 	var cSpeedB = vDot ( vSum ( b.speed, vMult ( vPerp ( vSubt ( cPoint, b.position ) ), b.omega ) ), normal);
 	
 	//Relative speed at cPoint
@@ -489,5 +490,11 @@ function handleUnitCollision ( a, b, collision ) {
 		//Applies impulse
 		a.applyImpulse ( cPoint, impulse );
 		b.applyImpulse ( cPoint, vMult ( impulse, -1 ) );
-	}
+	}*/
+	
+	var dist = vSubt ( a.position, b.position );
+	var force = vSetModule ( dist, 2000 / vModule ( dist ) );
+	
+	a.applyForce ( cPoint, force );
+	b.applyForce ( cPoint, vMult(force, -1) );
 }
