@@ -498,3 +498,29 @@ function handleUnitCollision ( a, b, collision ) {
 	a.applyForce ( cPoint, force );
 	b.applyForce ( cPoint, vMult(force, -1) );
 }
+
+//Function to control unit with AI
+function ai ( unit, target ) {
+	if (unit.health <= 0 || target.health <= 0) { unit.gfxModifiers[gfxMod_engineOn] = false; return; }
+	
+	var dist = vSubt ( target.position, unit.position );
+	var dAngle = vAngle(dist);
+	
+	var turn = getStat ( unit, stat_maneuvrability );
+	var force = getStat ( unit, stat_engine );
+	
+	var angle = unit.angle - dAngle;
+	
+	while (angle > Math.PI) angle -= Math.PI * 2;
+	while (angle < -Math.PI) angle += Math.PI * 2;
+	
+	if (angle > 0) unit.applyMomentum ( -turn );
+	else unit.applyMomentum ( turn );
+	
+	if ( angle > -Math.PI / 6 && angle < Math.PI / 6 ){
+		unit.applyForce ( unit.position, vRotate ( [force,0], unit.angle ) );
+		unit.shoot();
+	}
+	
+	unit.gfxModifiers[gfxMod_engineOn] = true;
+}

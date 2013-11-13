@@ -8,6 +8,8 @@
 //Canvas and drawing context for the game
 var canvas, context;
 
+var sceneScale = 0.5;
+
 //Function to center the canvas on screen
 function centerCanvas () {
 	canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";
@@ -220,6 +222,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 	}
 	
 	context.save();
+	context.scale ( sceneScale, sceneScale );
 	context.translate ( offset[0], offset[1] );
 	
 	for ( var i = 0; i < scene.projectiles.length; i++)
@@ -244,7 +247,7 @@ function drawArrows ( scene, unit, viewport ) {
 		
 		var d = vModule(dX) < vModule(dY) ? dX : dY;
 		
-		if (Math.abs(distance[0]) < viewport[2] / 2 && Math.abs(distance[1]) < viewport[3] / 2) continue;
+		if (Math.abs(distance[0]) < viewport[2] / 2 / sceneScale && Math.abs(distance[1]) < viewport[3] / 2 / sceneScale) continue;
 
 		context.fillStyle = scene.units[i].colors[0];
 			
@@ -269,7 +272,7 @@ function draw () {
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	if (state_current == state_game){
-		drawScene ( context, s, [-inputBoundUnit.position[0] + canvas.width / 2, -inputBoundUnit.position[1] + canvas.height / 2], true, { divisions: 4, squareSize: 64 } );
+		drawScene ( context, s, [-inputBoundUnit.position[0] + canvas.width / 2 / sceneScale, -inputBoundUnit.position[1] + canvas.height / 2 / sceneScale], true, { divisions: 4, squareSize: 64 } );
 		drawArrows ( s, inputBoundUnit, [10, 40, canvas.width - 20 ,canvas.height - 80] );
 	}
 	

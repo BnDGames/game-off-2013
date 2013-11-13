@@ -123,8 +123,15 @@ function spawnWave ( scene, unit, minDistance, maxDistance, count, color ) {
 		}
 		
 		u.angle = vAngle(vSubt(u.position, unit.position));
+		u.ai = true;
 	}
 	
 	scene.spawnCount = count;
 	scene.wave++;
+}
+
+//Function to control all AI units in scene
+function sceneAi ( scene, target ) {
+	for ( var i = 0; i < scene.units.length; i++ )
+		if (scene.units[i].ai) ai ( scene.units[i], target );
 }

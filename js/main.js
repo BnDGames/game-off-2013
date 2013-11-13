@@ -31,8 +31,9 @@ var pause = false;
 function loop () {
 	if (state_current == state_game){
 		if (!pause){
-			applyInput();	
+			applyInput();
 			moveScene ( s, speed );
+			sceneAi ( s, inputBoundUnit );
 			
 			updateHud( inputBoundUnit );
 			
