@@ -64,10 +64,10 @@ function sceneCheckProj ( scene ) {
 	for ( var i = 0; i < scene.projectiles.length; i++ ){
 		for ( var j = 0; j < scene.units.length; j++ ){
 			if ( scene.projectiles[i].owner == scene.units[j] ) continue;
-			if ( scene.units[j].dead || scene.units[j].health <= 0 ) continue;
+			if ( scene.units[j].dead || scene.units[j].health <= 0 || scene.projectiles[i].owner.team == scene.units[j].team ) continue;
 			
 			var dist = vSubt ( scene.units[j].position, scene.projectiles[i].position );
-			if ( vModule ( dist ) > scene.units[j].r ) continue;
+			if ( vModule ( dist ) > scene.units[j].r) continue;
 			
 			if (pointInUnit ( scene.projectiles[i].position, scene.units[j] ) ) {
 				scene.units[j].applyImpulse ( scene.projectiles[i].position, vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass ) );
@@ -124,6 +124,7 @@ function spawnWave ( scene, unit, minDistance, maxDistance, count, color ) {
 		
 		u.angle = vAngle(vSubt(u.position, unit.position));
 		u.ai = true;
+		u.team = "ai";
 	}
 	
 	scene.spawnCount = count;

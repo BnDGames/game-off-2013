@@ -98,7 +98,7 @@ var Unit = function () {
 	
 	//Shooting action
 	this.shoot = function () {
-		if (!this.parent) return;
+		if (!this.parent || this.health <= 0) return;
 		
 		for ( var i = 0; i < this.parts.length; i++ ) {
 			for ( var l = 0; l < this.parts[i].actions.length; l++ ) {
@@ -199,7 +199,8 @@ var Unit = function () {
 		
 		for ( var i = 0; i < this.parts.length; i++ ) {
 			this.parts[i].omega = 0;
-			this.parts[i].speed = vSetModule ( this.parts[i].position, fx_destructionSpeed );
+			this.parts[i].speed = vSetModule ( this.parts[i].position, Math.sqrt(fx_destructionSpeed * vModule(this.parts[i].position) / 100) );
+			this.parts[i].moveToTarget = false;
 		}
 	}
 	
@@ -250,6 +251,9 @@ var Unit = function () {
 		this.status = to;
 		this.calcStats();
 	}
+	
+	//AI function
+	this.aiFunction = 0;
 }
 
 var units = new Array();
@@ -315,6 +319,8 @@ function loadUnitFromJSON ( data, unit ) {
 		
 		unit.parts_heavy.push ( p );
 	}
+	
+	if ( data.ai ) unit.aiFunction = eval ( data.ai );
 	
 	unit.scoreValue = data.scoreValue;
 	
@@ -469,29 +475,6 @@ function handleUnitCollision ( a, b, collision ) {
 	for (var i = 0; i < collision.length; i++) cPoint = vSum ( cPoint, collision[i] );
 	cPoint = vMult ( cPoint, 1 / collision.length );
 	
-	//Linear speeds at cPoint on a and b units, relative to normal
-	/*var cSpeedA = vDot ( vSum ( a.speed, vMult ( vPerp ( vSubt ( cPoint, a.position ) ), a.omega ) ), normal);
-	var cSpeedB = vDot ( vSum ( b.speed, vMult ( vPerp ( vSubt ( cPoint, b.position ) ), b.omega ) ), normal);
-	
-	//Relative speed at cPoint
-	var cSpeed = cSpeedA - cSpeedB;
-	
-	//Perpendicular radiuses
-	var rA = vDot ( vPerp ( vSubt ( cPoint , a.position ) ), normal );
-	var rB = vDot ( vPerp ( vSubt ( cPoint , b.position ) ), normal );
-	
-	//Calculates impulse
-	var j = -2 * cSpeed / (vDot ( normal, vMult ( normal, 1 / a.mass + 1 / b.mass ) ) + Math.pow ( rA, 2 ) / a.inertia + Math.pow( rB, 2 ) / b.inertia );
-		
-	//Impulse vector
-	var impulse = vMult ( normal, j );
-	
-	if (cSpeed < 0){
-		//Applies impulse
-		a.applyImpulse ( cPoint, impulse );
-		b.applyImpulse ( cPoint, vMult ( impulse, -1 ) );
-	}*/
-	
 	var dist = vSubt ( a.position, b.position );
 	var force = vSetModule ( dist, 2000 / vModule ( dist ) );
 	
@@ -501,26 +484,30 @@ function handleUnitCollision ( a, b, collision ) {
 
 //Function to control unit with AI
 function ai ( unit, target ) {
-	if (unit.health <= 0 || target.health <= 0) { unit.gfxModifiers[gfxMod_engineOn] = false; return; }
+	if (unit.aiFunction) unit.aiFunction ( target );
 	
-	var dist = vSubt ( target.position, unit.position );
-	var dAngle = vAngle(dist);
+	else {
+		if (unit.health <= 0 || target.health <= 0) { unit.gfxModifiers[gfxMod_engineOn] = false; return; }
 	
-	var turn = getStat ( unit, stat_maneuvrability );
-	var force = getStat ( unit, stat_engine );
+		var dist = vSubt ( target.position, unit.position );
+		var dAngle = vAngle(dist);
 	
-	var angle = unit.angle - dAngle;
+		var turn = getStat ( unit, stat_maneuvrability );
+		var force = getStat ( unit, stat_engine );
 	
-	while (angle > Math.PI) angle -= Math.PI * 2;
-	while (angle < -Math.PI) angle += Math.PI * 2;
+		var angle = unit.angle - dAngle;
 	
-	if (angle > 0) unit.applyMomentum ( -turn );
-	else unit.applyMomentum ( turn );
+		while (angle > Math.PI) angle -= Math.PI * 2;
+		while (angle < -Math.PI) angle += Math.PI * 2;
 	
-	if ( angle > -Math.PI / 6 && angle < Math.PI / 6 ){
-		unit.applyForce ( unit.position, vRotate ( [force,0], unit.angle ) );
-		unit.shoot();
+		if (angle > 0) unit.applyMomentum ( -turn );
+		else unit.applyMomentum ( turn );
+	
+		if ( angle > -Math.PI / 6 && angle < Math.PI / 6 ){
+			unit.applyForce ( unit.position, vRotate ( [force,0], unit.angle ) );
+			unit.shoot();
+		}
+	
+		unit.gfxModifiers[gfxMod_engineOn] = true;
 	}
-	
-	unit.gfxModifiers[gfxMod_engineOn] = true;
 }

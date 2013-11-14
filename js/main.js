@@ -38,7 +38,7 @@ function loop () {
 			updateHud( inputBoundUnit );
 			
 			if (s.units.length == 1 && hud.blinkingTextContent == ""){
-				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( s, inputBoundUnit, canvas.width, canvas.width * 5, 3, colors_enemy ); } ); } );
+				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( s, inputBoundUnit, canvas.width / sceneScale, canvas.width * 5 / sceneScale, 3, colors_enemy ); } ); } );
 			}
 		}
 	}
@@ -51,7 +51,7 @@ function loop () {
 			inputBoundUnit.position = [ 500, 500 ];
 			inputBoundUnit.colors.push ( colors_player );
 		
-			spawnWave ( s, inputBoundUnit, canvas.width, canvas.width * 5, 3, colors_enemy );
+			spawnWave ( s, inputBoundUnit, canvas.width / sceneScale, canvas.width * 5 / sceneScale, 3, colors_enemy );
 			
 			state_current = state_menu;
 			currentUI = menu;
