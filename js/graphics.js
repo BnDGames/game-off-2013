@@ -8,7 +8,7 @@
 //Canvas and drawing context for the game
 var canvas, context;
 
-var sceneScale = 0.5;
+var sceneScale = 0.75;
 
 //Function to center the canvas on screen
 function centerCanvas () {
