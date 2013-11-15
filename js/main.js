@@ -37,7 +37,11 @@ function loop () {
 			
 			updateHud( inputBoundUnit );
 			
-			if (s.units.length == 1 && hud.blinkingTextContent == ""){
+			if (inputBoundUnit.health <= 0 && !hud.overlayText){
+				setTimeout ( function() { hud.overlay ( "GAME OVER", 4000, function () { state_current = state_menu; currentUI = menu; } ) }, 300 ) ;
+			}
+			
+			else if (s.units.length == 1 && hud.blinkingTextContent == ""){
 				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( s, inputBoundUnit, canvas.width / sceneScale, canvas.width * 5 / sceneScale, 3, colors_enemy ); } ); } );
 			}
 		}
