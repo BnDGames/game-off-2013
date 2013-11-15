@@ -97,6 +97,11 @@ function initUI () {
 			context.textBaseline = "middle";
 			context.font = "160px League Gothic";
 			context.fillText ( this.overlayTextContent, canvas.width / 2, canvas.height / 2 );		
+			
+			if ( this.overlaySubtitle ) {
+				context.font = "24px League Gothic";
+				context.fillText ( this.overlaySubtitle, canvas.width / 2, canvas.height / 2 + 72 );	
+			}
 		}
 	}
 	
@@ -112,12 +117,13 @@ function initUI () {
 	
 	hud.overlayText = false;
 	hud.overlayTextContent = "";
-	hud.overlay = function ( text, time, done ) {
+	hud.overlay = function ( text, time, done, subtitle ) {
 		this.overlayText = true;
 		this.overlayTextContent = text;
 		this.overlayTextTime = time;
 		this.overlayTextBegin = Date.now();
 		this.overlayTextDone = done;		
+		this.overlaySubtitle = subtitle;
 	}
 	
 	hud.animate = function ( time ) {

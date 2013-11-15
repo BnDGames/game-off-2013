@@ -39,7 +39,9 @@ function loop () {
 			
 			if (inputBoundUnit.health <= 0){
 				if (!hud.overlayText && !gameoverOverlay){
-					setTimeout ( function() { hud.overlay ( "GAME OVER", 4000, function () { state_current = state_menu; currentUI = menu; gameoverOverlay = false; } ); }, 300 ) ;
+					setTimeout ( function() {
+						hud.overlay ( "GAME OVER", 4000, function () { state_current = state_menu; currentUI = menu; gameoverOverlay = false; }, inputBoundUnit.score + " POINTS" )
+						}, 300 ) ;
 					gameoverOverlay = true;
 				}
 			}
