@@ -62,7 +62,7 @@ function initUI () {
 		}
 	}
 	
-	hud.print = function () {
+	hud.print = function ( context ) {
 		context.fillStyle = "#FFFFFF";
 		context.fillRect ( -1, 568, canvas.width + 2, 4 );
 		context.fillRect ( -1, 28, canvas.width + 2, 4 );
@@ -78,6 +78,14 @@ function initUI () {
 			context.font = "160px League Gothic";
 			context.fillText ( this.blinkingTextContent, canvas.width / 2, canvas.height / 2 );
 		}
+		
+		if ( this.overlayText ) {			
+			context.fillStyle = "#FFFFFF";
+			context.textAlign = "center";
+			context.textBaseline = "middle";
+			context.font = "160px League Gothic";
+			context.fillText ( this.overlayTextContent, canvas.width / 2, canvas.height / 2 );		
+		}
 	}
 	
 	hud.blinkingTextContent = "";
@@ -88,6 +96,16 @@ function initUI () {
 		this.blinkingTextTime = Date.now();
 		this.blinkingTextDone = done;
 		this.blinkingTextUpdate = update;
+	}
+	
+	hud.overlayText = false;
+	hud.overlayTextContent = "";
+	hud.overlay = function ( text, time, done ) {
+		this.overlayText = true;
+		this.overlayTextContent = text;
+		this.overlayTextTime = time;
+		this.overlayTextBegin = Date.now();
+		this.overlayTextDone = done;		
 	}
 	
 	hud.animate = function ( time ) {
@@ -105,6 +123,11 @@ function initUI () {
 				this.blinkingTextContent = "";
 				if (this.blinkingTextDone) this.blinkingTextDone();
 			}
+		}
+		
+		if ( this.overlayText && Date.now() - this.overlayTextBegin > this.overlayTextTime ){
+			this.overlayText = false;
+			if ( this.overlayTextDone ) this.overlayTextDone();
 		}
 	}
 	
