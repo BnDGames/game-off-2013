@@ -182,6 +182,14 @@ function initUI () {
 		this.innerColor = colors_buttonHover;
 		state_current = state_game;
 		currentUI = hud;
+		
+		resetScene ( gameScene );
+		
+		inputBoundUnit = addUnitToScene(getUnit("test"), gameScene);
+		inputBoundUnit.position = [ 500, 500 ];
+		inputBoundUnit.colors.push ( colors_player );
+	
+		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 5 / sceneScale, 3, colors_enemy );
 	}
 	
 	menu.children.editship = new Label();

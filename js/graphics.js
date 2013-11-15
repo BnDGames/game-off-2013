@@ -272,8 +272,8 @@ function draw () {
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	if (state_current == state_game){
-		drawScene ( context, s, [-inputBoundUnit.position[0] + canvas.width / 2 / sceneScale, -inputBoundUnit.position[1] + canvas.height / 2 / sceneScale], true, { divisions: 4, squareSize: 64 } );
-		drawArrows ( s, inputBoundUnit, [10, 40, canvas.width - 20 ,canvas.height - 80] );
+		drawScene ( context, gameScene, [-inputBoundUnit.position[0] + canvas.width / 2 / sceneScale, -inputBoundUnit.position[1] + canvas.height / 2 / sceneScale], true, { divisions: 4, squareSize: 64 } );
+		drawArrows ( gameScene, inputBoundUnit, [10, 40, canvas.width - 20 ,canvas.height - 80] );
 	}
 	
 	if (currentUI) printControl ( context, currentUI, [0,0] );

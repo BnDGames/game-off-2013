@@ -136,3 +136,10 @@ function sceneAi ( scene, target ) {
 	for ( var i = 0; i < scene.units.length; i++ )
 		if (scene.units[i].ai) ai ( scene.units[i], target );
 }
+
+//Function to reset a scene
+function resetScene ( scene ) {
+	scene.units.splice (0, scene.units.length );
+	scene.projectiles.splice (0, scene.projectiles.length );
+	scene.wave = 0;
+}
