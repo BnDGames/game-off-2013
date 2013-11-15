@@ -216,7 +216,11 @@ function updateHud ( unit ) {
 	
 	hud.children.scoreLabel.value = unit.score;
 	
-	hud.children.enemies.content = (unit.parent.units.length - 1) + "/" + unit.parent.spawnCount;
+	var uCount = 0;
+	for (var i = 0; i < unit.parent.units.length; i++ )
+		if (unit.parent.units[i] != unit && unit.parent.units[i].health > 0) uCount++;
+		
+	hud.children.enemies.content = uCount + "/" + unit.parent.spawnCount;
 	
 	hud.children.waveLabel.content = "WAVE " + unit.parent.wave;
 	
