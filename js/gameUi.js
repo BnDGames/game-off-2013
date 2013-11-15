@@ -79,7 +79,19 @@ function initUI () {
 			context.fillText ( this.blinkingTextContent, canvas.width / 2, canvas.height / 2 );
 		}
 		
-		if ( this.overlayText ) {			
+		if ( this.overlayText ) {
+			context.globalAlpha = 0.75;
+			
+			var g = context.createLinearGradient ( 0, canvas.height / 2 - 100, 0, canvas.height / 2 + 100 );
+			g.addColorStop ( 0, "transparent" );
+			g.addColorStop (0.3, "#000000" );
+			g.addColorStop (0.7, "#000000" );
+			g.addColorStop ( 1, "transparent" );
+			
+			context.fillStyle = g;
+			context.fillRect ( 0, canvas.height / 2 - 100, canvas.width, 200 );
+			context.globalAlpha = 1;
+						
 			context.fillStyle = "#FFFFFF";
 			context.textAlign = "center";
 			context.textBaseline = "middle";
