@@ -17,7 +17,7 @@ function centerCanvas () {
 }
 
 //Function to set fill style according to settings array
-function setFill ( settings, colorset ) {
+function setFill ( context, settings, colorset ) {
 	if (settings[0] == "plain"){
 		if (settings[1].charAt(0) == "$") context.fillStyle = colorset[ settings[1].substring(1) ];
 		else context.fillStyle = settings[1];
@@ -38,14 +38,14 @@ function setFill ( settings, colorset ) {
 }
 
 //Function to draw a primitive according to array
-function drawPrimitive ( prim, colorset ) {
+function drawPrimitive ( context, prim, colorset ) {
 	if ( prim[0] == "circle" ){
 		context.save();
 		context.translate ( prim[1], prim[2] );
 		
 		context.beginPath();
 		context.arc ( 0, 0, prim[3], 0, Math.PI * 2 );
-		setFill ( prim[4], colorset );
+		setFill ( context, prim[4], colorset );
 		context.fill();
 		
 		context.restore();
@@ -55,7 +55,7 @@ function drawPrimitive ( prim, colorset ) {
 		context.save();
 		context.translate ( prim[1], prim[2] );
 		
-		setFill ( prim[5], colorset );
+		setFill ( context, prim[5], colorset );
 		context.fillRect ( 0, 0, prim[3], prim[4] );
 		
 		context.restore();
@@ -68,7 +68,7 @@ function drawPrimitive ( prim, colorset ) {
 		for ( var i = 2; i < prim.length - 1; i++ )
 			context.lineTo ( prim[i][0], prim[i][1] );
 		
-		setFill ( prim[i], colorset );
+		setFill ( context, prim[i], colorset );
 		
 		context.fill();
 	}
@@ -87,7 +87,7 @@ function graphicsSetup () {
 
 //Function to draw a part on drawing context
 //Offset is a vector 
-function drawPart ( context, part, offset, modifiers, colorset ) {
+function drawPart ( context, part, offset, modifiers, colorset, deco ) {
 	if (part.vertices.length == 0) return;
 	
 	offset = vSum ( offset, part.position );
@@ -100,15 +100,6 @@ function drawPart ( context, part, offset, modifiers, colorset ) {
 	
 	if (part.mirrorX) context.scale ( -1, 1 );
 	if (part.mirrorY) context.scale ( 1, -1 );
-	
-	if ( part.vertices.length == 1 ) {
-		drawPrimitive ( [ "circle", part.vertices[0][0], part.vertices[0][1], 5, ["plain", part.fill] ], colorset );
-	}
-	
-	else if ( part.vertices.length == 2){
-		drawPrimitive ( [ "circle", part.vertices[0][0], part.vertices[0][1], 5, ["plain", part.fill] ], colorset );
-		drawPrimitive ( [ "circle", part.vertices[1][0], part.vertices[1][1], 5, ["plain", part.fill] ], colorset );
-	}
 	
 	else {
 		//Basic drawing
@@ -126,15 +117,15 @@ function drawPart ( context, part, offset, modifiers, colorset ) {
 	}
 	
 	//Draws primitives
-	if ( part.draw != undefined )
+	if ( part.draw != undefined && (deco == undefined || deco) )
 		for ( var i = 0; i < part.draw.length; i++ )
-			drawPrimitive(part.draw[i], colorset);
+			drawPrimitive(context, part.draw[i], colorset);
 	
 	//Draws possible status-related primitives
 	if ( modifiers != undefined && part.modifiers != undefined ) 
 		for ( var i = 0; i < part.modifiers.length; i++ ) 
 			if ( modifiers[part.modifiers[i].which] )
-				drawPrimitive ( part.modifiers[i].draw, colorset );
+				drawPrimitive ( context, part.modifiers[i].draw, colorset );
 				
 	//Basic drawing
 	if ( part.parent.printOpacity < 1){
@@ -189,7 +180,7 @@ function drawProjectile ( context, projectile, offset ) {
 	context.rotate ( vAngle ( projectile.speed ) );
 	
 	for ( var i = 0; i < projectile.draw.length; i++)
-		drawPrimitive ( projectile.draw[i] );
+		drawPrimitive ( context, projectile.draw[i] );
 		
 	context.restore();
 }

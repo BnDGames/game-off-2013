@@ -4,104 +4,229 @@
 //Part editor
 //-----------------------------------------------------------------
 
-var textArea;
-
-var redrawTimeout = -1;
-var redrawDelay = 100;
-
-var gridSize = 10;
-
 var part = new Part();
 
-String.prototype.splice = function( i, r, s ) {
-    return (this.slice(0,i) + s + this.slice(i + Math.abs(r)));
-};
+var state_shape = 0;
+var shapeCanvas, shapeContext;
+var shape_showGrid = true;
+var shape_snapToGrid = true;
+var shape_showHandles = true;
+var shape_selectedNodeIndex = -1;
+
+var state_draw = 1;
+var drawCanvas, drawContext;
+var draw_showGrid = true;
+var draw_snapToGrid = true;
+var draw_showHandles = true;
+
+var state_stats = 2;
+
+var state = state_shape;
+
+var handleSize = 4;
+var gridSize = 10;
 
 //Setup function
 function setup () {
-	graphicsSetup();
+	shapeCanvas = document.getElementById("shapeCanvas");
+	shapeContext = shapeCanvas.getContext("2d");
 	
-	textArea = document.getElementById("codeField");
-	textArea.onkeydown = taOnKeyDown;
+	drawCanvas = document.getElementById("drawCanvas");
+	drawContext = drawCanvas.getContext("2d");
 	
-	document.onkeydown = docOnKeyDown;
+	uiSetup();
 	
-	canvas.onclick = canvasClick;
-	
-	redraw();
+	setInterval ( draw, 15 );
 }
 
-//Function to handle keypresses on textarea
-function taOnKeyDown (event) {
-	var c = event.which || event.keyCode;
+//UI setup function
+function uiSetup() {
+	$("#tabs").tabs();
 	
-	if (c == 9){
+	$("#tabtitle-shape").click( function () { state = state_shape; } );
+	$("#tabtitle-draw").click( function () { state = state_draw; } );
+	$("#tabtitle-stats").click( function () { state = state_stats; } );
+	
+	$("#shape_showGrid").click ( function () { shape_showGrid = !shape_showGrid; } );
+	$("#shape_snapToGrid").click ( function () { shape_snapToGrid = !shape_snapToGrid; } );
+	$("#shape_showHandles").click ( function () { shape_showHandles = !shape_showHandles; } );
+	
+	$("#draw_showGrid").click ( function () { draw_showGrid = !draw_showGrid; } );
+	$("#draw_snapToGrid").click ( function () { draw_snapToGrid = !draw_snapToGrid; } );
+	$("#draw_showHandles").click ( function () { draw_showHandles = !draw_showHandles; } );
+	
+	$(".button").button();
+	
+	$("#shape_addPoint").click ( function() {
+		if (part.vertices.length <= 1)
+			part.vertices.push( [0,0] );
+		
+		else part.vertices.push ( vMult ( vSum (part.vertices[part.vertices.length - 1], part.vertices[0]) , 0.5) );
+	});
+	
+	$("#shape_removePoint").click ( function() {
+		if (shape_selectedNodeIndex > 0){
+			part.vertices.splice(shape_selectedNodeIndex, 1);
+			shape_selectedNodeIndex = -1;
+		}
+	});
+	
+	$("#shapeCanvas").mousedown ( function(event) {
 		event.preventDefault();
+		
+		var offset = this.getBoundingClientRect();
+		var point = [event.clientX - offset.left - this.width / 2, event.clientY - offset.top - this.height / 2];
+		
+		for (var i = 0; i < part.vertices.length; i++){
+			if ( vModule ( vSubt ( point, part.vertices[i] ) ) < 2 * handleSize ){
+				this.selectedNode = part.vertices[i];
+				shape_selectedNodeIndex = i;
+				return;
+			}
+		}
+		
+		shape_selectedNodeIndex = -1;
+	})
+	.mousemove ( function(event) {
+		var offset = this.getBoundingClientRect();
+		var point = [event.clientX - offset.left - this.width / 2, event.clientY - offset.top - this.height / 2];
+		
+		if (shape_snapToGrid){
+			point[0] = gridSize * Math.floor(point[0] / gridSize);
+			point[1] = gridSize * Math.floor(point[1] / gridSize);
+		}
+		
+		if ( this.selectedNode ){ this.selectedNode[0] = point[0]; this.selectedNode[1] = point[1]; }
+	})
+	.mouseup ( function(event) {
+		this.selectedNode = 0;
+	});
 	
-		var i = textArea.selectionStart;
-					
-		textArea.value = textArea.value.splice ( textArea.selectionStart, textArea.selectionEnd - textArea.selectionStart, "\t" );
-		textArea.selectionStart = i + 1;
-		textArea.selectionEnd = i + 1;
-	}
+	$("#shape_moveUp").button ( { text:false, icons: { primary: "ui-icon-triangle-1-n" } } )
+	.click ( function() { for (var i = 0; i < part.vertices.length; i++) part.vertices[i][1] -= 10; } );
 	
-	if ( redrawTimeout != -1) clearTimeout ( redrawTimeout );
-	redrawTimeout = setTimeout ( redraw, redrawDelay );
+	$("#shape_moveDown").button ( { text:false, icons: { primary: "ui-icon-triangle-1-s" } } )
+	.click ( function() { for (var i = 0; i < part.vertices.length; i++) part.vertices[i][1] += 10; } );
+	
+	$("#shape_moveRight").button ( { text:false, icons: { primary: "ui-icon-triangle-1-e" } } )
+	.click ( function() { for (var i = 0; i < part.vertices.length; i++) part.vertices[i][0] += 10; } );
+	
+	$("#shape_moveLeft").button ( { text:false, icons: { primary: "ui-icon-triangle-1-w" } } )
+	.click ( function() { for (var i = 0; i < part.vertices.length; i++) part.vertices[i][0] -= 10; } );
+	
+	$("#shapeMove").buttonset();
 }
 
-function docOnKeyDown (event){
-	var c = event.which || event.keyCode;
+//Function to draw part node handles
+function drawHandles (context, part, offset, index){
+	offset = vSum (offset, part.position);
 	
-	if (c == 8 && document.activeElement != textArea){
-		part.vertices.pop();
-		textArea.value = JSON.stringify ( part, 0, "   " );			
-		redraw();
-	}
-}
-
-function redraw () {
-	context.fillStyle = "#000000";
-	context.fillRect (0,0,canvas.width,canvas.height);
+	context.save();
+	context.translate(offset[0], offset[1]);
 	
-	context.strokeStyle = "#303030";
-	for ( var i = 0; i < canvas.width; i += gridSize){
+	var vAve = [0,0];
+	
+	for (var i = 0; i < part.vertices.length; i++){
+		if (i == index){
+			context.beginPath();
+			context.arc(part.vertices[i][0], part.vertices[i][1], 1.5 * handleSize, 0, 2 * Math.PI);
+			context.fillStyle = "#FFCC00";
+			context.fill();
+		}
+		
 		context.beginPath();
-		context.moveTo ( i, 0 );
-		context.lineTo ( i, canvas.height );
+		context.arc(part.vertices[i][0], part.vertices[i][1], handleSize, 0, 2 * Math.PI);
+		context.fillStyle = "#FFFFFF";
+		context.fill();
+		
+		context.strokeStyle = "#000000";
 		context.stroke();
+		
+		vAve = vSum ( vAve, part.vertices[i] );
 	}
 	
-	for ( var i = 0; i < canvas.height; i += gridSize){
-		context.beginPath();
-		context.moveTo ( 0, i );
-		context.lineTo ( canvas.width, i );
-		context.stroke();
-	}
-	
-	context.strokeStyle = "#404040";
-	context.beginPath();
-	context.moveTo ( canvas.width / 2, 0);
-	context.lineTo ( canvas.width / 2, canvas.height);
-	context.stroke();
+	vAve = vMult ( vAve, 1 / part.vertices.length );
 	
 	context.beginPath();
-	context.moveTo ( 0, canvas.height / 2);
-	context.lineTo ( canvas.width, canvas.height / 2);
-	context.stroke();
+	context.arc (vAve[0], vAve[1], 1, 0, 2 * Math.PI);
+	context.fillStyle = "#FFFFFF";
+	context.fill();
 	
-	drawPart ( context, part, [canvas.width / 2, canvas.height / 2], undefined, [ "#C83737" ] );
-	part = partFromJson ( JSON.parse ( textArea.value ) );
-	drawPart ( context, part, [canvas.width / 2, canvas.height / 2], undefined, [ "#C83737" ] );
+	context.restore();
 }
 
-function canvasClick ( event ) {
-	var x = (event.offsetX || event.layerX) - canvas.width / 2;
-	var y = (event.offsetY || event.layerY) - canvas.height / 2;
+//Canvas update function
+function draw () {
+	if (state == state_shape){
+		shapeContext.fillStyle = "#000000";
+		shapeContext.fillRect ( 0, 0, shapeCanvas.width, shapeCanvas.height );
+		
+		if ( shape_showGrid ) {
+			shapeContext.strokeStyle = "#404040";
+			
+			for (var i = shapeCanvas.width / 2; i < shapeCanvas.width; i += gridSize ){
+				shapeContext.beginPath();
+				shapeContext.moveTo (i, 0); shapeContext.lineTo(i, shapeCanvas.height);
+				shapeContext.stroke ();
+			}
+				
+			for (var i = shapeCanvas.width / 2; i > 0; i -= gridSize ){
+				shapeContext.beginPath();
+				shapeContext.moveTo (i, 0); shapeContext.lineTo(i, shapeCanvas.height);
+				shapeContext.stroke ();
+			}
+			
+			for ( var i = shapeCanvas.height / 2; i < shapeCanvas.height; i += gridSize ){
+				shapeContext.beginPath();
+				shapeContext.moveTo (0, i); shapeContext.lineTo ( shapeCanvas.width, i);
+				shapeContext.stroke();
+			}
+			
+			for ( var i = shapeCanvas.height / 2; i > 0; i -= gridSize ){
+				shapeContext.beginPath();
+				shapeContext.moveTo (0, i); shapeContext.lineTo ( shapeCanvas.width, i);
+				shapeContext.stroke();
+			}
+		}
+		
+		drawPart (shapeContext, part, [shapeCanvas.width / 2, shapeCanvas.height / 2], [false], [ "#C83737" ], false);
+		
+		if (shape_showHandles)
+			drawHandles ( shapeContext, part, [shapeCanvas.width / 2, shapeCanvas.height / 2], shape_selectedNodeIndex );
+	}
 	
-	var x = gridSize * Math.round ( x / gridSize );
-	var y = gridSize * Math.round ( y / gridSize );
-	
-	part.vertices.push ( [x,y] );
-	textArea.value = JSON.stringify ( part, 0, "   " );	
-	redraw();
+	if (state == state_draw){
+		drawContext.fillStyle = "#000000";
+		drawContext.fillRect ( 0, 0, drawCanvas.width, drawCanvas.height );
+		
+		if ( draw_showGrid ) {
+			drawContext.strokeStyle = "#404040";
+			
+			for (var i = drawCanvas.width / 2; i < drawCanvas.width; i += gridSize ){
+				drawContext.beginPath();
+				drawContext.moveTo (i, 0); drawContext.lineTo(i, drawCanvas.height);
+				drawContext.stroke ();
+			}
+				
+			for (var i = drawCanvas.width / 2; i > 0; i -= gridSize ){
+				drawContext.beginPath();
+				drawContext.moveTo (i, 0); drawContext.lineTo(i, drawCanvas.height);
+				drawContext.stroke ();
+			}
+			
+			for ( var i = drawCanvas.height / 2; i < drawCanvas.height; i += gridSize ){
+				drawContext.beginPath();
+				drawContext.moveTo (0, i); drawContext.lineTo ( drawCanvas.width, i);
+				drawContext.stroke();
+			}
+			
+			for ( var i = drawCanvas.height / 2; i > 0; i -= gridSize ){
+				drawContext.beginPath();
+				drawContext.moveTo (0, i); drawContext.lineTo ( drawCanvas.width, i);
+				drawContext.stroke();
+			}
+		}
+		
+		drawPart (drawContext, part, [drawCanvas.width / 2, drawCanvas.height / 2], [false], [ "#C83737" ], true);
+	}
 }
