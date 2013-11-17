@@ -101,21 +101,19 @@ function drawPart ( context, part, offset, modifiers, colorset, deco ) {
 	if (part.mirrorX) context.scale ( -1, 1 );
 	if (part.mirrorY) context.scale ( 1, -1 );
 	
-	else {
-		//Basic drawing
-		context.beginPath();
+	//Basic drawing
+	context.beginPath();
 	
-		context.moveTo ( part.vertices[0][0], part.vertices[0][1] );
+	context.moveTo ( part.vertices[0][0], part.vertices[0][1] );
 	
-		for (var i = 0; i < part.vertices.length; i++)
-			context.lineTo ( part.vertices[i][0], part.vertices[i][1] );
+	for (var i = 0; i < part.vertices.length; i++)
+		context.lineTo ( part.vertices[i][0], part.vertices[i][1] );
+
+	context.closePath();
 	
-		context.closePath();
-	
-		context.fillStyle = part.fill;
-		context.fill();
-	}
-	
+	context.fillStyle = part.fill;
+	context.fill();
+
 	//Draws primitives
 	if ( part.draw != undefined && (deco == undefined || deco) )
 		for ( var i = 0; i < part.draw.length; i++ )
@@ -127,7 +125,6 @@ function drawPart ( context, part, offset, modifiers, colorset, deco ) {
 			if ( modifiers[part.modifiers[i].which] )
 				drawPrimitive ( context, part.modifiers[i].draw, colorset );
 				
-	//Basic drawing
 	if ( part.parent.printOpacity < 1){
 		context.beginPath();
 	
@@ -148,9 +145,6 @@ function drawPart ( context, part, offset, modifiers, colorset, deco ) {
 	}
 	
 	//Resets canvas status
-	if (part.mirrorY) context.scale ( 1, -1 );
-	if (part.mirrorX) context.scale ( -1, 1 );
-	
 	context.restore();
 }
 
