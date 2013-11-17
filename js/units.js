@@ -159,7 +159,8 @@ var Unit = function () {
 				v[n] = vSum ( v[n], this.parts[i].position );
 			}
 			
-			this.inertia += polyInertia ( v, this.parts[i].stats[stat_mass] );
+			var p = polyInertia ( v, this.parts[i].stats[stat_mass] );
+			this.inertia += p;
 		}
 		
 		//Calculates health and max health
@@ -248,8 +249,10 @@ var Unit = function () {
 		
 		if (to != this.status) this.putOutParts ( to );
 		
+		if ( this.status != to)
+			this.calcStats();
+		
 		this.status = to;
-		this.calcStats();
 	}
 	
 	//AI function

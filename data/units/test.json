@@ -122,7 +122,26 @@
 	"parts_heavy": [
 		{
 			"source" : "heavy_wing_0",
-			"translate" : [ 0, 65 ]
+			"translate" : [ 0, 65 ],
+			"angle": 0,
+			"mirrorX" : false,
+			"mirrorY" : false
+		},
+		
+		{
+			"source" : "heavy_wing_0",
+			"translate" : [ 0, -65 ],
+			"angle": 0,
+			"mirrorX" : false,
+			"mirrorY" : true
+		},
+		
+		{
+			"source" : "light_engine_0",
+			"translate" : [ -25, 0 ],
+			"angle" : 0,
+			"mirrorX" : false,
+			"mirrorY" : false
 		}
 	],
 	
