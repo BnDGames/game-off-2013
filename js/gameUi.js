@@ -191,7 +191,7 @@ function initUI () {
 		
 		resetScene ( gameScene );
 		
-		inputBoundUnit = addUnitToScene(getUnit("test"), gameScene);
+		inputBoundUnit = addUnitToScene(playerShip, gameScene);
 		inputBoundUnit.position = [ 500, 500 ];
 		inputBoundUnit.colors.push ( colors_player );
 	

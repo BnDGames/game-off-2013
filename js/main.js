@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------
 
 var gameScene = new Scene();
+var playerShip = 0;
 
 //Setup function
 function setup () {
@@ -56,6 +57,15 @@ function loop () {
 		updateLoading ();
 		
 		if (partsCount > 0 && partsLoaded >= partsCount && unitsLoaded >= unitsCount && loading.children.progressBar.shownFill > 0.99) {
+			if (localStorage && localStorage.playerShip){
+				playerShip = new Unit();
+				try { loadUnitFromJSON ( JSON.parse(localStorage.playerShip), playerShip ); }
+				catch (e) {	playerShip = loadUnit ( "data/units/default.json", function (data) { localStorage.playerShip = JSON.stringify(data)	} ); }
+			}
+			
+			else
+				playerShip = loadUnit ( "data/units/default.json", function (data) { localStorage.playerShip = JSON.stringify(data)	} );
+			
 			state_current = state_menu;
 			currentUI = menu;
 		}

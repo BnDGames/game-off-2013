@@ -398,10 +398,10 @@ function loadUnitFromJSON ( data, unit ) {
 }
 
 //Function to load a unit from JSON file
-function loadUnit ( sourcefile ) {
+function loadUnit ( sourcefile, done ) {
 	var unit = new Unit();
 	
-	$.getJSON ( sourcefile, function (data) { loadUnitFromJSON(data, unit); } );
+	$.getJSON ( sourcefile, function (data) { loadUnitFromJSON(data, unit); if (done) done(data); } );
 	
 	return unit;
 }
@@ -582,4 +582,10 @@ function ai ( unit, target ) {
 	
 		unit.gfxModifiers[gfxMod_engineOn] = true;
 	}
+}
+
+//JSON stringify replacer function for units
+function unitReplacer ( key, value ) {
+	if (key == "parent") return undefined;
+	else return value;
 }
