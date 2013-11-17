@@ -39,28 +39,59 @@
 			.button {
 				width: 180px;
 			}
+			
+			.button_sm {
+				width: 32px;
+				height: 28px;
+			}
+			
+			.textInput {
+				width: 600px;
+				height: 24px;
+				margin-left: 2px;
+				padding-left: 10px;
+			}
+			
+			textarea {
+				resize: none;
+			}
+			
+			#tabs-stats label {
+				text-align: right;
+				width: 100px;
+				display: inline-block;
+				margin-right: 10px;
+			}
+			
+			#tabs-stats input select {
+				text-align: right;
+				width: 80px;
+			}
 		</style>
 	</head>
 	
 	<body bgcolor="#202020" onload="setup()">
-		<div id="tabs" style="width:600px">
+		<input type="text" class="textInput ui-widget-content ui-corner-all" placeholder="part name"></input>
+		<button class="button" id="save" title="save to file">Save</button>
+	
+		<div id="tabs" style="width:800px; border:0; color:#505050; margin-top:10px">
 			<ul>
-				<li id="tabtitle-shape"><a href="#tabs-shape">Shape</a></li>
-				<li id="tabtitle-draw"><a href="#tabs-draw">Draw</a></li>
-				<li id="tabtitle-stats"><a href="#tabs-stats">Stats</a></li>
+				<li id="tabtitle-shape"><a href="#tabs-shape" title="edit part shape">Shape</a></li>
+				<li id="tabtitle-draw"><a href="#tabs-draw" title="edit part graphical decorations">Draw</a></li>
+				<li id="tabtitle-stats"><a href="#tabs-stats" title="edit part statistics">Stats</a></li>
 			</ul>
 			
 			<div id="tabs-shape" class="tab">
 				<canvas id="shapeCanvas" class="canvas" style="float:left; margin-left:-5px; margin-right:15px" width="300px"; height="300px" bgcolor="#000000"></canvas>
 				
-				<button class="button" id="shape_addPoint">Add point</button><br>
-				<button class="button" id="shape_removePoint">Remove point</button><br>
+				<button class="button" id="shape_addPoint" title="add a new vertex to the shape">Add point</button><br>
+				<button class="button" id="shape_removePoint" title="remove selected vertex">Remove point</button><br>
 				
 				<div id="shapeMove">
-					<button id="shape_moveUp"></button>
-					<button id="shape_moveDown"></button>
-					<button id="shape_moveRight"></button>
-					<button id="shape_moveLeft"></button>
+					<button id="shape_moveUp" class="button_sm" title="move entire shape up"></button>
+					<button id="shape_moveDown" class="button_sm" title="move entire shape down"></button>
+					<button id="shape_moveRight" class="button_sm" title="move entire shape right"></button>
+					<button id="shape_moveLeft" class="button_sm" title="move entire shape left"></button>
 				</div>
 				
 				<br><br>
@@ -77,29 +108,38 @@
 				
 				<input type="checkbox" name="showHandles" id="shape_showHandles" checked="true"></input>
 				<label for="showHandles">Show handles</label>
-				
 			</div>
 			
 			<div id="tabs-draw" class="tab">
 				<canvas id="drawCanvas" class="canvas" style="float:left; margin-left:-5px; margin-right:15px" width="300px"; height="300px" bgcolor="#000000"></canvas>
 				
-				<br><br>
-				
-				<input type="checkbox" name="showGrid" id="draw_showGrid" checked="true"></input>
-				<label for="showGrid">Show grid</label>
-				
-				<br>
-				
-				<input type="checkbox" name="snapToGrid" id="draw_snapToGrid" checked="true"></input>
-				<label for="snapToGrid">Snap to grid</label>
-				
-				<br>
-				
-				<input type="checkbox" name="showHandles" id="draw_showHandles" checked="true"></input>
-				<label for="showHandles">Show handles</label>
+				<textarea class="ui-widget-content ui-corner-all" id="primitivesInput" placeholder="decorations" wrap="off" style="width:445px; height:100%"></textarea>
 			</div>
 			
 			<div id="tabs-stats" class="tab">
+				<label for="health">Health</label>
+				<input id="healthSpinner" class="ui-widget-content ui-corner-all" value="0">
+				<br>
+				<label for="armor">Armor</label>
+				<input id="armor" class="ui-widget-content ui-corner-all" value="0">
+				<br>
+				<label for="mass">Mass</label>
+				<input id="mass" class="ui-widget-content ui-corner-all" value="0">
+				<br>
+				<label for="engine">Engine</label>
+				<input id="engine" class="ui-widget-content ui-corner-all" value="0">
+				<br>
+				<label for="man">Maneuvrability</label>
+				<input id="man" class="ui-widget-content ui-corner-all" value="0">
+				
+				<br><br>
+				
+				<label for="class">Class</label>
+				<select id="class" class="ui-widget-content ui-corner-all" >
+					<option value="1">Light</option>
+					<option value="2">Mid</option>
+					<option value="3">Heavy</option>
+				</select>
 			</div>
 		</div>
 	</body>

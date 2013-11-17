@@ -51,10 +51,6 @@ function uiSetup() {
 	$("#shape_snapToGrid").click ( function () { shape_snapToGrid = !shape_snapToGrid; } );
 	$("#shape_showHandles").click ( function () { shape_showHandles = !shape_showHandles; } );
 	
-	$("#draw_showGrid").click ( function () { draw_showGrid = !draw_showGrid; } );
-	$("#draw_snapToGrid").click ( function () { draw_snapToGrid = !draw_snapToGrid; } );
-	$("#draw_showHandles").click ( function () { draw_showHandles = !draw_showHandles; } );
-	
 	$(".button").button();
 	
 	$("#shape_addPoint").click ( function() {
@@ -115,6 +111,17 @@ function uiSetup() {
 	.click ( function() { for (var i = 0; i < part.vertices.length; i++) part.vertices[i][0] -= 10; } );
 	
 	$("#shapeMove").buttonset();
+	
+	var tArea = document.getElementById("primitivesInput");
+	tArea.onkeydown = reloadPrims;
+	tArea.onkeyup = reloadPrims;
+	tArea.onchange = reloadPrims;
+}
+
+//Function to reload primitives from text area
+function reloadPrims () {
+	var tArea = document.getElementById("primitivesInput");
+	part.draw = JSON.parse ( "[" + tArea.value + "]" );
 }
 
 //Function to draw part node handles
