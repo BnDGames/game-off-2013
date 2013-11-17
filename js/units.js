@@ -389,6 +389,11 @@ function moveUnit ( unit, time ) {
 	for ( var i = 0; i < unit.putOff.length; i++ )
 		movePart ( unit.putOff[i], time );
 		
+	for ( var i = 0; i < unit.putOff.length; i++ ){
+		if (vModule(vSubt(unit.putOff[i].position, unit.putOff[i].target)) > 1) break;
+		if (i == unit.putOff.length - 1) unit.putOff = 0;
+	}
+		
 	if ( unit.health <= 0 ) unit.printOpacity -= 0.01;
 	if ( unit.printOpacity <= 0){ unit.dead = true; unit.printOpacity = 0; }
 }
