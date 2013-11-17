@@ -116,12 +116,48 @@ function uiSetup() {
 	tArea.onkeydown = reloadPrims;
 	tArea.onkeyup = reloadPrims;
 	tArea.onchange = reloadPrims;
+	
+	$(".stat").keydown ( reloadStats )
+			.keyup ( reloadStats )
+			.change ( reloadStats );
+	
+	
+	$("#save").click ( function () { 
+		var id = document.getElementById("partId");
+		part.id = id.value;
+		
+		var pom = document.createElement('a');
+		pom.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(part)));
+		pom.setAttribute('download', part.id);
+		pom.click();
+    });
 }
 
 //Function to reload primitives from text area
 function reloadPrims () {
 	var tArea = document.getElementById("primitivesInput");
 	part.draw = JSON.parse ( "[" + tArea.value + "]" );
+}
+
+//Function to reload stats
+function reloadStats () {
+	var i = document.getElementById("health");
+	part.stats[stat_health] = parseInt(i.value);
+	
+	i = document.getElementById("armor");
+	part.stats[stat_armor] = parseInt(i.value);
+	
+	i = document.getElementById("mass");
+	part.stats[stat_mass] = parseInt(i.value);
+	
+	i = document.getElementById("engine");
+	part.stats[stat_engine] = parseInt(i.value);
+	
+	i = document.getElementById("man");
+	part.stats[stat_maneuvrability] = parseInt(i.value);
+	
+	i = document.getElementById("class");
+	part.cls = parseInt(i.value);
 }
 
 //Function to draw part node handles

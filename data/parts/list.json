@@ -4,5 +4,6 @@
 	"data/parts/light_wing_0.json",	
 	"data/parts/light_engine_0.json",	
 	"data/parts/light_weapon_0.json",	
-	"data/parts/mid_weapon_0.json"
+	"data/parts/mid_weapon_0.json",
+	"data/parts/heavy_wing_0.json"
 ]
