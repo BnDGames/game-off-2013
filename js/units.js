@@ -279,6 +279,22 @@ function loadUnitFromJSON ( data, unit ) {
 		p.mirrorY = data.parts_static[i].mirrorY;
 		
 		unit.parts_static.push ( p );
+		
+		if (p.position[1] != 0){
+			var q = getPart ( data.parts_static[i].source );
+		
+			q.parent = unit;
+		
+			q.position = vSum ( q.position, data.parts_static[i].translate );
+			q.angle += data.parts_static[i].angle * Math.PI;
+			q.position[1] = -q.position[1];
+			q.angle = -q.angle;
+		
+			q.mirrorX = data.parts_static[i].mirrorX;
+			q.mirrorY = !data.parts_static[i].mirrorY;
+		
+			unit.parts_static.push ( q );
+		}
 	}
 	
 	if ( data.parts_light ) for ( var i = 0; i < data.parts_light.length; i++){
@@ -293,6 +309,22 @@ function loadUnitFromJSON ( data, unit ) {
 		p.mirrorY = data.parts_light[i].mirrorY;
 		
 		unit.parts_light.push ( p );
+		
+		if (p.position[1] != 0){
+			var q = getPart ( data.parts_light[i].source );
+		
+			q.parent = unit;
+		
+			q.position = vSum ( q.position, data.parts_light[i].translate );
+			q.angle += data.parts_light[i].angle * Math.PI;
+			q.position[1] = -q.position[1];
+			q.angle = -q.angle;
+		
+			q.mirrorX = data.parts_light[i].mirrorX;
+			q.mirrorY = !data.parts_light[i].mirrorY;
+		
+			unit.parts_light.push ( q );
+		}
 	}
 	
 	if ( data.parts_mid ) for ( var i = 0; i < data.parts_mid.length; i++){
@@ -303,10 +335,26 @@ function loadUnitFromJSON ( data, unit ) {
 		p.position = vSum ( p.position, data.parts_mid[i].translate );
 		p.angle += data.parts_mid[i].angle * Math.PI;
 		
-		p.mirrorX = data.parts_mid[i].mirrorX;
+		p.mirrorX = data.parts_mid[i].misrrorX;
 		p.mirrorY = data.parts_mid[i].mirrorY;
 		
 		unit.parts_mid.push ( p );
+		
+		if (p.position[1] != 0){
+			var q = getPart ( data.parts_mid[i].source );
+		
+			q.parent = unit;
+		
+			q.position = vSum ( q.position, data.parts_mid[i].translate );
+			q.angle += data.parts_mid[i].angle * Math.PI;
+			q.position[1] = -q.position[1];
+			q.angle = -q.angle;
+		
+			q.mirrorX = data.parts_mid[i].mirrorX;
+			q.mirrorY = !data.parts_mid[i].mirrorY;
+		
+			unit.parts_mid.push ( q );
+		}
 	}
 	
 	if ( data.parts_heavy ) for ( var i = 0; i < data.parts_heavy.length; i++){
@@ -321,6 +369,22 @@ function loadUnitFromJSON ( data, unit ) {
 		p.mirrorY = data.parts_heavy[i].mirrorY;
 		
 		unit.parts_heavy.push ( p );
+		
+		if (p.position[1] != 0){
+			var q = getPart ( data.parts_heavy[i].source );
+		
+			q.parent = unit;
+		
+			q.position = vSum ( q.position, data.parts_heavy[i].translate );
+			q.angle += data.parts_heavy[i].angle * Math.PI;
+			q.position[1] = -q.position[1];
+			q.angle = -q.angle;
+		
+			q.mirrorX = data.parts_heavy[i].mirrorX;
+			q.mirrorY = !data.parts_heavy[i].mirrorY;
+		
+			unit.parts_heavy.push ( q );
+		}
 	}
 	
 	if ( data.ai ) unit.aiFunction = eval ( data.ai );

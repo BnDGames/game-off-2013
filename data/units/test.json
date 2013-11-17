@@ -21,14 +21,6 @@
 		},
 		
 		{
-			"source" : "light_wing_0",
-			"translate" : [ 0, 55 ],
-			"angle" : 0,
-			"mirrorX" : false,
-			"mirrorY" : false
-		},
-		
-		{
 			"source" : "light_engine_0",
 			"translate" : [ -25, 0 ],
 			"angle" : 0,
@@ -50,14 +42,6 @@
 			"angle" : -0.05,
 			"mirrorX" : false,
 			"mirrorY" : false
-		},
-		
-		{
-			"source" : "light_weapon_0",
-			"translate" : [ 15, 15 ],
-			"angle" : 0.05,
-			"mirrorX" : false,
-			"mirrorY" : false
 		}
 	],
 	
@@ -65,14 +49,6 @@
 		{
 			"source" : "mid_weapon_0",
 			"translate" : [ 30, 47 ],
-			"angle" : 0,
-			"mirrorX" : false,
-			"mirrorY" : false
-		},
-		
-		{
-			"source" : "mid_weapon_0",
-			"translate" : [ 30, -47 ],
 			"angle" : 0,
 			"mirrorX" : false,
 			"mirrorY" : false
@@ -87,27 +63,11 @@
 		},
 		
 		{
-			"source" : "light_wing_0",
-			"translate" : [ 0, 85 ],
-			"angle" : 0,
-			"mirrorX" : false,
-			"mirrorY" : false
-		},
-		
-		{
 			"source" : "light_engine_0",
 			"translate" : [ -25, 0 ],
 			"angle" : 0,
 			"mirrorX" : false,
 			"mirrorY" : false
-		},
-		
-		{
-			"source" : "generic_0",
-			"translate" : [ 0, -45 ],
-			"angle" : 0,
-			"mirrorX" : false,
-			"mirrorY" : true
 		},
 		
 		{
@@ -126,14 +86,6 @@
 			"angle": 0,
 			"mirrorX" : false,
 			"mirrorY" : false
-		},
-		
-		{
-			"source" : "heavy_wing_0",
-			"translate" : [ 0, -65 ],
-			"angle": 0,
-			"mirrorX" : false,
-			"mirrorY" : true
 		},
 		
 		{
