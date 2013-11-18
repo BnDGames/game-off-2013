@@ -156,7 +156,11 @@ var Unit = function () {
 				if ( this.parts[i].mirrorY ) v[n][1] *= -1;
 				
 				v[n] = vRotate ( v[n], this.parts[i].angle );
-				v[n] = vSum ( v[n], this.parts[i].position );
+				
+				if ( this.parts[i].moveToTarget)
+					v[n] = vSum ( v[n], this.parts[i].target );
+				else
+					v[n] = vSum ( v[n], this.parts[i].position );
 			}
 			
 			var p = polyInertia ( v, this.parts[i].stats[stat_mass] );
@@ -199,6 +203,7 @@ var Unit = function () {
 		this.health = 0;
 		
 		for ( var i = 0; i < this.parts.length; i++ ) {
+			this.parts[i].originalPos = this.parts[i].position;
 			this.parts[i].omega = 0;
 			this.parts[i].speed = vSetModule ( this.parts[i].position, Math.sqrt(fx_destructionSpeed * vModule(this.parts[i].position) / 100) );
 			this.parts[i].moveToTarget = false;
@@ -206,24 +211,29 @@ var Unit = function () {
 	}
 	
 	//Function to put off parts
-	this.putOffParts = function ( which ) {		
-		//this.putOff.splice ( 0, this.putOff.length );
-	
+	this.putOffParts = function ( which, immediate ) {		
 		if ( which == "heavy" ) this.putOff = this.parts_heavy;
 		if ( which == "mid" ) this.putOff = this.parts_mid;
 		if ( which == "light" ) this.putOff = this.parts_light;
 		
 		for ( var i = 0; i < this.putOff.length; i++ ) {
-			if (this.putOff[i].target[0] == 0 && this.putOff[i].target[1] == 0) this.putOff[i].oldPos = this.putOff[i].position.slice(0);
-			else this.putOff[i].oldPos = this.putOff[i].target.slice(0);
+			if ( immediate == undefined || !immediate ){
+				if (this.putOff[i].target[0] == 0 && this.putOff[i].target[1] == 0) this.putOff[i].oldPos = this.putOff[i].position.slice(0);
+				else this.putOff[i].oldPos = this.putOff[i].target.slice(0);
 			
-			this.putOff[i].target = [0,0];
-			this.putOff[i].moveToTarget = true;
+				this.putOff[i].target = [0,0];
+				this.putOff[i].moveToTarget = true;
+			}
+			
+			else {
+				this.putOff[i].position = [0,0];
+				this.putOff[i].moveToTarget = false;
+			}
 		}
 	}
 	
 	//Function to put out parts
-	this.putOutParts = function ( which ) {
+	this.putOutParts = function ( which, immediate ) {
 		var p;
 		
 		if ( which == "heavy" ) p = this.parts_heavy;
@@ -233,23 +243,30 @@ var Unit = function () {
 		for ( var i = 0; i < p.length; i++ ){
 			if ( p[i].oldPos == undefined ) p[i].oldPos = p[i].position.slice(0);
 			
-			p[i].target = p[i].oldPos.slice(0);
-			if ( p[i].position[0] == p[i].oldPos[0] && p[i].position[1] == p[i].oldPos[1]) p[i].position = [0,0];
-			p[i].moveToTarget = true;
+			if ( immediate == undefined || !immediate){
+				p[i].target = p[i].oldPos.slice(0);
+				if ( p[i].position[0] == p[i].oldPos[0] && p[i].position[1] == p[i].oldPos[1]) p[i].position = [0,0];
+				p[i].moveToTarget = true;
+			}
+			
+			else {
+				p[i].position = p[i].oldPos.slice(0);
+				p[i].moveToTarget = false;
+			}
 		}
 	}
 	
 	//Function to change parts
-	this.changeParts = function ( to ) {
-		if (to != this.status) this.putOffParts ( this.status );
+	this.changeParts = function ( to, immediate ) {
+		if (to != this.status) this.putOffParts ( this.status, immediate );
 		
 		if ( to == "heavy" ) this.parts_current = this.parts_heavy;
 		else if (to == "mid" ) this.parts_current = this.parts_mid;
 		else if ( to == "light" ) this.parts_current = this.parts_light;
 		
-		if (to != this.status) this.putOutParts ( to );
+		if (to != this.status) this.putOutParts ( to, immediate );
 		
-		if ( this.status != to)
+		if (this.status != to)
 			this.calcStats();
 		
 		this.status = to;
@@ -257,6 +274,29 @@ var Unit = function () {
 	
 	//AI function
 	this.aiFunction = 0;
+	
+	//Reset function
+	this.reset = function () {
+		this.changeParts ( "light", true );
+		this.health = this.maxHealth;
+		this.calcStats();
+		
+		this.printOpacity = 1;
+		this.dead = false;
+		
+		for (var i = 0; i < this.parts.length; i++){
+			if (this.parts[i].originalPos != undefined)
+				this.parts[i].position = this.parts[i].originalPos.slice(0);
+				
+			this.parts[i].speed = [0,0];
+			this.parts[i].omega = 0;
+		}
+		
+		this.angle = 0;
+		this.speed = [0,0];
+		this.omega = 0;
+		this.alpha = 0;
+	}
 }
 
 var units = new Array();
