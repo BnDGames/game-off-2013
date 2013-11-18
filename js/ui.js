@@ -37,6 +37,7 @@ var Control = function () {
 
 //Function to print control and its children
 function printControl ( context, control, offset ) {
+	context.save();
 	context.translate ( offset[0], offset[1] );
 	
 	if (control.print) control.print ( context );
@@ -44,7 +45,7 @@ function printControl ( context, control, offset ) {
 	for (c in control.children)
 		printControl ( context, control.children[c], control.area );
 		
-	context.translate ( -offset[0], -offset[1] );
+	context.restore();
 }
 
 //Function to animate control
@@ -326,3 +327,60 @@ var CheckBoxList = function () {
 	}
 }
 CheckBoxList.prototype = new Control();
+
+//Part viewer control
+var PartViewer = function () {
+	//Shown part
+	this.part = 0;
+	this.angle = 0;
+	
+	//Graphics
+	this.innerColor = "#001230";
+	this.borderSize = 4;
+	this.borderColor = "#FFFFFF";
+	
+	this.scale = 1;
+	
+	this.corner = 16;
+	
+	//Print function
+	this.print = function ( context ) {
+		context.beginPath();
+		context.moveTo(this.area[0] + this.corner, this.area[1]);
+		context.lineTo(this.area[0] + this.area[2] - this.corner, this.area[1]);
+		context.lineTo(this.area[0] + this.area[2], this.area[1] + this.corner);
+		context.lineTo(this.area[0] + this.area[2], this.area[1] + this.area[3] - this.corner);
+		context.lineTo(this.area[0] + this.area[2] - this.corner, this.area[1] + this.area[3]);
+		context.lineTo(this.area[0] + this.corner, this.area[1] + this.area[3]);
+		context.lineTo(this.area[0], this.area[1] + this.area[3] - this.corner);
+		context.lineTo(this.area[0], this.area[1] + this.corner);
+		context.closePath();
+		
+		context.fillStyle = this.innerColor;
+		context.fill();
+		
+		context.strokeStyle = this.borderColor;
+		context.lineWidth = this.borderSize;
+		context.stroke();
+		context.lineWidth = 1;
+		
+		if (this.part != 0){
+			context.save();
+			
+			context.translate(this.area[2] / 2 + this.area[0], this.area[3] / 2 + this.area[1]);
+			context.scale (this.scale, this.scale);
+			context.rotate (this.angle);
+			
+			drawPart ( context, this.part, [0,0], [false], [colors_player], true );
+			
+			context.restore();
+		}
+	}
+	
+	//Animate
+	this.animate = function ( time ){
+		this.angle += 0.01;
+	}
+}
+PartViewer.prototype = new Control();
+
