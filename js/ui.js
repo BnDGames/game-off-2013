@@ -332,7 +332,6 @@ CheckBoxList.prototype = new Control();
 var PartViewer = function () {
 	//Shown part
 	this.part = 0;
-	this.angle = 0;
 	
 	//Graphics
 	this.innerColor = "#001230";
@@ -367,9 +366,8 @@ var PartViewer = function () {
 		if (this.part != 0){
 			context.save();
 			
-			context.translate(this.area[2] / 2 + this.area[0], this.area[3] / 2 + this.area[1]);
 			context.scale (this.scale, this.scale);
-			context.rotate (this.angle);
+			context.translate((this.area[2] / 2 + this.area[0]) / this.scale, (this.area[3] / 2 + this.area[1]) / this.scale);
 			
 			drawPart ( context, this.part, [0,0], [false], [colors_player], true );
 			
@@ -379,7 +377,35 @@ var PartViewer = function () {
 	
 	//Animate
 	this.animate = function ( time ){
-		this.angle += 0.01;
+		if (this.part != window.draggedPart)
+			this.angle += 0.01;
+	}
+	
+	//Onclick
+	this.onmousedown = function ( event ) {
+		window.draggedPart = this.part;
+		window.draggedSource = this;
+		window.draggedSourcePos = [ this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] / 2 ];
+		
+		window.onmouseup = function () {
+			if (this.onpartdrop)
+				this.onpartdrop ( this.draggedPart, vSum(vMult(this.draggedPart.position, 1 / this.draggedSource.scale), this.draggedSourcePos) );
+				
+			this.onmouseup = 0;
+			this.onmousemove = 0;
+			
+			this.draggedPart.position = [0,0];
+			this.draggedPart = 0;
+		}
+		
+		window.onmousemove = function (event) {
+			var offset = document.getElementById("gameCanvas").getBoundingClientRect();
+			var point = [event.clientX - offset.left, event.clientY - offset.top];
+			
+			point = vMult ( vSubt ( point, this.draggedSourcePos ), 1 / this.draggedSource.scale );
+			
+			this.draggedPart.position = point.slice(0);
+		}
 	}
 }
 PartViewer.prototype = new Control();

@@ -112,6 +112,8 @@ function getPart ( id ) {
 		if (parts[i].id == id){
 			var result = new Part();
 			
+			result.id = parts[i].id;
+			
 			for ( var l = 0; l < parts[i].vertices.length; l++)
 				result.vertices.push ( parts[i].vertices[l].slice (0) );
 			
