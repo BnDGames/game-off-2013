@@ -34,7 +34,7 @@ function loop () {
 		if (!pause){
 			applyInput();
 			moveScene ( gameScene, speed );
-			//sceneAi ( gameScene, inputBoundUnit );
+			sceneAi ( gameScene, inputBoundUnit );
 			
 			updateHud( inputBoundUnit );
 			

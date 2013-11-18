@@ -7,6 +7,7 @@
 
 //Canvas and drawing context for the game
 var canvas, context;
+var minimapCanvas, minimapContext;
 
 var sceneScale = 0.75;
 
@@ -14,6 +15,9 @@ var sceneScale = 0.75;
 function centerCanvas () {
 	canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";
 	canvas.style.top = (window.innerHeight - canvas.height) / 2 + "px";
+	
+	minimapCanvas.style.left = (window.innerWidth - canvas.width) / 2 - minimapCanvas.width - 16 + "px";
+	minimapCanvas.style.top = (window.innerHeight - canvas.height) / 2 + 60 + "px";
 }
 
 //Function to set fill style according to settings array
@@ -78,6 +82,11 @@ function drawPrimitive ( context, prim, colorset ) {
 function graphicsSetup () {
 	canvas = document.getElementById("gameCanvas");
 	context = canvas.getContext("2d");
+	
+	minimapCanvas = document.getElementById("minimapCanvas");
+	minimapContext = minimapCanvas.getContext("2d");
+	
+	$("#minimapCanvas").hide();
 	
 	context.lineCap = "round";
 	context.lineJoin = "round";
@@ -251,14 +260,70 @@ function drawArrows ( scene, unit, viewport ) {
 	}
 }
 
+//Function to draw minimap
+function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
+	$("#minimapCanvas").fadeIn(400, "swing");
+	
+	minimapContext.fillStyle = minimapCanvas.style.backgroundColor;
+	minimapContext.fillRect ( 0, 0, minimapCanvas.width, minimapCanvas.height );
+	
+	if (grid != undefined && grid){
+		var oX = ((-unit.position[0] * scale) + 4) % (gridInfo.squareSize);
+		var oY = ((-unit.position[1] * scale) + 4) % (gridInfo.squareSize);
+				
+		for (var i = -gridInfo.squareSize * 2; i <= minimapCanvas.height + gridInfo.squareSize * 2; i += gridInfo.squareSize / gridInfo.divisions){
+			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) minimapContext.strokeStyle = "#202020";
+			else minimapContext.strokeStyle = "#101010";
+			
+			minimapContext.beginPath();
+			minimapContext.moveTo ( 0, oY + i );
+			minimapContext.lineTo ( canvas.width, oY + i );
+			minimapContext.stroke();
+		}
+		
+		for (var i = -gridInfo.squareSize * 2; i <= minimapCanvas.width + gridInfo.squareSize * 2; i += gridInfo.squareSize / gridInfo.divisions){
+			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) minimapContext.strokeStyle = "#202020";
+			else minimapContext.strokeStyle = "#101010";
+			
+			minimapContext.beginPath();
+			minimapContext.moveTo ( oX + i, 0 );
+			minimapContext.lineTo ( oX + i, canvas.height );
+			minimapContext.stroke();
+		}
+	}
+	
+	for (var i = 0; i < scene.units.length; i++){
+		if (scene.units[i].health <= 0) continue;
+		
+		var centre = vSum ( vMult ( vSubt ( scene.units[i].position, unit.position ), scale ), [ minimapCanvas.width / 2, minimapCanvas.height / 2 ] );
+		
+		minimapContext.beginPath();
+		minimapContext.arc ( centre[0], centre[1], 2, 0, 2 * Math.PI );
+		minimapContext.fillStyle = scene.units[i].colors[0];
+		minimapContext.fill();
+	}
+	
+	var p = minimapContext.createImageData(1,1);
+	p.data[0] = 0x60; p.data[1] = 0x60; p.data[2] = 0x60; p.data[3] = 255;
+	for (var i = 0; i < scene.projectiles.length; i++){
+		var centre = vSum ( vMult ( vSubt ( scene.projectiles[i].position, unit.position ), scale ), [ minimapCanvas.width / 2, minimapCanvas.height / 2 ] );
+		minimapContext.putImageData ( p, centre[0], centre[1] );
+	}
+}
+
 //Function to draw the current game state
 function draw () {
 	context.fillStyle = canvas.style.backgroundColor;
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	if (state_current == state_game){
-		drawScene ( context, gameScene, [-inputBoundUnit.position[0] + canvas.width / 2 / sceneScale, -inputBoundUnit.position[1] + canvas.height / 2 / sceneScale], true, { divisions: 4, squareSize: 64 } );
+		drawScene ( context, gameScene, [-inputBoundUnit.position[0] + canvas.width / 2 / sceneScale, -inputBoundUnit.position[1] + canvas.height / 2 / sceneScale], true, { divisions: 20, squareSize: 640 } );
 		drawArrows ( gameScene, inputBoundUnit, [10, 40, canvas.width - 20 ,canvas.height - 80] );
+		drawMinimap ( gameScene, inputBoundUnit, 0.025, true, { divisions: 1, squareSize: 16 } );
+	}
+	
+	else {
+		$("#minimapCanvas").fadeOut(400, "swing");
 	}
 	
 	if (currentUI) printControl ( context, currentUI, [0,0] );
