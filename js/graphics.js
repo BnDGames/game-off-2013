@@ -7,6 +7,7 @@
 
 //Canvas and drawing context for the game
 var canvas, context;
+var minimapCanvas, minimapContext;
 
 var sceneScale = 0.75;
 
@@ -14,6 +15,9 @@ var sceneScale = 0.75;
 function centerCanvas () {
 	canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";
 	canvas.style.top = (window.innerHeight - canvas.height) / 2 + "px";
+	
+	minimapCanvas.style.left = (window.innerWidth - canvas.width) / 2 - minimapCanvas.width - 16 + "px";
+	minimapCanvas.style.top = (window.innerHeight - canvas.height) / 2 + 60 + "px";
 }
 
 //Function to set fill style according to settings array
@@ -78,6 +82,11 @@ function drawPrimitive ( context, prim, colorset ) {
 function graphicsSetup () {
 	canvas = document.getElementById("gameCanvas");
 	context = canvas.getContext("2d");
+	
+	minimapCanvas = document.getElementById("minimapCanvas");
+	minimapContext = minimapCanvas.getContext("2d");
+	
+	$("#minimapCanvas").hide();
 	
 	context.lineCap = "round";
 	context.lineJoin = "round";
@@ -251,6 +260,23 @@ function drawArrows ( scene, unit, viewport ) {
 	}
 }
 
+//Function to draw minimap
+function drawMinimap ( scene, unit, scale ) {
+	$("#minimapCanvas").fadeIn(400, "swing");
+	
+	minimapContext.fillStyle = minimapCanvas.style.backgroundColor;
+	minimapContext.fillRect ( 0, 0, minimapCanvas.width, minimapCanvas.height );
+	
+	for (var i = 0; i < scene.units.length; i++){
+		var centre = vSum ( vMult ( vSubt ( scene.units[i].position, unit.position ), scale ), [ minimapCanvas.width / 2, minimapCanvas.height / 2 ] );
+		
+		minimapContext.beginPath();
+		minimapContext.arc ( centre[0], centre[1], 2, 0, 2 * Math.PI );
+		minimapContext.fillStyle = scene.units[i].colors[0];
+		minimapContext.fill();
+	}
+}
+
 //Function to draw the current game state
 function draw () {
 	context.fillStyle = canvas.style.backgroundColor;
@@ -259,6 +285,11 @@ function draw () {
 	if (state_current == state_game){
 		drawScene ( context, gameScene, [-inputBoundUnit.position[0] + canvas.width / 2 / sceneScale, -inputBoundUnit.position[1] + canvas.height / 2 / sceneScale], true, { divisions: 4, squareSize: 64 } );
 		drawArrows ( gameScene, inputBoundUnit, [10, 40, canvas.width - 20 ,canvas.height - 80] );
+		drawMinimap ( gameScene, inputBoundUnit, 0.025 );
+	}
+	
+	else {
+		$("#minimapCanvas").fadeOut(400, "swing");
 	}
 	
 	if (currentUI) printControl ( context, currentUI, [0,0] );
