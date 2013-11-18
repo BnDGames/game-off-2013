@@ -216,20 +216,18 @@ var Unit = function () {
 		if ( which == "mid" ) this.putOff = this.parts_mid;
 		if ( which == "light" ) this.putOff = this.parts_light;
 		
-		for ( var i = 0; i < this.putOff.length; i++ ) {
-			if ( immediate == undefined || !immediate ){
-				if (this.putOff[i].target[0] == 0 && this.putOff[i].target[1] == 0) this.putOff[i].oldPos = this.putOff[i].position.slice(0);
-				else this.putOff[i].oldPos = this.putOff[i].target.slice(0);
+		if ( immediate == undefined || !immediate ){
+			for ( var i = 0; i < this.putOff.length; i++ ) {
+		
+					if (this.putOff[i].target[0] == 0 && this.putOff[i].target[1] == 0) this.putOff[i].oldPos = this.putOff[i].position.slice(0);
+					else this.putOff[i].oldPos = this.putOff[i].target.slice(0);
 			
-				this.putOff[i].target = [0,0];
-				this.putOff[i].moveToTarget = true;
-			}
-			
-			else {
-				this.putOff[i].position = [0,0];
-				this.putOff[i].moveToTarget = false;
+					this.putOff[i].target = [0,0];
+					this.putOff[i].moveToTarget = true;
 			}
 		}
+		
+		else this.putOff = 0;
 	}
 	
 	//Function to put out parts
