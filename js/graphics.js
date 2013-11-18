@@ -268,8 +268,8 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 	minimapContext.fillRect ( 0, 0, minimapCanvas.width, minimapCanvas.height );
 	
 	if (grid != undefined && grid){
-		var oX = (-unit.position[0] * scale) % (gridInfo.squareSize);
-		var oY = (-unit.position[1] * scale) % (gridInfo.squareSize);
+		var oX = ((-unit.position[0] * scale) + 4) % (gridInfo.squareSize);
+		var oY = ((-unit.position[1] * scale) + 4) % (gridInfo.squareSize);
 				
 		for (var i = -gridInfo.squareSize * 2; i <= minimapCanvas.height + gridInfo.squareSize * 2; i += gridInfo.squareSize / gridInfo.divisions){
 			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) minimapContext.strokeStyle = "#202020";
@@ -292,9 +292,6 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 		}
 	}
 	
-	minimapContext.save();
-	minimapContext.translate(-4,-4);
-	
 	for (var i = 0; i < scene.units.length; i++){
 		var centre = vSum ( vMult ( vSubt ( scene.units[i].position, unit.position ), scale ), [ minimapCanvas.width / 2, minimapCanvas.height / 2 ] );
 		
@@ -303,8 +300,6 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 		minimapContext.fillStyle = scene.units[i].colors[0];
 		minimapContext.fill();
 	}
-	
-	minimapContext.restore();
 }
 
 //Function to draw the current game state
@@ -313,9 +308,9 @@ function draw () {
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	if (state_current == state_game){
-		drawScene ( context, gameScene, [-inputBoundUnit.position[0] + canvas.width / 2 / sceneScale, -inputBoundUnit.position[1] + canvas.height / 2 / sceneScale], true, { divisions: 20, squareSize: 320 } );
+		drawScene ( context, gameScene, [-inputBoundUnit.position[0] + canvas.width / 2 / sceneScale, -inputBoundUnit.position[1] + canvas.height / 2 / sceneScale], true, { divisions: 20, squareSize: 640 } );
 		drawArrows ( gameScene, inputBoundUnit, [10, 40, canvas.width - 20 ,canvas.height - 80] );
-		drawMinimap ( gameScene, inputBoundUnit, 0.025, true, { divisions: 1, squareSize: 8 } );
+		drawMinimap ( gameScene, inputBoundUnit, 0.025, true, { divisions: 1, squareSize: 16 } );
 	}
 	
 	else {
