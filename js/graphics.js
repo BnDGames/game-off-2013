@@ -293,6 +293,8 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 	}
 	
 	for (var i = 0; i < scene.units.length; i++){
+		if (scene.units[i].health <= 0) continue;
+		
 		var centre = vSum ( vMult ( vSubt ( scene.units[i].position, unit.position ), scale ), [ minimapCanvas.width / 2, minimapCanvas.height / 2 ] );
 		
 		minimapContext.beginPath();
