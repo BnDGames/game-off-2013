@@ -103,7 +103,7 @@ function sceneCheckCollisions ( scene ) {
 //Function to check for dead units
 function sceneCheckDead ( scene ) {
 	for ( var i = 0; i < scene.units.length; i++ )
-		if ( scene.units[i].dead ) scene.units.splice ( i--, 1 );
+		if ( scene.units[i].dead && scene.units[i] != inputBoundUnit ) scene.units.splice ( i--, 1 );
 }
 
 //Function to spawn a wave in scene
