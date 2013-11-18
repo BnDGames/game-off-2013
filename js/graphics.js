@@ -302,6 +302,13 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 		minimapContext.fillStyle = scene.units[i].colors[0];
 		minimapContext.fill();
 	}
+	
+	var p = minimapContext.createImageData(1,1);
+	p.data[0] = 0x60; p.data[1] = 0x60; p.data[2] = 0x60; p.data[3] = 255;
+	for (var i = 0; i < scene.projectiles.length; i++){
+		var centre = vSum ( vMult ( vSubt ( scene.projectiles[i].position, unit.position ), scale ), [ minimapCanvas.width / 2, minimapCanvas.height / 2 ] );
+		minimapContext.putImageData ( p, centre[0], centre[1] );
+	}
 }
 
 //Function to draw the current game state
