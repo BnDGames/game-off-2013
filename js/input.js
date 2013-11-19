@@ -43,10 +43,10 @@ function applyInput () {
 		
 		if (keyStates[4]) inputBoundUnit.shoot();
 		
-		if (keyStates[5]) inputBoundUnit.changeParts ( "light" );
+		if (keyStates[5]) hud.children.stateCheck.check(0);
 		
-		if (keyStates[6]) inputBoundUnit.changeParts ( "mid" );
+		if (keyStates[6]) hud.children.stateCheck.check(1);
 		
-		if (keyStates[7]) inputBoundUnit.changeParts ( "heavy" );
+		if (keyStates[7]) hud.children.stateCheck.check(2);
 	}
 }

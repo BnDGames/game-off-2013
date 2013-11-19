@@ -20,6 +20,7 @@ var Control = function () {
 	//with prototype function ( context )
 	//offset is set before calling function
 	this.print = 0;
+	this.printAfter = 0;
 	
 	//Animate function
 	//with prototype function ( time )
@@ -44,7 +45,20 @@ function printControl ( context, control, offset ) {
 	
 	for (c in control.children)
 		printControl ( context, control.children[c], control.area );
-		
+	
+	context.restore();
+}
+
+//Printafter for controls
+function printAfterControl ( context, control, offset ) {
+	context.save();
+	context.translate ( offset[0], offset[1] );
+	
+	if (control.printAfter) control.printAfter ( context );
+	
+	for (c in control.children)
+		printAfterControl ( context, control.children[c], control.area );
+	
 	context.restore();
 }
 
@@ -75,10 +89,10 @@ function checkMouse ( control, event, offset ) {
 	
 	else control.status = 0;
 	
-	if (oldstatus != 2 && control.status == 2 && control.onmousedown) control.onmousedown ();
-	if (oldstatus == 2 && control.status == 1 && control.onmouseup) control.onmouseup ();
-	if (oldstatus == 0 && control.status == 1 && control.onmousein) control.onmousein ();
-	if ((oldstatus == 1 || oldstatus == 2) && control.status == 0 && control.onmouseout) control.onmouseout ();
+	if (oldstatus != 2 && control.status == 2 && control.onmousedown) control.onmousedown (mX - control.area[0], mY - control.area[1]);
+	if (oldstatus == 2 && control.status == 1 && control.onmouseup) control.onmouseup (mX - control.area[0], mY - control.area[1]);
+	if (oldstatus == 0 && control.status == 1 && control.onmousein) control.onmousein (mX - control.area[0], mY - control.area[1]);
+	if ((oldstatus == 1 || oldstatus == 2) && control.status == 0 && control.onmouseout) control.onmouseout ( mX - control.area[0], mY - control.area[1]);
 }
 
 //Fillbar control
@@ -319,12 +333,31 @@ var CheckBoxList = function () {
 	//Individual drawing functions
 	this.prints = new Array();
 	
+	//Function to check element
+	this.check = function ( i ) {
+		this.checked = i;
+		if (this.oncheck) this.oncheck(i);
+	}
+	
 	//Animation
 	this.animate = function ( time ) {
 		var d = this.checkedOffset - this.checked * this.area[2] / this.length;
 		
 		this.checkedOffset -= d * time / 10;
 	}
+	
+	//Click handler
+	this.onmouseup = function ( x, y ) {
+		for ( var i = 0; i < this.length; i++ ){
+			if ( x > (this.area[2] / this.length) * i && x < (this.area[2] / this.length) * (i + 1)){
+				this.check(i);
+				break;
+			}
+		}
+	}
+	
+	//Function to handle check
+	this.oncheck = 0;
 }
 CheckBoxList.prototype = new Control();
 
@@ -333,8 +366,12 @@ var PartViewer = function () {
 	//Shown part
 	this.part = 0;
 	
+	//Behaviour
+	this.disabled = false;
+	
 	//Graphics
-	this.innerColor = "#001230";
+	this.innerColor = "#000410";
+	this.disabledColor = "#303030";
 	this.borderSize = 4;
 	this.borderColor = "#FFFFFF";
 	
@@ -362,7 +399,10 @@ var PartViewer = function () {
 		context.lineWidth = this.borderSize;
 		context.stroke();
 		context.lineWidth = 1;
-		
+	}
+	
+	//Print after
+	this.printAfter = function ( context ) {
 		if (this.part != 0){
 			context.save();
 			
@@ -372,6 +412,30 @@ var PartViewer = function () {
 			drawPart ( context, this.part, [0,0], [false], [colors_player], true );
 			
 			context.restore();
+		}
+		
+		
+		if (this.disabled){
+			context.beginPath();
+			context.moveTo(this.area[0] + this.corner, this.area[1]);
+			context.lineTo(this.area[0] + this.area[2] - this.corner, this.area[1]);
+			context.lineTo(this.area[0] + this.area[2], this.area[1] + this.corner);
+			context.lineTo(this.area[0] + this.area[2], this.area[1] + this.area[3] - this.corner);
+			context.lineTo(this.area[0] + this.area[2] - this.corner, this.area[1] + this.area[3]);
+			context.lineTo(this.area[0] + this.corner, this.area[1] + this.area[3]);
+			context.lineTo(this.area[0], this.area[1] + this.area[3] - this.corner);
+			context.lineTo(this.area[0], this.area[1] + this.corner);
+			context.closePath();
+			
+			context.globalAlpha = 0.5;
+			context.fillStyle = this.disabledColor;
+			context.fill();
+			context.globalAlpha = 1;
+			
+			context.strokeStyle = this.borderColor;
+			context.lineWidth = this.borderSize;
+			context.stroke();
+			context.lineWidth = 1;
 		}
 	}
 	
@@ -383,6 +447,8 @@ var PartViewer = function () {
 	
 	//Onclick
 	this.onmousedown = function ( event ) {
+		if (this.disabled) return;
+		
 		window.draggedPart = this.part;
 		window.draggedSource = this;
 		window.draggedSourcePos = [ this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] / 2 ];
@@ -396,6 +462,8 @@ var PartViewer = function () {
 			
 			this.draggedPart.position = [0,0];
 			this.draggedPart = 0;
+			this.draggedSource = 0;
+			this.draggedSourcePos = 0;
 		}
 		
 		window.onmousemove = function (event) {

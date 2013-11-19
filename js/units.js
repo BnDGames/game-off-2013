@@ -294,6 +294,7 @@ var Unit = function () {
 		this.speed = [0,0];
 		this.omega = 0;
 		this.alpha = 0;
+		this.position = [0,0];
 	}
 }
 

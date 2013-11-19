@@ -322,9 +322,20 @@ function draw () {
 		drawMinimap ( gameScene, inputBoundUnit, 0.025, true, { divisions: 1, squareSize: 16 } );
 	}
 	
-	else {
-		$("#minimapCanvas").fadeOut(400, "swing");
+	else $("#minimapCanvas").fadeOut(400, "swing");
+	
+	if (currentUI){
+		printControl ( context, currentUI, [0,0] );
+		printAfterControl ( context, currentUI, [0,0] );
 	}
 	
-	if (currentUI) printControl ( context, currentUI, [0,0] );
+	if (state_current == state_shipedit){
+	}
+	
+	context.beginPath();
+	context.rect ( 0, 0, canvas.width, canvas.height );
+	context.lineWidth = 8;
+	context.strokeStyle = "#FFFFFF";
+	context.stroke();
+	context.lineWidth = 1;
 }

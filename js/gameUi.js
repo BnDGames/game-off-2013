@@ -13,6 +13,9 @@ var menu = 0;
 //Hud control
 var hud = 0;
 
+//Ship editor control
+var shipEditor = 0;
+
 //Current UI root control
 var currentUI = 0;
 
@@ -39,6 +42,11 @@ function initUI () {
 	hud.children.stateCheck.prints[1] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.arc ( 0,0,10, 0, Math.PI * 2 ); ctx.fill(); }
 	hud.children.stateCheck.prints[2] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-10, -10, 20, 20); }
 	hud.children.stateCheck.checkedColor = colors_buttonActive;
+	hud.children.stateCheck.oncheck = function ( i ){
+		if (i == 0) inputBoundUnit.changeParts("light");
+		if (i == 1) inputBoundUnit.changeParts("mid");
+		if (i == 2) inputBoundUnit.changeParts("heavy");
+	}
 	
 	hud.children.waveLabel = new Label();
 	hud.children.waveLabel.area = [ 628, 14, 160, 32 ];
@@ -174,7 +182,7 @@ function initUI () {
 	
 	menu.children.subtitle = new Label();
 	menu.children.subtitle.area = [0, 120, 800, 32];
-	menu.children.subtitle.content = "MADE BY BnDGAMES for GITHUB GAME OFF 2013";
+	menu.children.subtitle.content = "MADE BY BUCH for GITHUB GAME OFF 2013";
 	menu.children.subtitle.printFrame = false;
 	
 	menu.children.play = new Label();
@@ -195,7 +203,6 @@ function initUI () {
 		
 		inputBoundUnit = addUnitToScene(playerShip, gameScene);
 		inputBoundUnit.position = [ 500, 500 ];
-		inputBoundUnit.colors.push ( colors_player );
 	
 		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 5 / sceneScale, 3, colors_enemy );
 	}
@@ -205,12 +212,66 @@ function initUI () {
 	menu.children.editship.content = "EDIT SHIP";
 	menu.children.editship.onmousein = labelOnMouseIn;
 	menu.children.editship.onmouseout = labelOnMouseOut;
+	menu.children.editship.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	menu.children.editship.onmouseup = function () {
+		this.innerColor = colors_buttonHover;
+		
+		state_current = state_shipedit;
+		currentUI = shipEditor;
+	}
 	
 	menu.children.store = new Label();
 	menu.children.store.area = [300, 350, 200, 32];
 	menu.children.store.content = "STORE";
 	menu.children.store.onmousein = labelOnMouseIn;
 	menu.children.store.onmouseout = labelOnMouseOut;
+	
+	shipEditor = new Control();
+	shipEditor.shipArea = [ 30, 100, 480, 480 ];
+	shipEditor.print = function (context) {
+		context.fillStyle = colors[0];
+		context.fillRect ( 0, 0, canvas.width, canvas.height );
+		
+		context.fillStyle = "#000410";
+		context.beginPath();
+		context.rect ( this.shipArea[0], this.shipArea[1], this.shipArea[2], this.shipArea[3] );
+		context.fill();
+		context.strokeStyle = "#FFFFFF";
+		context.lineWidth = 4;
+		context.stroke();
+		context.lineWidth = 1;
+		
+		drawUnit ( context, playerShip, [this.shipArea[0] + this.shipArea[2] / 2, this.shipArea[1] + this.shipArea[3] / 2] );
+	}
+	
+	shipEditor.children.title = new Label();
+	shipEditor.children.title.area = [40, 40, 200, 48];
+	shipEditor.children.title.content = "EDIT YOUR SHIP";
+	shipEditor.children.title.printFrame = false;
+	shipEditor.children.title.fontStyle = "48px League Gothic";
+	
+	for (var i = 0; i < 8; i += 2){
+		var vName_1 = "partSlot_" + i;
+		var vName_2 = "partSlot_" + (i + 1);
+		
+		shipEditor.children[vName_1] = new PartViewer();
+		shipEditor.children[vName_1].area = [ 554, 133 + 106 * i / 2, 96, 96 ];
+		
+		shipEditor.children[vName_2] = new PartViewer();
+		shipEditor.children[vName_2].area = [ 660, 133 + 106 * i / 2, 96, 96 ];
+	}
+	
+	shipEditor.children.stateCheck = new CheckBoxList();
+	shipEditor.children.stateCheck.area = [ 300, 84, 188, 32 ];
+	shipEditor.children.stateCheck.prints[0] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.moveTo ( 10, 0 ); ctx.lineTo ( -10, -10 ); ctx.lineTo ( -10, 10 ); ctx.fill(); }
+	shipEditor.children.stateCheck.prints[1] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.arc ( 0,0,10, 0, Math.PI * 2 ); ctx.fill(); }
+	shipEditor.children.stateCheck.prints[2] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-10, -10, 20, 20); }
+	shipEditor.children.stateCheck.checkedColor = colors_buttonActive;
+	shipEditor.children.stateCheck.oncheck = function ( i ){
+		if (i == 0) playerShip.changeParts("light", true);
+		if (i == 1) playerShip.changeParts("mid", true);
+		if (i == 2) playerShip.changeParts("heavy", true);
+	}
 	
 	currentUI = loading;
 }
@@ -232,9 +293,9 @@ function updateHud ( unit ) {
 	
 	hud.children.waveLabel.content = "WAVE " + unit.parent.wave;
 	
-	if (unit.status == "light") hud.children.stateCheck.checked = 0;
+	/*if (unit.status == "light") hud.children.stateCheck.checked = 0;
 	if (unit.status == "mid") hud.children.stateCheck.checked = 1;
-	if (unit.status == "heavy") hud.children.stateCheck.checked = 2;
+	if (unit.status == "heavy") hud.children.stateCheck.checked = 2;*/
 }
 
 //Function to update loading screen
