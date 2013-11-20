@@ -12,6 +12,12 @@
 		[ 20, 20 ]
 	],
 	
+	"anchors_minus": [
+		[0,-25]
+	],
+	
+	"allowMiddle": false,
+	
 	"stats": [ 0, 0.1, 5, 0, 0 ],
 	
 	"fill": "#A0A0A0",

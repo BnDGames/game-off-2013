@@ -105,10 +105,11 @@ function drawPart ( context, part, offset, modifiers, colorset, deco ) {
 
 	//Transforms canvas
 	context.translate ( offset[0], offset[1] );
-	context.rotate ( part.angle );
 	
 	if (part.mirrorX) context.scale ( -1, 1 );
 	if (part.mirrorY) context.scale ( 1, -1 );
+	
+	context.rotate ( part.angle );
 	
 	//Basic drawing
 	context.beginPath();

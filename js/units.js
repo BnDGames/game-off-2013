@@ -296,6 +296,90 @@ var Unit = function () {
 		this.alpha = 0;
 		this.position = [0,0];
 	}
+	
+	//Attach part
+	this.attachPart = function ( partId, position ) {
+		var part_1 = getPart ( partId );
+		var part_2 = getPart ( partId );
+		
+		if (!part_1) return;
+		if (part_1.anchors_minus.length == 0) return;
+		
+		part_1.parent = this;
+		part_1.position = position;
+		
+		part_2.parent = this;
+		part_2.position = position;
+		
+		var anchorPart = 0;
+		var anchorPlus = -1, anchorMinus = 0;
+		var anchorDist = [0,0];
+		
+		for ( var i = 0; i < this.parts.length; i++ ) {			
+			for ( var j = 0; j < this.parts[i].anchors_plus.length; j++ ){
+				var aPlus = vRotate ( this.parts[i].anchors_plus[j], this.parts[i].angle );
+				
+				if (this.parts[i].mirrorX) aPlus[0] *= -1;
+				if (this.parts[i].mirrorY) aPlus[1] *= -1;
+				
+				aPlus = vSum ( aPlus, this.parts[i].position );
+				
+				for (var l = 2; l < this.parts[i].anchors_plus[j].length; l++)
+					aPlus[l] = this.parts[i].anchors_plus[j][l];
+				
+				for ( var l = 0; l < part_1.anchors_minus.length; l++ ) {
+					var aMinus = part_1.anchors_minus[l];
+					var v = vSum (part_1.position, aMinus);
+					var d = vSubt ( v, aPlus );
+				
+					if ( anchorPlus == -1 || vModule(d) < vModule(anchorDist) ){
+						anchorPart = this.parts[i];
+						anchorPlus = j;
+						anchorMinus = l;
+					
+						anchorDist = d.slice(0);
+					}
+				}
+			}
+		}
+		
+		attachPart ( anchorPart, anchorPlus, part_1, anchorMinus );
+		
+		if ( anchorPart.anchors_plus [ anchorPlus ] [5] != -1 ){
+			var target = anchorPart.anchors_plus [ anchorPlus ] [5];
+			var symAnchorPart;
+			
+			if ( target[0] == 0 ) symAnchorPart = anchorPart;
+			else symAnchorPart = anchorPart.symmetric;
+			
+			if (symAnchorPart){
+				attachPart ( symAnchorPart, target[1], part_2, anchorMinus );
+				
+				part_1.symmetric = part_2;
+				part_2.symmetric = part_1;
+			}
+		}
+			
+		
+		if (this.status == "light"){
+			this.parts_light.push ( part_1 );
+			if ( part_1.symmetric ) this.parts_light.push ( part_2 );
+		}
+		
+		if (this.status == "mid"){
+			this.parts_mid.push ( part_1 );
+			if ( part_1.symmetric ) this.parts_mid.push ( part_2 );
+		}
+		
+		if (this.status == "heavy"){
+			this.parts_heavy.push ( part_1 );
+			if ( part_1.symmetric ) this.parts_heavy.push ( part_2 );
+		}
+		
+		this.calcStats();
+		
+		return part_1;
+	}
 }
 
 var units = new Array();

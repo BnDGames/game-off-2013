@@ -1,0 +1,13 @@
+{
+	"id": "default",
+
+	"parts_static" : [
+		{
+			"source" : "base_0",
+			"translate" : [ 0, 0 ],
+			"angle" : 0,
+			"mirrorX" : false,
+			"mirrorY" : false
+		}
+	]
+}

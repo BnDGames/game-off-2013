@@ -218,6 +218,12 @@ function initUI () {
 		
 		state_current = state_shipedit;
 		currentUI = shipEditor;
+		
+		window.onpartdrop = function ( part, position ) {
+			if ( position[0] > shipEditor.shipArea[0] && position[1] > shipEditor.shipArea[1] && position[0] < shipEditor.shipArea[0] + shipEditor.shipArea[2] && position[1] < shipEditor.shipArea[1] + shipEditor.shipArea[3]){
+				playerShip.attachPart ( part.id, vSubt ( position, [shipEditor.shipArea[0] + shipEditor.shipArea[2] / 2, shipEditor.shipArea[1] + shipEditor.shipArea[3] / 2] ) );
+			}
+		}
 	}
 	
 	menu.children.store = new Label();

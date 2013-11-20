@@ -45,6 +45,16 @@ var Part = function () {
 	this.draw = new Array();
 	this.modifiers = new Array();
 
+	//Construction rules
+
+	//Part anchors (used for ship building)
+	this.anchors_plus = new Array();
+	this.anchors_minus = new Array();
+	
+	this.allowMiddle = true;
+	
+	this.symmetric = 0;
+
 	//Unit statistics belong to its parts
 	//and are calculated summing the stats
 	//of all the parts; a value of 0 for any
@@ -150,6 +160,17 @@ function getPart ( id ) {
 					result.actions.push(action);
 				}
 			
+			if (parts[i].anchors_plus != undefined)
+				for ( var l = 0; l < parts[i].anchors_plus.length; l++ )
+					result.anchors_plus.push ( parts[i].anchors_plus[l].slice(0) );
+					
+			if (parts[i].anchors_minus != undefined)
+				for ( var l = 0; l < parts[i].anchors_minus.length; l++ )
+					result.anchors_minus.push ( parts[i].anchors_minus[l].slice(0) );
+					
+			if (parts[i].allowMiddle != undefined)
+				result.allowMiddle = parts[i].allowMiddle;
+			
 			return result;
 		}
 	}
@@ -181,4 +202,32 @@ function movePart ( part, time ) {
 	
 	part.force = [0,0];
 	part.momentum = 0;
+}
+
+//Function to attach a part to an anchor on another part
+//Positions the part if anchor is free
+function attachPart ( to, toIndex, what, whatIndex ) {
+	what.mirrorX = to.anchors_plus [ toIndex ] [3];
+	what.mirrorY = to.anchors_plus [ toIndex ] [4];	
+	what.angle =   to.anchors_plus [ toIndex ] [2] * Math.PI;	
+	
+	if (what.mirrorX) what.angle = Math.PI - what.angle;
+	if (what.mirrorY) what.angle = -what.angle;
+	
+	what.angle += to.angle;
+
+	var plus = to.anchors_plus [ toIndex ];
+	plus = vRotate ( plus, to.angle );
+	if (to.mirrorX){ plus[0] *= -1; what.mirrorX = !what.mirrorX; }
+	if (to.mirrorY){ plus[1] *= -1; what.mirrorY = !what.mirrorY; }
+	plus = vSum (plus, to.position);
+	
+	var minus = what.anchors_minus [ whatIndex ];
+	minus = vRotate ( minus, what.angle );
+	if (what.mirrorX) minus[0] *= -1; if (what.mirrorY) minus[1] *= -1;
+	minus = vSum (minus, what.position);	
+	
+	var dist = vSubt ( plus, minus );
+	
+	what.position = vSum ( what.position, dist );
 }
