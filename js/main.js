@@ -9,8 +9,8 @@ var gameScene = new Scene();
 
 //Setup function
 function setup () {
-	initUI();
 	graphicsSetup();
+	initUI();
 	
 	canvas.onmousedown = uiCheckEvents;
 	canvas.onmouseup = uiCheckEvents;

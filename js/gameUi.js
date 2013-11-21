@@ -221,7 +221,7 @@ function initUI () {
 		
 		window.onpartdrop = function ( part, position ) {
 			if ( position[0] > shipEditor.shipArea[0] && position[1] > shipEditor.shipArea[1] && position[0] < shipEditor.shipArea[0] + shipEditor.shipArea[2] && position[1] < shipEditor.shipArea[1] + shipEditor.shipArea[3]){
-				playerShip.attachPart ( part.id, vSubt ( position, [shipEditor.shipArea[0] + shipEditor.shipArea[2] / 2, shipEditor.shipArea[1] + shipEditor.shipArea[3] / 2] ) );
+				playerShip.attachPart ( part.id, vSubt ( position, [shipEditor.shipArea[0] + shipEditor.shipArea[2] / 2, shipEditor.shipArea[1] + shipEditor.shipArea[3] / 2] ) )
 			}
 		}
 	}
@@ -233,7 +233,8 @@ function initUI () {
 	menu.children.store.onmouseout = labelOnMouseOut;
 	
 	shipEditor = new Control();
-	shipEditor.shipArea = [ 30, 100, 480, 480 ];
+	shipEditor.area = [0,0, canvas.width, canvas.height];
+	shipEditor.shipArea = [ 30, 100, 480, 450 ];
 	shipEditor.print = function (context) {
 		context.fillStyle = colors[0];
 		context.fillRect ( 0, 0, canvas.width, canvas.height );
@@ -250,6 +251,27 @@ function initUI () {
 		drawUnit ( context, playerShip, [this.shipArea[0] + this.shipArea[2] / 2, this.shipArea[1] + this.shipArea[3] / 2] );
 	}
 	
+	shipEditor.onmouseup = function (mX, mY){
+		if (window.draggedPart) return;
+		
+		if (mX > this.shipArea[0] && mX < this.shipArea[0] + this.shipArea[2] && mY > this.shipArea[1] && mY < this.shipArea[1] + this.shipArea[3]){
+			var p = vSubt ( [mX, mY], [this.shipArea[0] + this.shipArea[2] / 2, this.shipArea[1] + this.shipArea[3] / 2] );
+			
+			for ( var i = 0; i < playerShip.parts.length; i++ ) {
+				var v = new Array();
+				for (var l = 0; l < playerShip.parts[i].vertices.length; l++)
+					v.push ( vSum (playerShip.parts[i].vertices[l], playerShip.parts[i].position) );
+					
+				if ( pointInsidePoly ( p, v ) ){					
+					if ( playerShip.parts[i].id.substr(0,5) != "base_" )
+						detatchPart ( playerShip.parts[i] );
+					
+					return;
+				}
+			}
+		}
+	}
+	
 	shipEditor.children.title = new Label();
 	shipEditor.children.title.area = [40, 40, 200, 48];
 	shipEditor.children.title.content = "EDIT YOUR SHIP";
@@ -261,10 +283,10 @@ function initUI () {
 		var vName_2 = "partSlot_" + (i + 1);
 		
 		shipEditor.children[vName_1] = new PartViewer();
-		shipEditor.children[vName_1].area = [ 554, 133 + 106 * i / 2, 96, 96 ];
+		shipEditor.children[vName_1].area = [ 554, 118 + 106 * i / 2, 96, 96 ];
 		
 		shipEditor.children[vName_2] = new PartViewer();
-		shipEditor.children[vName_2].area = [ 660, 133 + 106 * i / 2, 96, 96 ];
+		shipEditor.children[vName_2].area = [ 660, 118 + 106 * i / 2, 96, 96 ];
 	}
 	
 	shipEditor.children.stateCheck = new CheckBoxList();
@@ -277,6 +299,23 @@ function initUI () {
 		if (i == 0) playerShip.changeParts("light", true);
 		if (i == 1) playerShip.changeParts("mid", true);
 		if (i == 2) playerShip.changeParts("heavy", true);
+	}
+	
+	shipEditor.children.ok = new Label();
+	shipEditor.children.ok.area = [ 50, 534, 72, 32 ];
+	shipEditor.children.ok.content = "OK";
+	shipEditor.children.ok.onmousein = labelOnMouseIn;
+	shipEditor.children.ok.onmouseout = labelOnMouseOut;
+	shipEditor.children.ok.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	shipEditor.children.ok.onmouseup = function () {
+		this.innerColor = colors_buttonHover;
+		
+		currentUI = menu;
+		state_current = state_menu;
+		
+		savePlayerData();
+		
+		window.onpartdrop = 0;
 	}
 	
 	currentUI = loading;
@@ -298,10 +337,6 @@ function updateHud ( unit ) {
 	hud.children.enemies.content = uCount + "/" + unit.parent.spawnCount;
 	
 	hud.children.waveLabel.content = "WAVE " + unit.parent.wave;
-	
-	/*if (unit.status == "light") hud.children.stateCheck.checked = 0;
-	if (unit.status == "mid") hud.children.stateCheck.checked = 1;
-	if (unit.status == "heavy") hud.children.stateCheck.checked = 2;*/
 }
 
 //Function to update loading screen

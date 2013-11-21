@@ -22,6 +22,8 @@ var Control = function () {
 	this.print = 0;
 	this.printAfter = 0;
 	
+	this.visible = true;
+	
 	//Animate function
 	//with prototype function ( time )
 	this.animate = 0;
@@ -38,6 +40,8 @@ var Control = function () {
 
 //Function to print control and its children
 function printControl ( context, control, offset ) {
+	if (!control.visible) return;
+
 	context.save();
 	context.translate ( offset[0], offset[1] );
 	
@@ -446,8 +450,8 @@ var PartViewer = function () {
 	}
 	
 	//Onclick
-	this.onmousedown = function ( event ) {
-		if (this.disabled) return;
+	this.onmousedown = function () {
+		if (this.disabled || !this.part) return;
 		
 		window.draggedPart = this.part;
 		window.draggedSource = this;

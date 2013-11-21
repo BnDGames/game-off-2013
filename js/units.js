@@ -302,8 +302,8 @@ var Unit = function () {
 		var part_1 = getPart ( partId );
 		var part_2 = getPart ( partId );
 		
-		if (!part_1) return;
-		if (part_1.anchors_minus.length == 0) return;
+		if (!part_1) return false;
+		if (part_1.anchors_minus.length == 0) return false;
 		
 		part_1.parent = this;
 		part_1.position = position;
@@ -343,42 +343,45 @@ var Unit = function () {
 			}
 		}
 		
-		attachPart ( anchorPart, anchorPlus, part_1, anchorMinus );
+		
+		var attach1 = attachPart ( anchorPart, anchorPlus, part_1, anchorMinus );
+		var attach2 = false;
 		
 		if ( anchorPart.anchors_plus [ anchorPlus ] [5] != -1 ){
 			var target = anchorPart.anchors_plus [ anchorPlus ] [5];
 			var symAnchorPart;
 			
 			if ( target[0] == 0 ) symAnchorPart = anchorPart;
-			else symAnchorPart = anchorPart.symmetric;
+			else symAnchorPart = anchorPart.parent.getPart(anchorPart.symmetric);
 			
 			if (symAnchorPart){
-				attachPart ( symAnchorPart, target[1], part_2, anchorMinus );
+				attach2 = attachPart ( symAnchorPart, target[1], part_2, anchorMinus, attach1 );
 				
-				part_1.symmetric = part_2;
-				part_2.symmetric = part_1;
+				part_1.symmetric = part_2.uid;
+				part_2.symmetric = part_1.uid;
 			}
-		}
-			
-		
-		if (this.status == "light"){
-			this.parts_light.push ( part_1 );
-			if ( part_1.symmetric ) this.parts_light.push ( part_2 );
-		}
-		
-		if (this.status == "mid"){
-			this.parts_mid.push ( part_1 );
-			if ( part_1.symmetric ) this.parts_mid.push ( part_2 );
-		}
-		
-		if (this.status == "heavy"){
-			this.parts_heavy.push ( part_1 );
-			if ( part_1.symmetric ) this.parts_heavy.push ( part_2 );
 		}
 		
 		this.calcStats();
 		
-		return part_1;
+		return attach1 || attach2;
+	}
+	
+	this.getPart = function ( uid ){
+		for (var i = 0; i < this.parts_static.length; i++)
+			if (this.parts_static[i].uid == uid) return this.parts_static[i];
+			
+		for (var i = 0; i < this.parts_light.length; i++)
+			if (this.parts_light[i].uid == uid) return this.parts_light[i];
+			
+		for (var i = 0; i < this.parts_mid.length; i++)
+			if (this.parts_mid[i].uid == uid) return this.parts_mid[i];
+			
+		for (var i = 0; i < this.parts_heavy.length; i++)
+			if (this.parts_heavy[i].uid == uid) return this.parts_heavy[i];
+			
+			
+		return undefined;
 	}
 }
 
@@ -391,124 +394,33 @@ function loadUnitFromJSON ( data, unit ) {
 	while ( partsLoaded < partsCount ) { };
 					
 	for ( var i = 0; i < data.parts_static.length; i++){
-		var p = getPart ( data.parts_static[i].source );
-		
+		var p = partFromJSON ( data.parts_static[i] );
 		p.parent = unit;
 		
-		p.position = vSum ( p.position, data.parts_static[i].translate );
-		p.angle += data.parts_static[i].angle * Math.PI;
-		
-		p.mirrorX = data.parts_static[i].mirrorX;
-		p.mirrorY = data.parts_static[i].mirrorY;
-		
-		unit.parts_static.push ( p );
-		
-		if (p.position[1] != 0){
-			var q = getPart ( data.parts_static[i].source );
-		
-			q.parent = unit;
-		
-			q.position = vSum ( q.position, data.parts_static[i].translate );
-			q.angle += data.parts_static[i].angle * Math.PI;
-			q.position[1] = -q.position[1];
-			q.angle = -q.angle;
-		
-			q.mirrorX = data.parts_static[i].mirrorX;
-			q.mirrorY = !data.parts_static[i].mirrorY;
-		
-			unit.parts_static.push ( q );
-		}
+		unit.parts_static.push (p);
 	}
 	
 	if ( data.parts_light ) for ( var i = 0; i < data.parts_light.length; i++){
-		var p = getPart ( data.parts_light[i].source );
-		
+		var p = partFromJSON ( data.parts_light[i] );
 		p.parent = unit;
 		
-		p.position = vSum ( p.position, data.parts_light[i].translate );
-		p.angle += data.parts_light[i].angle * Math.PI;
-		
-		p.mirrorX = data.parts_light[i].mirrorX;
-		p.mirrorY = data.parts_light[i].mirrorY;
-		
-		unit.parts_light.push ( p );
-		
-		if (p.position[1] != 0){
-			var q = getPart ( data.parts_light[i].source );
-		
-			q.parent = unit;
-		
-			q.position = vSum ( q.position, data.parts_light[i].translate );
-			q.angle += data.parts_light[i].angle * Math.PI;
-			q.position[1] = -q.position[1];
-			q.angle = -q.angle;
-		
-			q.mirrorX = data.parts_light[i].mirrorX;
-			q.mirrorY = !data.parts_light[i].mirrorY;
-		
-			unit.parts_light.push ( q );
-		}
+		unit.parts_light.push (p);
 	}
 	
 	if ( data.parts_mid ) for ( var i = 0; i < data.parts_mid.length; i++){
-		var p = getPart ( data.parts_mid[i].source );
-		
+		var p = partFromJSON ( data.parts_mid[i] );
 		p.parent = unit;
 		
-		p.position = vSum ( p.position, data.parts_mid[i].translate );
-		p.angle += data.parts_mid[i].angle * Math.PI;
-		
-		p.mirrorX = data.parts_mid[i].misrrorX;
-		p.mirrorY = data.parts_mid[i].mirrorY;
-		
-		unit.parts_mid.push ( p );
-		
-		if (p.position[1] != 0){
-			var q = getPart ( data.parts_mid[i].source );
-		
-			q.parent = unit;
-		
-			q.position = vSum ( q.position, data.parts_mid[i].translate );
-			q.angle += data.parts_mid[i].angle * Math.PI;
-			q.position[1] = -q.position[1];
-			q.angle = -q.angle;
-		
-			q.mirrorX = data.parts_mid[i].mirrorX;
-			q.mirrorY = !data.parts_mid[i].mirrorY;
-		
-			unit.parts_mid.push ( q );
-		}
+		unit.parts_mid.push (p);
 	}
 	
 	if ( data.parts_heavy ) for ( var i = 0; i < data.parts_heavy.length; i++){
-		var p = getPart ( data.parts_heavy[i].source );
-		
+		var p = partFromJSON ( data.parts_heavy[i] );
 		p.parent = unit;
 		
-		p.position = vSum ( p.position, data.parts_heavy[i].translate );
-		p.angle += data.parts_heavy[i].angle * Math.PI;
-		
-		p.mirrorX = data.parts_heavy[i].mirrorX;
-		p.mirrorY = data.parts_heavy[i].mirrorY;
-		
-		unit.parts_heavy.push ( p );
-		
-		if (p.position[1] != 0){
-			var q = getPart ( data.parts_heavy[i].source );
-		
-			q.parent = unit;
-		
-			q.position = vSum ( q.position, data.parts_heavy[i].translate );
-			q.angle += data.parts_heavy[i].angle * Math.PI;
-			q.position[1] = -q.position[1];
-			q.angle = -q.angle;
-		
-			q.mirrorX = data.parts_heavy[i].mirrorX;
-			q.mirrorY = !data.parts_heavy[i].mirrorY;
-		
-			unit.parts_heavy.push ( q );
-		}
+		unit.parts_heavy.push (p);
 	}
+	
 	
 	if ( data.ai ) unit.aiFunction = eval ( data.ai );
 	
@@ -711,4 +623,29 @@ function ai ( unit, target ) {
 function unitReplacer ( key, value ) {
 	if (key == "parent") return undefined;
 	else return value;
+}
+
+//Function to save a unit to JSON
+function unitToJSON ( unit ) {
+	var result = new Object();
+	
+	result.id = unit.id;
+	
+	result.parts_static = new Array();
+	for (var i = 0; i < unit.parts_static.length; i++)
+		result.parts_static.push(partToJSON(unit.parts_static[i]));
+		
+	result.parts_light = new Array();
+	for (var i = 0; i < unit.parts_light.length; i++)
+		result.parts_light.push(partToJSON(unit.parts_light[i]));
+		
+	result.parts_mid = new Array();
+	for (var i = 0; i < unit.parts_mid.length; i++)
+		result.parts_mid.push(partToJSON(unit.parts_mid[i]));
+		
+	result.parts_heavy = new Array();
+	for (var i = 0; i < unit.parts_heavy.length; i++)
+		result.parts_heavy.push(partToJSON(unit.parts_heavy[i]));
+	
+	return result;
 }

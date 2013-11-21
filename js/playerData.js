@@ -21,3 +21,9 @@ function loadPlayerData () {
 		playerShip.colors.push(colors_player);
 	}
 }
+
+//Function to save player data to local storage
+function savePlayerData () {
+	if (localStorage)
+		localStorage.playerShip = JSON.stringify(unitToJSON(playerShip), 0, " ");
+}
