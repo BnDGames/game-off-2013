@@ -61,13 +61,15 @@ function initUI () {
 	hud.children.pause.cornerFactor = 0.5;
 	hud.children.pause.onmousein = labelOnMouseIn;
 	hud.children.pause.onmouseout = labelOnMouseOut;
-	hud.children.pause.onmousedown = function() {
-		if (!pause){ pause = true; this.innerColor = colors_buttonActive; this.onmouseout = 0; this.onmousein = 0; }
-		else {
-			pause = false;
-			this.innerColor = colors_buttonHover;
-			this.onmouseout = labelOnMouseOut;this.onmousein = labelOnMouseIn;
-		}
+	hud.children.pause.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	hud.children.pause.onmouseup = function() {
+		if (inputBoundUnit.health <= 0){ this.innerColor = colors_buttonHover; return; }
+		
+		pause = true;
+		this.innerColor = colors_buttonActive;
+		this.onmouseout = 0;
+		this.onmousein = 0;
+		hud.children.pausemenu.visible = true;
 	}
 	
 	hud.print = function ( context ) {
@@ -157,6 +159,64 @@ function initUI () {
 		}
 	}
 	
+	hud.children.pausemenu = new Control();
+	hud.children.pausemenu.visible = false;
+	
+	hud.children.pausemenu.print = function ( context ) {
+		context.globalAlpha = 0.75;
+			
+		var g = context.createLinearGradient ( 0, canvas.height / 2 - 200, 0, canvas.height / 2 + 200 );
+		g.addColorStop ( 0, "transparent" );
+		g.addColorStop (0.3, "#000000" );
+		g.addColorStop (0.7, "#000000" );
+		g.addColorStop ( 1, "transparent" );
+		
+		context.fillStyle = g;
+		context.fillRect ( 0, canvas.height / 2 - 200, canvas.width, 400 );
+		context.globalAlpha = 1;
+	}
+	
+	hud.children.pausemenu.children.title = new Label();
+	hud.children.pausemenu.children.title.area = [0,120,800,72];
+	hud.children.pausemenu.children.title.fontStyle = "72px League Gothic";
+	hud.children.pausemenu.children.title.content = "PAUSE";
+	hud.children.pausemenu.children.title.printFrame = false;
+	
+	hud.children.pausemenu.children.resume = new Label();
+	hud.children.pausemenu.children.resume.area = [280, 234, 240, 48];
+	hud.children.pausemenu.children.resume.content = "RESUME";
+	hud.children.pausemenu.children.resume.fontStyle = "36px League Gothic";
+	hud.children.pausemenu.children.resume.onmousein = labelOnMouseIn;
+	hud.children.pausemenu.children.resume.onmouseout = labelOnMouseOut;
+	hud.children.pausemenu.children.resume.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	hud.children.pausemenu.children.resume.onmouseup = function () {
+		this.innerColor = colors_buttonHover;
+		hud.children.pausemenu.visible = false;
+		
+		hud.children.pause.innerColor = colors_buttonStd;
+		hud.children.pause.onmousein = labelOnMouseIn;
+		hud.children.pause.onmouseout = labelOnMouseOut;
+		pause = false;
+	}
+	
+	hud.children.pausemenu.children.quit = new Label();
+	hud.children.pausemenu.children.quit.area = [300,300,200,32];
+	hud.children.pausemenu.children.quit.content = "QUIT";
+	hud.children.pausemenu.children.quit.onmousein = labelOnMouseIn;
+	hud.children.pausemenu.children.quit.onmouseout = labelOnMouseOut;
+	hud.children.pausemenu.children.quit.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	hud.children.pausemenu.children.quit.onmouseup = function () {
+		this.innerColor = colors.buttonHover;
+		hud.children.pausemenu.visible = false;
+		
+		hud.children.pause.innerColor = colors_buttonStd;
+		hud.children.pause.onmousein = labelOnMouseIn;
+		hud.children.pause.onmouseout = labelOnMouseOut;
+		pause = false;
+		
+		currentUI = menu;
+		state_current = state_menu;
+	}
 	
 	
 	loading = new Control();
@@ -219,6 +279,10 @@ function initUI () {
 		state_current = state_shipedit;
 		currentUI = shipEditor;
 		
+		playerShip.reset();
+		
+		shipEditor.drawAvailableParts(shipEditor.children.stateCheck.checked + 1);
+		
 		window.onpartdrop = function ( part, position ) {
 			if ( position[0] > shipEditor.shipArea[0] && position[1] > shipEditor.shipArea[1] && position[0] < shipEditor.shipArea[0] + shipEditor.shipArea[2] && position[1] < shipEditor.shipArea[1] + shipEditor.shipArea[3]){
 				playerShip.attachPart ( part.id, vSubt ( position, [shipEditor.shipArea[0] + shipEditor.shipArea[2] / 2, shipEditor.shipArea[1] + shipEditor.shipArea[3] / 2] ) )
@@ -272,6 +336,20 @@ function initUI () {
 		}
 	}
 	
+	shipEditor.drawAvailableParts = function ( cls ) {
+		var n = 0;
+		
+		for (c in this.children){
+			if (c.substr(0,9) == "partSlot_")
+				this.children[c].part = 0;
+		}
+		
+		for (var i = 0; i < playerParts.length; i++){
+			if (playerParts[i].cls == cls){ this.children["partSlot_" + n].part = getPart(playerParts[i].id); n++; }
+			else this.children["partSlot_" + n].part = 0;
+		}
+	}
+	
 	shipEditor.children.title = new Label();
 	shipEditor.children.title.area = [40, 40, 200, 48];
 	shipEditor.children.title.content = "EDIT YOUR SHIP";
@@ -283,10 +361,20 @@ function initUI () {
 		var vName_2 = "partSlot_" + (i + 1);
 		
 		shipEditor.children[vName_1] = new PartViewer();
-		shipEditor.children[vName_1].area = [ 554, 118 + 106 * i / 2, 96, 96 ];
+		shipEditor.children[vName_1].area = [ 554, 32 + 106 * i / 2, 96, 96 ];
+		
+		shipEditor.children[vName_1].onmousein = function ( x, y ) {
+			if (this.part)
+				shipEditor.children.info.stats = this.part.stats;
+		}
 		
 		shipEditor.children[vName_2] = new PartViewer();
-		shipEditor.children[vName_2].area = [ 660, 118 + 106 * i / 2, 96, 96 ];
+		shipEditor.children[vName_2].area = [ 660, 32 + 106 * i / 2, 96, 96 ];
+		
+		shipEditor.children[vName_2].onmousein = function ( x, y ) {
+			if (this.part)			
+				shipEditor.children.info.stats = this.part.stats;
+		}
 	}
 	
 	shipEditor.children.stateCheck = new CheckBoxList();
@@ -299,6 +387,8 @@ function initUI () {
 		if (i == 0) playerShip.changeParts("light", true);
 		if (i == 1) playerShip.changeParts("mid", true);
 		if (i == 2) playerShip.changeParts("heavy", true);
+		
+		shipEditor.drawAvailableParts(i + 1);
 	}
 	
 	shipEditor.children.ok = new Label();
@@ -317,6 +407,9 @@ function initUI () {
 		
 		window.onpartdrop = 0;
 	}
+	
+	shipEditor.children.info = new StatViewer();
+	shipEditor.children.info.area = [ 554, 488, 202, 80 ];
 	
 	currentUI = loading;
 }

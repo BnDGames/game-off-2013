@@ -20,6 +20,8 @@ function loadPlayerData () {
 		playerShip = loadUnit ( "data/units/default.json", function (data) { localStorage.playerShip = JSON.stringify(data)	} );
 		playerShip.colors.push(colors_player);
 	}
+	
+	playerParts = parts;
 }
 
 //Function to save player data to local storage

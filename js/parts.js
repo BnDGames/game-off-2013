@@ -110,6 +110,9 @@ function loadParts () {
 										d.mass = d.stats[stat_mass];
 										d.inertia = polyInertia ( d.vertices, d.mass );
 										
+										if (d.angle != undefined)
+											d.angle *= Math.PI;
+										
 										parts.push ( d );
 										partsLoaded++;
 									}
@@ -401,7 +404,7 @@ function partFromJSON ( data ) {
 	if (!result) return false;
 	
 	result.position = vSum ( result.position, data.translate );
-	result.angle += data.angle;
+	result.angle = data.angle;
 	result.mirrorX = data.mirrorX;
 	result.mirrorY = data.mirrorY;
 	result.symmetric = data.symmetric;

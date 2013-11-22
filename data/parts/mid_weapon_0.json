@@ -1,5 +1,6 @@
 {
 	"id": "mid_weapon_0",
+	"cls": 2,
 
 	"vertices":	[
 					[ 20, 5 ],

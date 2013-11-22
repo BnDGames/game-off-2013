@@ -112,9 +112,27 @@ var Unit = function () {
 					
 						projectile.owner = this;
 						
-						projectile.position = vSum ( this.position, vRotate ( vSum ( this.parts[i].position, action.projectiles[m].position ), this.angle + this.parts[i].angle ) );
+						var angle = this.parts[i].angle;
+						if (this.parts[i].mirrorX) angle = Math.PI - angle;
+						if (this.parts[i].mirrorY) angle = -angle;
 						
-						var pS = vRotate ( action.projectiles[m].speed, this.angle + this.parts[i].angle );
+						var partRelativePos = vRotate ( action.projectiles[m].position, angle );
+						
+						if (this.parts[i].mirrorX) partRelativePos[0] *= -1;
+						if (this.parts[i].mirrorY) partRelativePos[1] *= -1;
+						
+						var pPos = vRotate ( vSum ( this.parts[i].position, partRelativePos ), this.angle);
+						
+						projectile.position = vSum ( this.position, pPos );
+						
+						var a = this.angle + angle;
+						if (this.parts[i].mirrorX) a = Math.PI - a;
+						if (this.parts[i].mirrorY) a = -a;
+						var pS = vRotate ( action.projectiles[m].speed, a );
+						
+						if (this.parts[i].mirrorX) pS[0] *= -1;
+						if (this.parts[i].mirrorY) pS[1] *= -1;
+						
 						var speedComponent = vDot ( this.speed, vSetModule (pS, 1 ) );
 						
 						projectile.speed = vSum ( speedComponent > 0 ? vSetModule ( this.speed, speedComponent ) : [0,0], pS );

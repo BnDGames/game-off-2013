@@ -77,6 +77,8 @@ function animateControl ( control, time ) {
 
 //Function to check mouse state
 function checkMouse ( control, event, offset ) {
+	if (!control.visible) return;
+	
 	var mX = event.clientX - offset[0];
 	var mY = event.clientY - offset[1];
 	
@@ -482,3 +484,62 @@ var PartViewer = function () {
 }
 PartViewer.prototype = new Control();
 
+//Stats viewer
+var StatViewer = function () {
+	this.stats = [0,0,0,0,0];
+	
+	//Graphics
+	this.innerColor = "#000410";
+	this.disabledColor = "#303030";
+	this.borderSize = 4;
+	this.borderColor = "#FFFFFF";
+	
+	this.corner = 16;
+	
+	this.fontStyle = "24px League Gothic";
+	
+	//Print function
+	this.print = function ( context ) {
+		context.beginPath();
+		context.moveTo(this.area[0] + this.corner, this.area[1]);
+		context.lineTo(this.area[0] + this.area[2] - this.corner, this.area[1]);
+		context.lineTo(this.area[0] + this.area[2], this.area[1] + this.corner);
+		context.lineTo(this.area[0] + this.area[2], this.area[1] + this.area[3] - this.corner);
+		context.lineTo(this.area[0] + this.area[2] - this.corner, this.area[1] + this.area[3]);
+		context.lineTo(this.area[0] + this.corner, this.area[1] + this.area[3]);
+		context.lineTo(this.area[0], this.area[1] + this.area[3] - this.corner);
+		context.lineTo(this.area[0], this.area[1] + this.corner);
+		context.closePath();
+		
+		context.fillStyle = this.innerColor;
+		context.fill();
+		
+		context.strokeStyle = this.borderColor;
+		context.lineWidth = this.borderSize;
+		context.stroke();
+		context.lineWidth = 1;
+		
+		context.font = this.fontStyle;
+		context.fillStyle = "#FFFFFF";
+		context.textAlign = "left";
+		context.textBaseline = "top";
+		
+		var statText = [ "HEALTH", "ARMOR", "MASS", "ENGINE" ];
+		var x = 20;
+		var y = 15;
+		
+		for (var i = 0; i < 4; i++ ){
+			context.fillText ( statText[i] + ": " + this.stats[i], this.area[0] + x, this.area[1] + y );
+			context.textBaseline = "bottom";
+			y = this.area[3] - 15;
+			
+			if ( i == 1 ){
+				context.textAlign = "right";
+				context.textBaseline = "top";
+				x = this.area[2] - 20;
+				y = 15;
+			}
+		}
+	}
+}
+StatViewer.prototype = new Control();
