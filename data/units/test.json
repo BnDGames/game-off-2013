@@ -49,9 +49,7 @@
     }
    ],
    "anchors_minus": []
-  }
- ],
- "parts_light": [
+  },
   {
    "source": "light_engine_0",
    "translate": [
@@ -149,65 +147,6 @@
    ]
   }
  ],
- "parts_mid": [
-  {
-   "source": "generic_0",
-   "translate": [
-    0,
-    0.6882427589735843
-   ],
-   "angle": 0,
-   "mirrorX": 0,
-   "mirrorY": 0,
-   "uid": 91,
-   "symmetric": 92,
-   "attachedStatus": "mid",
-   "anchors_plus": [
-    {
-     "attachedPart": {},
-     "attachedAnchor": {}
-    }
-   ],
-   "anchors_minus": [
-    {
-     "attachedPart": {
-      "mid": 0
-     },
-     "attachedAnchor": {
-      "mid": 1
-     }
-    }
-   ]
-  },
-  {
-   "source": "generic_0",
-   "translate": [
-    0,
-    -0.6882427589735843
-   ],
-   "angle": 0,
-   "mirrorX": 0,
-   "mirrorY": 1,
-   "uid": 92,
-   "symmetric": 91,
-   "attachedStatus": "mid",
-   "anchors_plus": [
-    {
-     "attachedPart": {},
-     "attachedAnchor": {}
-    }
-   ],
-   "anchors_minus": [
-    {
-     "attachedPart": {
-      "mid": 0
-     },
-     "attachedAnchor": {
-      "mid": 0
-     }
-    }
-   ]
-  }
- ],
- "parts_heavy": []
+ 
+ "scoreValue":10
 }

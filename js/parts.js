@@ -177,6 +177,9 @@ function getPart ( id ) {
 					
 			if (parts[i].allowMiddle != undefined)
 				result.allowMiddle = parts[i].allowMiddle;
+				
+			if (parts[i].info != undefined)
+				result.info = parts[i].info;
 			
 			return result;
 		}

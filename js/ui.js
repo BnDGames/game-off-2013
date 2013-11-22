@@ -382,8 +382,11 @@ var PartViewer = function () {
 	this.borderColor = "#FFFFFF";
 	
 	this.scale = 1;
+	this.angle = 0;
 	
 	this.corner = 16;
+	
+	this.infoControl = 0;
 	
 	//Print function
 	this.print = function ( context ) {
@@ -414,6 +417,7 @@ var PartViewer = function () {
 			
 			context.scale (this.scale, this.scale);
 			context.translate((this.area[2] / 2 + this.area[0]) / this.scale, (this.area[3] / 2 + this.area[1]) / this.scale);
+			if (this.part != window.draggedPart) context.rotate(this.angle);
 			
 			drawPart ( context, this.part, [0,0], [false], [colors_player], true );
 			
@@ -447,8 +451,8 @@ var PartViewer = function () {
 	
 	//Animate
 	this.animate = function ( time ){
-		if (this.part != window.draggedPart)
-			this.angle += 0.01;
+		if (this.rotate && this.part != window.draggedPart)
+			this.angle += 0.015;
 	}
 	
 	//Onclick
@@ -466,6 +470,8 @@ var PartViewer = function () {
 			this.onmouseup = 0;
 			this.onmousemove = 0;
 			
+			this.draggedSource.innerColor = "#000410";
+			
 			this.draggedPart.position = [0,0];
 			this.draggedPart = 0;
 			this.draggedSource = 0;
@@ -481,12 +487,29 @@ var PartViewer = function () {
 			this.draggedPart.position = point.slice(0);
 		}
 	}
+	
+	this.onmousein = function () {
+		if (!this.disabled) this.innerColor = "#001230";
+		
+		this.rotate = true;
+		
+		if (this.part && this.infoControl){
+			this.infoControl.stats = this.part.stats;
+			this.infoControl.info = this.part.info;
+		}
+	}
+	
+	this.onmouseout = function () {
+		if (!this.disabled && (!this.part || this.part != window.draggedPart)) this.innerColor = "#000410";
+		this.rotate = false;
+	}
 }
 PartViewer.prototype = new Control();
 
 //Stats viewer
 var StatViewer = function () {
 	this.stats = [0,0,0,0,0];
+	this.info = new Array();
 	
 	//Graphics
 	this.innerColor = "#000410";
@@ -496,7 +519,8 @@ var StatViewer = function () {
 	
 	this.corner = 16;
 	
-	this.fontStyle = "24px League Gothic";
+	this.bigFontStyle = "32px League Gothic";
+	this.fontStyle = "20px League Gothic";
 	
 	//Print function
 	this.print = function ( context ) {
@@ -524,21 +548,39 @@ var StatViewer = function () {
 		context.textAlign = "left";
 		context.textBaseline = "top";
 		
+		context.beginPath();
+		context.rect ( this.area[0] + this.area[2] - 200, this.area[1] + 15, 4, this.area[3] - 30 );
+		context.fill();
+		
 		var statText = [ "HEALTH", "ARMOR", "MASS", "ENGINE" ];
 		var x = 20;
 		var y = 15;
 		
 		for (var i = 0; i < 4; i++ ){
-			context.fillText ( statText[i] + ": " + this.stats[i], this.area[0] + x, this.area[1] + y );
+			context.fillText ( statText[i] + ": " + this.stats[i], this.area[0] + this.area[2] - 200 + x, this.area[1] + y );
 			context.textBaseline = "bottom";
 			y = this.area[3] - 15;
 			
 			if ( i == 1 ){
 				context.textAlign = "right";
 				context.textBaseline = "top";
-				x = this.area[2] - 20;
+				x = 180;
 				y = 15;
 			}
+		}
+		
+		context.textBaseline = "top";
+		context.textAlign = "left";
+		context.font = this.bigFontStyle;
+		
+		if (this.info){
+			if (this.info[0])
+				context.fillText ( this.info[0].toUpperCase(), this.area[0] + 20, this.area[1] + 10 );
+		
+			context.font = this.fontStyle;
+			
+			if (this.info[1])
+				context.fillText ( this.info[1].toUpperCase(), this.area[0] + 20, this.area[1] + 42 );
 		}
 	}
 }

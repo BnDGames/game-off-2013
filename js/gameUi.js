@@ -282,6 +282,7 @@ function initUI () {
 		playerShip.reset();
 		
 		shipEditor.drawAvailableParts(shipEditor.children.stateCheck.checked + 1);
+		playerShip.changeParts ( ["light", "mid", "heavy"][shipEditor.children.stateCheck.checked], true );
 		
 		window.onpartdrop = function ( part, position ) {
 			if ( position[0] > shipEditor.shipArea[0] && position[1] > shipEditor.shipArea[1] && position[0] < shipEditor.shipArea[0] + shipEditor.shipArea[2] && position[1] < shipEditor.shipArea[1] + shipEditor.shipArea[3]){
@@ -298,7 +299,7 @@ function initUI () {
 	
 	shipEditor = new Control();
 	shipEditor.area = [0,0, canvas.width, canvas.height];
-	shipEditor.shipArea = [ 30, 100, 480, 450 ];
+	shipEditor.shipArea = [ 30, 100, 380, 350 ];
 	shipEditor.print = function (context) {
 		context.fillStyle = colors[0];
 		context.fillRect ( 0, 0, canvas.width, canvas.height );
@@ -356,29 +357,29 @@ function initUI () {
 	shipEditor.children.title.printFrame = false;
 	shipEditor.children.title.fontStyle = "48px League Gothic";
 	
-	for (var i = 0; i < 8; i += 2){
+	shipEditor.children.info = new StatViewer();
+	shipEditor.children.info.area = [ 32, 488, 738, 80 ];
+	
+	for (var i = 0; i < 12; i += 3){
 		var vName_1 = "partSlot_" + i;
 		var vName_2 = "partSlot_" + (i + 1);
+		var vName_3 = "partSlot_" + (i + 2);
 		
 		shipEditor.children[vName_1] = new PartViewer();
-		shipEditor.children[vName_1].area = [ 554, 32 + 106 * i / 2, 96, 96 ];
-		
-		shipEditor.children[vName_1].onmousein = function ( x, y ) {
-			if (this.part)
-				shipEditor.children.info.stats = this.part.stats;
-		}
+		shipEditor.children[vName_1].area = [ 448, 32 + 106 * i / 3, 96, 96 ];
+		shipEditor.children[vName_1].infoControl = shipEditor.children.info;
 		
 		shipEditor.children[vName_2] = new PartViewer();
-		shipEditor.children[vName_2].area = [ 660, 32 + 106 * i / 2, 96, 96 ];
+		shipEditor.children[vName_2].area = [ 554, 32 + 106 * i / 3, 96, 96 ];
+		shipEditor.children[vName_2].infoControl = shipEditor.children.info;
 		
-		shipEditor.children[vName_2].onmousein = function ( x, y ) {
-			if (this.part)			
-				shipEditor.children.info.stats = this.part.stats;
-		}
+		shipEditor.children[vName_3] = new PartViewer();
+		shipEditor.children[vName_3].area = [ 660, 32 + 106 * i / 3, 96, 96 ];
+		shipEditor.children[vName_3].infoControl = shipEditor.children.info;
 	}
 	
 	shipEditor.children.stateCheck = new CheckBoxList();
-	shipEditor.children.stateCheck.area = [ 300, 84, 188, 32 ];
+	shipEditor.children.stateCheck.area = [ 200, 434, 188, 32 ];
 	shipEditor.children.stateCheck.prints[0] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.moveTo ( 10, 0 ); ctx.lineTo ( -10, -10 ); ctx.lineTo ( -10, 10 ); ctx.fill(); }
 	shipEditor.children.stateCheck.prints[1] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.beginPath(); ctx.arc ( 0,0,10, 0, Math.PI * 2 ); ctx.fill(); }
 	shipEditor.children.stateCheck.prints[2] = function (ctx) { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(-10, -10, 20, 20); }
@@ -392,7 +393,7 @@ function initUI () {
 	}
 	
 	shipEditor.children.ok = new Label();
-	shipEditor.children.ok.area = [ 50, 534, 72, 32 ];
+	shipEditor.children.ok.area = [ 50, 434, 72, 32 ];
 	shipEditor.children.ok.content = "OK";
 	shipEditor.children.ok.onmousein = labelOnMouseIn;
 	shipEditor.children.ok.onmouseout = labelOnMouseOut;
@@ -407,9 +408,6 @@ function initUI () {
 		
 		window.onpartdrop = 0;
 	}
-	
-	shipEditor.children.info = new StatViewer();
-	shipEditor.children.info.area = [ 554, 488, 202, 80 ];
 	
 	currentUI = loading;
 }
