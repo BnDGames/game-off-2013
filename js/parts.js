@@ -287,7 +287,7 @@ function attachPart ( to, toIndex, what, whatIndex, force ) {
 			v1[n] = vSum ( v1[n], what.position );
 		}
 		
-		for (var n = 0; n < what.vertices.length; n++ ){
+		for (var n = 0; n < to.parent.parts[i].vertices.length; n++ ){
 			v2.push ( vCopy ( to.parent.parts[i].vertices[n] ) );
 			
 			if ( to.parent.parts[i].mirrorX ) v2[n][0] *= -1;
