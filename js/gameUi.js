@@ -137,6 +137,8 @@ function initUI () {
 	}
 	
 	hud.animate = function ( time ) {
+		if (pause) return;
+		
 		if (this.blinkingTextContent != "" && Date.now() - this.blinkingTextTime > 300){
 			if (this.blinkingTextTimes > 0.5){
 				this.blinkingText = !this.blinkingText;
@@ -263,6 +265,9 @@ function initUI () {
 		
 		inputBoundUnit = addUnitToScene(playerShip, gameScene);
 		inputBoundUnit.position = [ 500, 500 ];
+	
+		hud.overlayText = "";
+		hud.blinkingTextContent = "";
 	
 		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 5 / sceneScale, 3, colors_enemy );
 	}
