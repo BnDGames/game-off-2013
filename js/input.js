@@ -28,7 +28,7 @@ var inputBoundUnit = 0;
 
 //Function to apply input to bound unit
 function applyInput () {
-	if (inputBoundUnit && inputBoundUnit.loaded){
+	if (inputBoundUnit && inputBoundUnit.loaded && inputBoundUnit.health > 0){
 		var force = vRotate ( [ getStat ( inputBoundUnit, stat_engine ), 0 ], inputBoundUnit.angle );
 		var turn = getStat ( inputBoundUnit, stat_maneuvrability );
 		
