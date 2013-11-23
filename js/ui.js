@@ -58,10 +58,10 @@ function printAfterControl ( context, control, offset ) {
 	context.save();
 	context.translate ( offset[0], offset[1] );
 	
-	if (control.printAfter) control.printAfter ( context );
-	
 	for (c in control.children)
 		printAfterControl ( context, control.children[c], control.area );
+		
+	if (control.printAfter) control.printAfter ( context );
 	
 	context.restore();
 }
@@ -454,7 +454,7 @@ var PartViewer = function () {
 		if (this.part.r / (this.area[2] - this.corner) > 1) this.scale = (this.area[2] - this.corner) / this.part.r 
 		
 		if (this.rotate && this.part != window.draggedPart)
-			this.angle += 0.015;
+			this.angle += 0.03;
 	}
 	
 	//Onclick

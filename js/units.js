@@ -321,16 +321,12 @@ var Unit = function () {
 	//Attach part
 	this.attachPart = function ( partId, position ) {
 		var part_1 = getPart ( partId );
-		var part_2 = getPart ( partId );
 		
 		if (!part_1) return false;
 		if (part_1.anchors_minus.length == 0) return false;
 		
 		part_1.parent = this;
 		part_1.position = position;
-		
-		part_2.parent = this;
-		part_2.position = position;
 		
 		var anchorPart = 0;
 		var anchorPlus = -1, anchorMinus = 0;
@@ -366,26 +362,10 @@ var Unit = function () {
 		
 		
 		var attach1 = attachPart ( anchorPart, anchorPlus, part_1, anchorMinus );
-		var attach2 = false;
-		
-		if ( anchorPart.anchors_plus [ anchorPlus ] [5] != -1 ){
-			var target = anchorPart.anchors_plus [ anchorPlus ] [5];
-			var symAnchorPart;
-			
-			if ( target[0] == 0 ) symAnchorPart = anchorPart;
-			else symAnchorPart = anchorPart.parent.getPart(anchorPart.symmetric);
-			
-			if (symAnchorPart){
-				attach2 = attachPart ( symAnchorPart, target[1], part_2, anchorMinus, attach1 );
-				
-				part_1.symmetric = part_2.uid;
-				part_2.symmetric = part_1.uid;
-			}
-		}
 		
 		this.calcStats();
 		
-		return attach1 || attach2;
+		return attach1;
 	}
 	
 	this.getPart = function ( uid ){

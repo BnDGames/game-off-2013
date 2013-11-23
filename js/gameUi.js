@@ -291,7 +291,37 @@ function initUI () {
 		
 		window.onpartdrop = function ( part, position ) {
 			if ( position[0] > shipEditor.shipArea[0] && position[1] > shipEditor.shipArea[1] && position[0] < shipEditor.shipArea[0] + shipEditor.shipArea[2] && position[1] < shipEditor.shipArea[1] + shipEditor.shipArea[3]){
-				playerShip.attachPart ( part.id, vSubt ( position, [shipEditor.shipArea[0] + shipEditor.shipArea[2] / 2, shipEditor.shipArea[1] + shipEditor.shipArea[3] / 2] ) )
+				for ( var i = 0; i < playerShip.parts.length; i++ ){
+					for ( var l = 0; l < playerShip.parts[i].anchors_plus.length; l++ ){
+						var anchor = playerShip.parts[i].anchors_plus[l];
+						
+						if (!anchor.attachedPart || !anchor.attachedPart[playerShip.status] || anchor.attachedPart[playerShip.status] < 0){
+							var aPoint = vCopy(anchor);
+							var partAngle = playerShip.parts[i].angle;
+						
+							if (playerShip.parts[i].mirrorX){ partAngle = Math.PI - partAngle;}
+							if (playerShip.parts[i].mirrorY){ partAngle = -partAngle;}
+						
+							aPoint = vRotate ( aPoint, playerShip.parts[i].angle );
+						
+							if (playerShip.parts[i].mirrorX){ aPoint[0] *= -1; }
+							if (playerShip.parts[i].mirrorY){ aPoint[1] *= -1; }
+						
+							aPoint = vSum ( aPoint, playerShip.parts[i].position );
+						
+							aPoint = vSum ( aPoint, [shipEditor.shipArea[0] + shipEditor.shipArea[2] / 2, shipEditor.shipArea[1] + shipEditor.shipArea[3] / 2] );
+						
+							if (vModule ( vSubt ( vSum ( window.draggedPart.position, window.draggedSourcePos ), aPoint ) ) < 8){
+								var result = attachPart ( playerShip.parts[i], l, getPart ( window.draggedPart.id ), 0 );
+								
+								if (result.error && result.error == "occupied"){
+								}
+								
+								playerShip.calcStats();
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -318,7 +348,49 @@ function initUI () {
 		context.stroke();
 		context.lineWidth = 1;
 		
-		drawUnit ( context, playerShip, [this.shipArea[0] + this.shipArea[2] / 2, this.shipArea[1] + this.shipArea[3] / 2] );
+		drawUnit ( context, playerShip, [this.shipArea[0] + this.shipArea[2] / 2, this.shipArea[1] + this.shipArea[3] / 2] );		
+	}
+	
+	shipEditor.printAfter = function (context){
+		if (window.draggedPart){
+			for (var i = 0; i < playerShip.parts.length; i++){
+				for (var l = 0; l < playerShip.parts[i].anchors_plus.length; l++){
+					var anchor = playerShip.parts[i].anchors_plus[l];
+					
+					if (!anchor.attachedPart || !anchor.attachedPart[playerShip.status] || anchor.attachedPart[playerShip.status] < 0){
+						var aPoint = vCopy(anchor);
+						var partAngle = playerShip.parts[i].angle;
+						
+						if (playerShip.parts[i].mirrorX){ partAngle = Math.PI - partAngle;}
+						if (playerShip.parts[i].mirrorY){ partAngle = -partAngle;}
+						
+						aPoint = vRotate ( aPoint, playerShip.parts[i].angle );
+						
+						if (playerShip.parts[i].mirrorX){ aPoint[0] *= -1; }
+						if (playerShip.parts[i].mirrorY){ aPoint[1] *= -1; }
+						
+						aPoint = vSum ( aPoint, playerShip.parts[i].position );
+						
+						aPoint = vSum ( aPoint, [this.shipArea[0] + this.shipArea[2] / 2, this.shipArea[1] + this.shipArea[3] / 2] );
+						
+						context.globalAlpha = 0.5;
+						
+						if (vModule ( vSubt ( vSum ( window.draggedPart.position, window.draggedSourcePos ), aPoint ) ) < 8) context.fillStyle = colors_enemy;
+						else context.fillStyle = colors_player;
+						
+						context.beginPath();
+						context.arc ( aPoint[0], aPoint[1], 8, 0, 2 * Math.PI );
+						context.fill();						
+						context.globalAlpha = 1;
+						
+						context.strokeStyle = "#FFFFFF";
+						context.lineWidth = 2;
+						context.stroke();
+						context.lineWidth = 1;
+					}
+				}
+			}
+		}
 	}
 	
 	shipEditor.onmouseup = function (mX, mY){
