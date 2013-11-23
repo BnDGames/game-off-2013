@@ -219,8 +219,14 @@ function movePart ( part, time ) {
 function attachPart ( to, toIndex, what, whatIndex, force ) {
 	if ( to.anchors_plus[toIndex].attachedPart && to.anchors_plus[toIndex].attachedPart[to.parent.status] != undefined && to.anchors_plus[toIndex].attachedPart[to.parent.status] >= 0 ){
 		console.warn("ATTACH REFUSED: anchor already in use (" + to.anchors_plus[toIndex].attachedPart[to.parent.status] + ")");
-		return;
+		return false;
 	};
+	
+	if ( to.anchors_plus[toIndex][6] > 0 && to.anchors_plus[toIndex][6] < what.anchors_minus[whatIndex][2] ) {
+		console.warn("ATTACH REFUSED: part too big");
+		return false;
+	}
+	
 	
 	if ( to.anchors_plus[toIndex].attachedPart == undefined ){
 		to.anchors_plus[toIndex].attachedPart = new Object();
@@ -232,18 +238,18 @@ function attachPart ( to, toIndex, what, whatIndex, force ) {
 		what.anchors_minus[whatIndex].attachedAnchor = new Object();
 	}
 	
-	var originalMX = what.mirrorX;
-	var originalMY = what.mirrorY;
-	var originalAngle = what.angle;
-	
 	what.mirrorX = to.anchors_plus [ toIndex ] [3];
 	what.mirrorY = to.anchors_plus [ toIndex ] [4];	
 	what.angle =   to.anchors_plus [ toIndex ] [2] * Math.PI;	
 	
+	var toAngle = to.angle;
+	if (to.mirrorX) toAngle = Math.PI - toAngle;
+	if (to.mirrorY) toAngle = -toAngle;
+		
+	what.angle += toAngle;
+	
 	if (what.mirrorX) what.angle = Math.PI - what.angle;
 	if (what.mirrorY) what.angle = -what.angle;
-	
-	what.angle += to.angle;
 
 	var plus = to.anchors_plus [ toIndex ];
 	plus = vRotate ( plus, to.angle );
@@ -254,19 +260,48 @@ function attachPart ( to, toIndex, what, whatIndex, force ) {
 	var minus = what.anchors_minus [ whatIndex ];
 	minus = vRotate ( minus, what.angle );
 	if (what.mirrorX) minus[0] *= -1; if (what.mirrorY) minus[1] *= -1;
-	minus = vSum (minus, what.position);	
+	minus = vSum (minus, what.position);
 	
 	var dist = vSubt ( plus, minus );
 	
 	if ( vModule(dist) > 50 && !force){
-		what.mirrorX = originalMX;
-		what.mirrorY = originalMY;
-		what.angle = originalAngle;
-		
 		return false;
 	}
 	
 	what.position = vSum ( what.position, dist );
+	
+	//Checks for possible collisions with other parts
+	for (var i = 0; i < to.parent.parts.length; i++){
+		if (to.parent.parts[i] == to) continue;
+		
+		var v1 = new Array();
+		var v2 = new Array();
+		
+		for (var n = 0; n < what.vertices.length; n++ ){
+			v1.push ( vCopy ( what.vertices[n] ) );
+			
+			if ( what.mirrorX ) v1[n][0] *= -1;
+			if ( what.mirrorY ) v1[n][1] *= -1;
+			
+			v1[n] = vRotate ( v1[n], what.angle );
+			v1[n] = vSum ( v1[n], what.position );
+		}
+		
+		for (var n = 0; n < what.vertices.length; n++ ){
+			v2.push ( vCopy ( to.parent.parts[i].vertices[n] ) );
+			
+			if ( to.parent.parts[i].mirrorX ) v2[n][0] *= -1;
+			if ( to.parent.parts[i].mirrorY ) v2[n][1] *= -1;
+			
+			v2[n] = vRotate ( v2[n], to.parent.parts[i].angle );
+			v2[n] = vSum ( v2[n], to.parent.parts[i].position );
+		}
+		
+		if ( polyCollide ( v1, v2 ) ) {
+			console.warn("ATTACH REFUSED: another part is occupying space (" + to.parent.parts[i].uid + ")");		
+			return false;
+		}
+	}
 	
 	if (to.attachedStatus) to.parent["parts_" + to.attachedStatus].push ( what );
 	else to.parent["parts_" + to.parent.status].push ( what );
@@ -279,6 +314,7 @@ function attachPart ( to, toIndex, what, whatIndex, force ) {
 	
 	what.attachedStatus = to.parent.status;
 	
+	console.log("ATTACH SUCCESSFUL (" + what.uid + ")");
 	return true;
 }
 

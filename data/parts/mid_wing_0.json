@@ -19,7 +19,7 @@
 	],
 	
 	"anchors_minus": [
-		[0,-25]
+		[0,-25, 30]
 	],
 	
 	"allowMiddle": false,
