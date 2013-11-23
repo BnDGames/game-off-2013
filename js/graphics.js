@@ -8,6 +8,7 @@
 //Canvas and drawing context for the game
 var canvas, context;
 var minimapCanvas, minimapContext;
+var statsCanvas, statsContext;
 
 var sceneScale = 0.75;
 
@@ -16,8 +17,11 @@ function centerCanvas () {
 	canvas.style.left = (window.innerWidth - canvas.width) / 2 + "px";
 	canvas.style.top = (window.innerHeight - canvas.height) / 2 + "px";
 	
+	statsCanvas.style.left = (window.innerWidth - canvas.width) / 2 - minimapCanvas.width - 16 + "px";
+	statsCanvas.style.top = (window.innerHeight + canvas.height) / 2 - statsCanvas.height - 16 + "px";
+	
 	minimapCanvas.style.left = (window.innerWidth - canvas.width) / 2 - minimapCanvas.width - 16 + "px";
-	minimapCanvas.style.top = (window.innerHeight - canvas.height) / 2 + 60 + "px";
+	minimapCanvas.style.top = (window.innerHeight + canvas.height) / 2 - statsCanvas.height - minimapCanvas.height - 32 + "px";
 }
 
 //Function to set fill style according to settings array
@@ -86,7 +90,11 @@ function graphicsSetup () {
 	minimapCanvas = document.getElementById("minimapCanvas");
 	minimapContext = minimapCanvas.getContext("2d");
 	
+	statsCanvas = document.getElementById("statsCanvas");
+	statsContext = statsCanvas.getContext("2d");
+	
 	$("#minimapCanvas").hide();
+	$("#statsCanvas").hide();
 	
 	context.lineCap = "round";
 	context.lineJoin = "round";
@@ -312,6 +320,37 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 	}
 }
 
+//Function to draw stats
+function drawStats ( unit ) {
+	$("#statsCanvas").fadeIn(400, "swing");
+	
+	statsContext.fillStyle = statsCanvas.style.backgroundColor;
+	statsContext.fillRect ( 0, 0, statsCanvas.width, statsCanvas.height );
+	
+	statsContext.font = "20px League Gothic";
+	statsContext.textBaseline = "top";
+	statsContext.fillStyle = "#FFFFFF";
+	
+	var text = [
+		["HP", Math.ceil(unit.health) + "/" + unit.maxHealth],
+		["ARMOR", unit.armor],
+		["MASS", unit.mass],
+		["ENGINE", getStat ( unit, stat_engine )],
+		["SPEED", Math.round(unit.maxSpeed)]
+	];
+	
+	var y = 10;
+	for ( var i = 0; i < text.length; i++ ){
+		statsContext.textAlign = "left";
+		statsContext.fillText ( text[i][0], 10, y );
+		
+		statsContext.textAlign = "right";
+		statsContext.fillText ( text[i][1], statsCanvas.width - 10, y );
+		
+		y += 24;
+	}
+}
+
 //Function to draw the current game state
 function draw () {
 	context.fillStyle = canvas.style.backgroundColor;
@@ -330,8 +369,9 @@ function draw () {
 		printAfterControl ( context, currentUI, [0,0] );
 	}
 	
-	if (state_current == state_shipedit){
-	}
+	if (state_current != state_shipedit && state_current != state_game)
+		$("#statsCanvas").fadeOut(400, "swing");
+	else drawStats ( playerShip );
 	
 	context.beginPath();
 	context.rect ( 0, 0, canvas.width, canvas.height );

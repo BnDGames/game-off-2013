@@ -13,3 +13,7 @@ var game_enableRecoil = false;
 //Destruction speed
 //The module speed the individual parts gain when the unit gets destroyed
 var fx_destructionSpeed = 1;
+
+//Damping factors
+var phys_dampingTr = 0.45;
+var phys_dampingRot = 1500;
