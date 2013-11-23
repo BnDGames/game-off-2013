@@ -1,0 +1,28 @@
+{
+	"id": "mid_engine_0",
+	"cls": 2,
+	
+	"info": [
+		"engine mk1",
+		"the standard engine for middle ships"
+	],
+
+	"vertices":	[
+					[ 15, -15 ],
+					[ 10, 15 ],
+					[ -10, 15 ],
+					[ -15, -15 ]
+				],
+				
+	"anchors_minus": [
+		[0, -10, 30]
+	],
+				
+	"stats" : [ 0, 0, 2, 7.5, 250 ],
+	
+	"fill": "#505050",
+	
+	"modifiers": [
+                { "which": 0, "draw": ["rect", -6, 20, 12, 40, [ "gradient", 0, 35, "#E4EEF0", "#000000" ] ] }
+        ]
+}
