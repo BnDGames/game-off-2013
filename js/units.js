@@ -58,7 +58,6 @@ var Unit = function () {
 	this.health = 1;
 	this.maxHealth = 1;
 	this.armor = 1;
-	this.maxArmor = 1;
 	
 	this.maxSpeed = 1;
 
@@ -208,6 +207,8 @@ var Unit = function () {
 		//Calculates max speed
 		if ( this.parent )
 			this.maxSpeed = getStat ( this, stat_engine ) / this.parent.dTr;
+			
+		else this.maxSpeed = getStat ( this, stat_engine ) / phys_dampingTr;
 	}
 	
 	//Function to damage the unit
