@@ -415,8 +415,8 @@ var PartViewer = function () {
 		if (this.part != 0){
 			context.save();
 			
-			context.scale (this.scale, this.scale);
-			context.translate((this.area[2] / 2 + this.area[0]) / this.scale, (this.area[3] / 2 + this.area[1]) / this.scale);
+			if (this.part != window.draggedPart) context.scale (this.scale, this.scale);
+			context.translate((this.area[2] / 2 + this.area[0]) / (this.part == window.draggedPart ? 1 : this.scale), (this.area[3] / 2 + this.area[1]) / (this.part == window.draggedPart ? 1 : this.scale));
 			if (this.part != window.draggedPart) context.rotate(this.angle);
 			
 			drawPart ( context, this.part, [0,0], [false], [colors_player], true );
@@ -451,6 +451,8 @@ var PartViewer = function () {
 	
 	//Animate
 	this.animate = function ( time ){
+		if (this.part.r / (this.area[2] - this.corner) > 1) this.scale = (this.area[2] - this.corner) / this.part.r 
+		
 		if (this.rotate && this.part != window.draggedPart)
 			this.angle += 0.015;
 	}
@@ -465,7 +467,7 @@ var PartViewer = function () {
 		
 		window.onmouseup = function () {
 			if (this.onpartdrop)
-				this.onpartdrop ( this.draggedPart, vSum(vMult(this.draggedPart.position, 1 / this.draggedSource.scale), this.draggedSourcePos) );
+				this.onpartdrop ( this.draggedPart, vSum(this.draggedPart.position, this.draggedSourcePos) );
 				
 			this.onmouseup = 0;
 			this.onmousemove = 0;
@@ -482,7 +484,7 @@ var PartViewer = function () {
 			var offset = document.getElementById("gameCanvas").getBoundingClientRect();
 			var point = [event.clientX - offset.left, event.clientY - offset.top];
 			
-			point = vMult ( vSubt ( point, this.draggedSourcePos ), 1 / this.draggedSource.scale );
+			point = vSubt ( point, this.draggedSourcePos );
 			
 			this.draggedPart.position = point.slice(0);
 		}

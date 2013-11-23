@@ -74,6 +74,8 @@ var Part = function () {
 	this.mass = 1;
 	this.inertia = 1;
 	
+	this.r = 1;
+	
 	this.target = [0,0];
 	this.moveToTarget = false;
 }
@@ -109,6 +111,10 @@ function loadParts () {
 									function ( d ) {
 										d.mass = d.stats[stat_mass];
 										d.inertia = polyInertia ( d.vertices, d.mass );
+										
+										d.r = 0;
+										for (var i = 0; i < d.vertices.length; i++)
+											if (vModule(d.vertices[i]) > d.r) d.r = vModule(d.vertices[i]);
 										
 										if (d.angle != undefined)
 											d.angle *= Math.PI;
