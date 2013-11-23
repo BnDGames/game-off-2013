@@ -328,9 +328,10 @@ function attachPart ( to, toIndex, what, whatIndex, force ) {
 function detatchPart ( part ) {	
 	if ( part.symmetric >= 0 ){
 		var p = part.parent.getPart(part.symmetric);
-		p.symmetric = -1;
-		
-		detatchPart ( p );
+		if (p){
+			p.symmetric = -1;
+			detatchPart ( p );
+		}
 		
 		part.symmetric = -1;
 	}

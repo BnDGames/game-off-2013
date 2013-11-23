@@ -4,7 +4,7 @@
 	
 	"info": [
 		"wing mk1",
-		"the basic wing for light ships"
+		"the basic wing for light ships - enhances maneuvrability"
 	],
 	
 	"vertices": [
@@ -24,7 +24,7 @@
 	
 	"allowMiddle": false,
 	
-	"stats": [ 0, 0.1, 5, 0, 0 ],
+	"stats": [ 0, 0.1, 5, 0, 100 ],
 	
 	"fill": "#A0A0A0",
 	
