@@ -294,6 +294,8 @@ var Unit = function () {
 	
 	//Reset function
 	this.reset = function () {
+		this.changeParts ( "heavy", true );
+		this.changeParts ( "mid", true );
 		this.changeParts ( "light", true );
 		this.health = this.maxHealth;
 		this.calcStats();
