@@ -1,9 +1,10 @@
 [
-	"data/parts/base_0.json",	
-	"data/parts/generic_0.json",	
-	"data/parts/light_wing_0.json",	
-	"data/parts/light_engine_0.json",	
-	"data/parts/light_weapon_0.json",	
-	"data/parts/mid_weapon_0.json",
-	"data/parts/heavy_wing_0.json"
+	"data/parts/base_0.json",
+	
+	"data/parts/light_wing_0.json",
+	"data/parts/light_engine_0.json",
+	"data/parts/light_machinegun_0.json",
+	
+	"data/parts/mid_generic_0.json",
+	"data/parts/mid_cannon_0.json"
 ]

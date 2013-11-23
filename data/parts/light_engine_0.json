@@ -1,6 +1,11 @@
 {
 	"id": "light_engine_0",
 	"cls": 1,
+	
+	"info": [
+		"engine mk1",
+		"the standard engine for light ships"
+	],
 
 	"vertices":	[
 					[ 15, -15 ],

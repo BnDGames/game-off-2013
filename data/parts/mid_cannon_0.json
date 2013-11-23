@@ -1,13 +1,22 @@
 {
-	"id": "mid_weapon_0",
+	"id": "mid_cannon_0",
 	"cls": 2,
+	
+	"info": [
+		"cannon mk1",
+		"the basic medium cannon - average firerate and average damage"
+	],
 
 	"vertices":	[
-					[ 20, 5 ],
-					[ -20, 5 ],
-					[ -20, -5 ],
-					[  20, -5 ]
+					[ 7, 10 ],
+					[ 7, -10 ],
+					[ -7, -10 ],
+					[ -7, 10 ]
 				],
+				
+	"anchors_minus": [
+		[0,-10]
+	],
 				
 	"stats" : [ 0, 0, 2.5, 0, 0 ],
 	
@@ -20,8 +29,8 @@
 			"projectiles": [
 				{
 					"range": 500,
-					"position": [ 24, 0 ],
-					"speed": [ 10, 0 ],
+					"position": [ 0, 14 ],
+					"speed": [ 0, 10 ],
 					"mass": 5,
 
 					"draw": [
