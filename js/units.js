@@ -618,8 +618,10 @@ function ai ( unit, target ) {
 		var dist = vSubt ( target.position, unit.position );
 		var dAngle = vAngle(dist);
 	
-		var turn = getStat ( unit, stat_maneuvrability );
+		var turn = getStat ( unit, stat_maneuvrability ) * phys_manCoefficient;
 		var force = getStat ( unit, stat_engine );
+	
+		if (turn / unit.inertia > phys_optimalMomentum) turn = phys_optimalMomentum * unit.inertia;
 	
 		var angle = unit.angle - dAngle;
 	

@@ -30,7 +30,9 @@ var inputBoundUnit = 0;
 function applyInput () {
 	if (inputBoundUnit && inputBoundUnit.loaded && inputBoundUnit.health > 0){
 		var force = vRotate ( [ getStat ( inputBoundUnit, stat_engine ), 0 ], inputBoundUnit.angle );
-		var turn = getStat ( inputBoundUnit, stat_maneuvrability );
+		var turn = getStat ( inputBoundUnit, stat_maneuvrability ) * phys_manCoefficient;
+		
+		if (turn / inputBoundUnit.inertia > phys_optimalMomentum) turn = phys_optimalMomentum * inputBoundUnit.inertia;
 		
 		if (keyStates[0]) inputBoundUnit.applyForce(inputBoundUnit.position, force);
 		else if (keyStates[2]) inputBoundUnit.applyForce(inputBoundUnit.position, vMult(force, -1))
