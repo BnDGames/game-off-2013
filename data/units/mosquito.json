@@ -75,54 +75,6 @@
    ]
   },
   {
-   "source": "light_wing_0",
-   "translate": [
-    0,
-    55.000000323349866
-   ],
-   "angle": 0,
-   "mirrorX": 0,
-   "mirrorY": 0,
-   "uid": 87,
-   "symmetric": 88,
-   "attachedStatus": "light",
-   "anchors_plus": [],
-   "anchors_minus": [
-    {
-     "attachedPart": {
-      "light": 0
-     },
-     "attachedAnchor": {
-      "light": 1
-     }
-    }
-   ]
-  },
-  {
-   "source": "light_wing_0",
-   "translate": [
-    0,
-    -55.000000323349866
-   ],
-   "angle": 0,
-   "mirrorX": 0,
-   "mirrorY": 1,
-   "uid": 88,
-   "symmetric": 87,
-   "attachedStatus": "light",
-   "anchors_plus": [],
-   "anchors_minus": [
-    {
-     "attachedPart": {
-      "light": 0
-     },
-     "attachedAnchor": {
-      "light": 0
-     }
-    }
-   ]
-  },
-  {
    "source": "light_machinegun_0",
    "translate": [
     40,

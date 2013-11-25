@@ -47,7 +47,7 @@ function loop () {
 			}
 			
 			else if (gameScene.units.length == 1 && hud.blinkingTextContent == ""){
-				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, 3, colors_enemy ); } ); } );
+				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, colors_enemy ); } ); } );
 			}
 		}
 	}

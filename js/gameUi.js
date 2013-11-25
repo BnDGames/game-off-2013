@@ -272,7 +272,7 @@ function initUI () {
 		hud.overlayText = "";
 		hud.blinkingTextContent = "";
 	
-		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, 1, colors_enemy );
+		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, colors_enemy );
 	}
 	
 	menu.children.editship = new Label();
