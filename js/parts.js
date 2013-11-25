@@ -246,36 +246,43 @@ function attachPart ( to, toIndex, what, whatIndex, force ) {
 		what.anchors_minus[whatIndex].attachedAnchor = new Object();
 	}
 	
-	what.mirrorX = to.anchors_plus [ toIndex ] [3];
-	what.mirrorY = to.anchors_plus [ toIndex ] [4];	
-	what.angle =   to.anchors_plus [ toIndex ] [2] * Math.PI;
+	var plus = to.anchors_plus[toIndex];
+	var minus = what.anchors_minus[whatIndex];
+	
+	what.angle = plus[2] * Math.PI / 2;
+	what.mirrorX = plus[3];
+	what.mirrorY = plus[4];
+	
+	var wAngle = what.angle;
+	if (what.mirrorX) wAngle = Math.PI - wAngle;
+	if (what.mirrorY) wAngle = -wAngle;
+	minus = vRotate ( minus, wAngle );
+	if (what.mirrorX) minus[0] *= -1;
+	if (what.mirrorY) minus[1] *= -1;
+	
+	what.position = vSum ( what.position, vSubt ( plus, minus ) );
+	
+	what.position = vRotateC ( what.position, to.angle, [0,0] );
+	what.angle += to.angle;
+	
+	if ((to.angle * 2 / Math.PI) % 2 == 0){
+		what.mirrorX ^= to.mirrorX;
+		what.mirrorY ^= to.mirrorY;
+	}
+	
+	else {
+		var swap = what.mirrorX;
+		what.mirrorX = what.mirrorY;
+		what.mirrorY = swap;
 
-	if (to.mirrorX) what.angle = Math.PI - what.angle;
-	if (to.mirrorY) what.angle = -what.angle;
+		what.mirrorX ^= to.mirrorX;
+		what.mirrorY ^= to.mirrorY;
+	}
 	
-	var toAngle = to.angle;
-	if (to.mirrorX) toAngle = Math.PI - toAngle;
-	if (to.mirrorY) toAngle = -toAngle;
-		
-	what.angle += toAngle;
+	if (to.mirrorX) what.position[0] *= -1;
+	if (to.mirrorY) what.position[1] *= -1;
 	
-	if (what.mirrorX) what.angle = Math.PI - what.angle;
-	if (what.mirrorY) what.angle = -what.angle;
-
-	var plus = to.anchors_plus [ toIndex ];
-	plus = vRotate ( plus, to.angle );
-	if (to.mirrorX){ plus[0] *= -1; }
-	if (to.mirrorY){ plus[1] *= -1; }
-	plus = vSum (plus, to.position);
-	
-	var minus = what.anchors_minus [ whatIndex ];
-	minus = vRotate ( minus, what.angle );
-	if (what.mirrorX) minus[0] *= -1; if (what.mirrorY) minus[1] *= -1;
-	minus = vSum (minus, what.position);
-	
-	var dist = vSubt ( plus, minus );
-	
-	what.position = vSum ( what.position, dist );
+	what.position = vSum ( what.position, to.position );
 	
 	//Checks for possible collisions with other parts
 	for (var i = 0; i < to.parent.parts.length; i++){

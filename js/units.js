@@ -318,56 +318,6 @@ var Unit = function () {
 		this.position = [0,0];
 	}
 	
-	//Attach part
-	this.attachPart = function ( partId, position ) {
-		var part_1 = getPart ( partId );
-		
-		if (!part_1) return false;
-		if (part_1.anchors_minus.length == 0) return false;
-		
-		part_1.parent = this;
-		part_1.position = position;
-		
-		var anchorPart = 0;
-		var anchorPlus = -1, anchorMinus = 0;
-		var anchorDist = [0,0];
-		
-		for ( var i = 0; i < this.parts.length; i++ ) {			
-			for ( var j = 0; j < this.parts[i].anchors_plus.length; j++ ){
-				var aPlus = vRotate ( this.parts[i].anchors_plus[j], this.parts[i].angle );
-				
-				if (this.parts[i].mirrorX) aPlus[0] *= -1;
-				if (this.parts[i].mirrorY) aPlus[1] *= -1;
-				
-				aPlus = vSum ( aPlus, this.parts[i].position );
-				
-				for (var l = 2; l < this.parts[i].anchors_plus[j].length; l++)
-					aPlus[l] = this.parts[i].anchors_plus[j][l];
-				
-				for ( var l = 0; l < part_1.anchors_minus.length; l++ ) {
-					var aMinus = part_1.anchors_minus[l];
-					var v = vSum (part_1.position, aMinus);
-					var d = vSubt ( v, aPlus );
-				
-					if ( anchorPlus == -1 || vModule(d) < vModule(anchorDist) ){
-						anchorPart = this.parts[i];
-						anchorPlus = j;
-						anchorMinus = l;
-					
-						anchorDist = d.slice(0);
-					}
-				}
-			}
-		}
-		
-		
-		var attach1 = attachPart ( anchorPart, anchorPlus, part_1, anchorMinus );
-		
-		this.calcStats();
-		
-		return attach1;
-	}
-	
 	this.getPart = function ( uid ){
 		for (var i = 0; i < this.parts_static.length; i++)
 			if (this.parts_static[i].uid == uid) return this.parts_static[i];

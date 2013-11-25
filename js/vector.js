@@ -19,6 +19,7 @@ function vCross ( a, b ) { return -a[0] * b[1] + a[1] * b[0]; }
 function vCopy ( a ) { return [ a[0], a[1] ]; }
 
 function vRotate ( a, b ) { return [ a[0] * Math.cos ( b ) - a[1] * Math.sin ( b ), a[0] * Math.sin ( b ) + a[1] * Math.cos ( b ) ]; }
+function vRotateC ( a, b, c ) { return vSum ( vRotate ( vSubt ( a, c ), b ) , c ); }
 
 function vAngle ( a ) { return Math.atan2 ( a[1], a[0] ); }
 function vModule ( a ) { return Math.sqrt ( a[0] * a[0] + a[1] * a[1] ); }

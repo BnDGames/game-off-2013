@@ -318,6 +318,8 @@ function initUI () {
 								}
 								
 								playerShip.calcStats();
+								
+								return;
 							}
 						}
 					}
