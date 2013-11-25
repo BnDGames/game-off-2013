@@ -19,11 +19,11 @@ function setup () {
 	loadParts ();
 	loadUnits ();
 	
-	setInterval ( loop, 15 );
+	setInterval ( loop, 30 );
 	setInterval ( draw, 0 );
 }
 
-var speed = 1;
+var speed = 1.5;
 var pause = false;
 var gameoverOverlay = false;
 
@@ -47,7 +47,7 @@ function loop () {
 			}
 			
 			else if (gameScene.units.length == 1 && hud.blinkingTextContent == ""){
-				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 5 / sceneScale, 3, colors_enemy ); } ); } );
+				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, 3, colors_enemy ); } ); } );
 			}
 		}
 	}

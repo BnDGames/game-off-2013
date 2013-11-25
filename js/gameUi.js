@@ -61,7 +61,7 @@ function initUI () {
 	hud.children.pause.cornerFactor = 0.5;
 	hud.children.pause.onmousein = labelOnMouseIn;
 	hud.children.pause.onmouseout = labelOnMouseOut;
-	hud.children.pause.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	hud.children.pause.onmousedown = labelOnMouseDown;
 	hud.children.pause.onmouseup = function() {
 		if (inputBoundUnit.health <= 0){ this.innerColor = colors_buttonHover; return; }
 		
@@ -190,7 +190,7 @@ function initUI () {
 	hud.children.pausemenu.children.resume.fontStyle = "36px League Gothic";
 	hud.children.pausemenu.children.resume.onmousein = labelOnMouseIn;
 	hud.children.pausemenu.children.resume.onmouseout = labelOnMouseOut;
-	hud.children.pausemenu.children.resume.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	hud.children.pausemenu.children.resume.onmousedown = labelOnMouseDown;
 	hud.children.pausemenu.children.resume.onmouseup = function () {
 		this.innerColor = colors_buttonHover;
 		hud.children.pausemenu.visible = false;
@@ -206,7 +206,7 @@ function initUI () {
 	hud.children.pausemenu.children.quit.content = "QUIT";
 	hud.children.pausemenu.children.quit.onmousein = labelOnMouseIn;
 	hud.children.pausemenu.children.quit.onmouseout = labelOnMouseOut;
-	hud.children.pausemenu.children.quit.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	hud.children.pausemenu.children.quit.onmousedown = labelOnMouseDown;
 	hud.children.pausemenu.children.quit.onmouseup = function () {
 		this.innerColor = colors.buttonHover;
 		hud.children.pausemenu.visible = false;
@@ -236,10 +236,13 @@ function initUI () {
 	
 	menu = new Control();
 	
+	menu.print = function ( context ) {
+	}
+	
 	menu.children.title = new Label();
 	menu.children.title.area = [0, 60, 800, 72];
 	menu.children.title.fontStyle = "72px League Gothic";
-	menu.children.title.content = "THE UNNAMED BULLETHELL GAME";
+	menu.children.title.content = "SWAPSHOOTER  ARENA";
 	menu.children.title.printFrame = false;
 	
 	menu.children.subtitle = new Label();
@@ -253,7 +256,7 @@ function initUI () {
 	menu.children.play.fontStyle = "36px League Gothic";
 	menu.children.play.onmousein = labelOnMouseIn;
 	menu.children.play.onmouseout = labelOnMouseOut;
-	menu.children.play.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	menu.children.play.onmousedown = labelOnMouseDown;
 	menu.children.play.onmouseup = function () {
 		this.innerColor = colors_buttonHover;
 		state_current = state_game;
@@ -269,7 +272,7 @@ function initUI () {
 		hud.overlayText = "";
 		hud.blinkingTextContent = "";
 	
-		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 5 / sceneScale, 3, colors_enemy );
+		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, 1, colors_enemy );
 	}
 	
 	menu.children.editship = new Label();
@@ -277,7 +280,7 @@ function initUI () {
 	menu.children.editship.content = "EDIT SHIP";
 	menu.children.editship.onmousein = labelOnMouseIn;
 	menu.children.editship.onmouseout = labelOnMouseOut;
-	menu.children.editship.onmousedown = function () { this.innerColor = colors_buttonActive; }
+	menu.children.editship.onmousedown = labelOnMouseDown;
 	menu.children.editship.onmouseup = function () {
 		this.innerColor = colors_buttonHover;
 		
@@ -333,14 +336,26 @@ function initUI () {
 	menu.children.store.content = "STORE";
 	menu.children.store.onmousein = labelOnMouseIn;
 	menu.children.store.onmouseout = labelOnMouseOut;
+	menu.children.store.onmousedown = labelOnMouseDown;
+	
+	menu.children.settings = new Label();
+	menu.children.settings.area = [300, 400, 200, 32];
+	menu.children.settings.content = "SETTINGS";
+	menu.children.settings.onmousein = labelOnMouseIn;
+	menu.children.settings.onmouseout = labelOnMouseOut;
+	menu.children.settings.onmousedown = labelOnMouseDown;
+	
+	menu.children.credits = new Label();
+	menu.children.credits.area = [300, 450, 200, 32];
+	menu.children.credits.content = "CREDITS";
+	menu.children.credits.onmousein = labelOnMouseIn;
+	menu.children.credits.onmouseout = labelOnMouseOut;
+	menu.children.credits.onmousedown = labelOnMouseDown;
 	
 	shipEditor = new Control();
 	shipEditor.area = [0,0, canvas.width, canvas.height];
 	shipEditor.shipArea = [ 30, 100, 380, 350 ];
-	shipEditor.print = function (context) {
-		context.fillStyle = colors[0];
-		context.fillRect ( 0, 0, canvas.width, canvas.height );
-		
+	shipEditor.print = function (context) {		
 		context.fillStyle = "#000410";
 		context.beginPath();
 		context.rect ( this.shipArea[0], this.shipArea[1], this.shipArea[2], this.shipArea[3] );
@@ -488,6 +503,22 @@ function initUI () {
 		window.onpartdrop = 0;
 	}
 	
+	shipEditor.exportShip = function (id) {
+		var u = new Unit();
+		u.id = id;
+		
+		for ( var i = 0; i < playerShip.parts.length; i++ ){
+			u.parts_static.push ( playerShip.parts[i] );
+		}
+		
+		var json = unitToJSON(u);
+		
+		var a = document.createElement('a');
+		a.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json)));
+		a.setAttribute('download', id + ".json");
+		a.click();
+	}
+	
 	currentUI = loading;
 }
 
@@ -529,3 +560,4 @@ function uiCheckEvents ( event ) {
 //Label standard event functions
 function labelOnMouseIn () { this.innerColor = colors_buttonHover; }
 function labelOnMouseOut () { this.innerColor = colors_buttonStd; }
+function labelOnMouseDown () { this.innerColor = colors_buttonActive; }

@@ -107,7 +107,7 @@ function loadParts () {
 					partsCount = data.length;//Stores parts count (needed to know if all parts have been loaded)
 					
 					for (var i = 0; i < data.length; i++){
-						$.getJSON ( data[i],
+						$.getJSON ( data[i] + "?" + Date.now(),
 									function ( d ) {
 										d.mass = d.stats[stat_mass];
 										d.inertia = polyInertia ( d.vertices, d.mass );

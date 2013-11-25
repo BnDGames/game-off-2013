@@ -10,7 +10,7 @@ var canvas, context;
 var minimapCanvas, minimapContext;
 var statsCanvas, statsContext;
 
-var sceneScale = 0.75;
+var sceneScale = 0.5;
 
 //Function to center the canvas on screen
 function centerCanvas () {
@@ -199,9 +199,9 @@ function drawProjectile ( context, projectile, offset ) {
 
 //Function to draw a scene
 function drawScene ( context, scene, offset, grid, gridInfo ) {
-	if (grid != undefined && grid){
-		var oX = offset[0] % (gridInfo.squareSize);
-		var oY = offset[1] % (gridInfo.squareSize);
+	if (grid != undefined && grid){		
+		var oX = (offset[0] * sceneScale) % (gridInfo.squareSize);
+		var oY = (offset[1] * sceneScale) % (gridInfo.squareSize);
 				
 		for (var i = -gridInfo.squareSize * 2; i <= canvas.height + gridInfo.squareSize * 2; i += gridInfo.squareSize / gridInfo.divisions){
 			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) context.strokeStyle = "#202020";
@@ -223,6 +223,12 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 			context.stroke();
 		}
 	}
+	
+	var g = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 1, canvas.width / 2, canvas.height / 2, canvas.width * 0.5)
+	g.addColorStop ( 0, 'rgba(0,0,0,0)' );
+	g.addColorStop ( 1, 'rgba(0,0,0,0.5)' );
+	context.fillStyle = g;
+	context.fillRect ( 0,0,canvas.width, canvas.height);
 	
 	context.save();
 	context.scale ( sceneScale, sceneScale );
@@ -277,8 +283,8 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 	minimapContext.fillRect ( 0, 0, minimapCanvas.width, minimapCanvas.height );
 	
 	if (grid != undefined && grid){
-		var oX = ((-unit.position[0] * scale) + 4) % (gridInfo.squareSize);
-		var oY = ((-unit.position[1] * scale) + 4) % (gridInfo.squareSize);
+		var oX = ((-unit.position[0] * scale)) % (gridInfo.squareSize);
+		var oY = ((-unit.position[1] * scale)) % (gridInfo.squareSize);
 				
 		for (var i = -gridInfo.squareSize * 2; i <= minimapCanvas.height + gridInfo.squareSize * 2; i += gridInfo.squareSize / gridInfo.divisions){
 			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) minimapContext.strokeStyle = "#202020";
@@ -336,7 +342,8 @@ function drawStats ( unit ) {
 		["ARMOR", unit.armor],
 		["MASS", unit.mass],
 		["ENGINE", getStat ( unit, stat_engine )],
-		["SPEED", Math.round(unit.maxSpeed)]
+		["SPEED", Math.round(unit.maxSpeed)],
+		["ACCEL", Math.ceil( getStat (unit, stat_engine) / unit.mass * 100 )]
 	];
 	
 	var y = 10;

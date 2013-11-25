@@ -311,6 +311,9 @@ var Unit = function () {
 			this.parts[i].omega = 0;
 		}
 		
+		for (var i = 0; i < this.gfxModifiers.length; i++)
+			this.gfxModifiers[i] = 0;
+		
 		this.angle = 0;
 		this.speed = [0,0];
 		this.omega = 0;
@@ -333,6 +336,39 @@ var Unit = function () {
 			
 			
 		return undefined;
+	}
+	
+	//AI functions
+	this.fwd = function () {
+		var force = getStat ( this, stat_engine );
+		this.applyForce ( this.position, vRotate ( [force,0], this.angle ) );
+		
+		this.gfxModifiers [ gfxMod_engineOn ] = true;
+	}
+	
+	this.back = function () {
+		var force = getStat ( this, stat_engine );
+		this.applyForce ( this.position, vRotate ( [-force,0], this.angle ) );
+		
+		this.gfxModifiers [ gfxMod_engineOn ] = true;
+	}
+	
+	this.turnRight = function () {
+		var turn = getStat ( this, stat_maneuvrability ) * phys_manCoefficient;
+		if (turn / this.inertia > phys_optimalMomentum) turn = phys_optimalMomentum * this.inertia;
+		
+		this.applyMomentum ( turn );
+		
+		this.gfxModifiers [ gfxMod_engineOn ] = true;
+	}
+	
+	this.turnLeft = function () {
+		var turn = getStat ( this, stat_maneuvrability ) * phys_manCoefficient;
+		if (turn / this.inertia > phys_optimalMomentum) turn = phys_optimalMomentum * this.inertia;
+		
+		this.applyMomentum ( -turn );
+		
+		this.gfxModifiers [ gfxMod_engineOn ] = true;
 	}
 }
 
@@ -373,9 +409,9 @@ function loadUnitFromJSON ( data, unit ) {
 	}
 	
 	
-	if ( data.ai ) unit.aiFunction = eval ( data.ai );
+	if ( data.ai ) unit.aiFunction = eval ("function ai (target,angle) { " + data.ai + "}; ai");
 	
-	unit.scoreValue = data.scoreValue;
+	if ( data.scoreValue ) unit.scoreValue = data.scoreValue;
 	
 	unit.parts_current = unit.parts_light;
 	
@@ -542,7 +578,17 @@ function handleUnitCollision ( a, b, collision ) {
 
 //Function to control unit with AI
 function ai ( unit, target ) {
-	if (unit.aiFunction) unit.aiFunction ( target );
+	if (unit.aiFunction){
+		var dist = vSubt ( target.position, unit.position );
+		var dAngle = vAngle ( dist );
+		
+		var angle = unit.angle - dAngle;
+		
+		while (angle > Math.PI) angle -= Math.PI * 2;
+		while (angle < -Math.PI) angle += Math.PI * 2;
+		
+		unit.aiFunction ( target, angle );
+	}
 	
 	else {
 		if (unit.health <= 0 || target.health <= 0) { unit.gfxModifiers[gfxMod_engineOn] = false; return; }
