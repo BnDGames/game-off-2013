@@ -11,5 +11,6 @@
 	"data/parts/mid_cannon_0.json",
 	"data/parts/mid_shotgun_0.json",
 	
-	"data/parts/heavy_generic_0.json"
+	"data/parts/heavy_generic_0.json",
+	"data/parts/heavy_repair_0.json"
 ]

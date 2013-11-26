@@ -69,7 +69,7 @@ function sceneCheckProj ( scene ) {
 			var dist = vSubt ( scene.units[j].position, scene.projectiles[i].position );
 			if ( vModule ( dist ) > scene.units[j].r) continue;
 			
-			if (pointInUnit ( scene.projectiles[i].position, scene.units[j] ) ) {
+			if ( pointInUnit ( scene.projectiles[i].position, scene.units[j] ) ) {
 				scene.units[j].applyImpulse ( scene.projectiles[i].position, vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass ) );
 				scene.units[j].damage ( scene.projectiles[i].mass * (scene.units[j] == inputBoundUnit ? game_playerDamageFactor : 1) );
 				scene.projectiles[i].dead = true;
@@ -78,7 +78,6 @@ function sceneCheckProj ( scene ) {
 					hud.blinkRed ( 0.15 + scene.projectiles[i].mass / 10 );
 				
 				if (scene.units[j].health <= 0) scene.projectiles[i].owner.score += scene.units[j].scoreValue;
-				
 			}
 		}
 	}

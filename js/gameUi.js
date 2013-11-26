@@ -287,6 +287,7 @@ function initUI () {
 		resetScene ( gameScene );
 		
 		playerShip.reset();
+		playerShip.team = "player";
 		
 		inputBoundUnit = addUnitToScene(playerShip, gameScene);
 		inputBoundUnit.position = [ 500, 500 ];

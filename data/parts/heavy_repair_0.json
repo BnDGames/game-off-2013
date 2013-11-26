@@ -1,10 +1,10 @@
 {
-	"id":"heavy_generic_0",
+	"id":"heavy_repair_0",
 	"cls":3,
 	
 	"info": [
-		"metal block mk1",
-		"offers improved armor to heavy ships"
+		"repair module mk1",
+		"repairs your ship from damage taken"
 	],
 	
 	"vertices": [
@@ -30,9 +30,12 @@
 	
 	"fill":"#A0A0A0",
 	
-	"stats": [ 0, 0.75, 30, 0, 0 ],
+	"stats": [ 0, 0.1, 30, 0, 0, 0.001 ],
 	
 	"draw" : [
-		[ "rect", -20, -30, 40, 5, [ "plain", "#505050" ] ]
+		[ "rect", -20, -30, 40, 5, [ "plain", "#505050" ] ],
+		[ "circle", 0, 2.5, 15, [ "plain", "#FFFFFF" ] ],
+		[ "rect", -5, -7.5, 10, 20, [ "plain", "$0" ] ],
+		[ "rect", -10, -2.5, 20, 10, [ "plain", "$0" ] ]
 	]
 }

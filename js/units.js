@@ -199,7 +199,7 @@ var Unit = function () {
 		this.r = 0;
 		for ( var i = 0; i < this.parts.length; i++ ) {
 			for ( var l = 0; l < this.parts[i].vertices.length; l++ ) {
-				var v = vSum ( this.parts[i].position, this.parts[i].vertices[l] );
+				var v = vSum ( (this.parts[i].moveToTarget ? this.parts[i].target : this.parts[i].position), this.parts[i].vertices[l] );
 				var d = vModule ( v );
 				
 				if ( d > this.r ) this.r = d;

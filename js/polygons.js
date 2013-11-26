@@ -13,7 +13,7 @@
 //If the sum is 2PI, then the point is inside; else it is outside
 //(algorithm found on http://paulbourke.net/geometry/polygonmesh)
 function pointInsidePoly ( point, polygon ) {
-	var tot = 0;//Total angle
+	/*var tot = 0;//Total angle
 	
 	//Iterates through pairs of vertices
 	for (var i = 0; i < polygon.length; i++){		
@@ -26,7 +26,17 @@ function pointInsidePoly ( point, polygon ) {
 	}
 		
 	if (Math.abs(tot) < Math.PI) return false;
-	else return true;
+	else return true;*/
+	
+	var result = false;
+	
+	for ( var i = 0; i + 1 < polygon.length; i++ ){
+		if ( (polygon[i][1] > point[1]) != (polygon[i + 1][1] > point[1]) && (polygon[i][0] < point[0] || polygon[i + 1][0] < point[0]) ) result = !result;
+	}
+	
+	if ( (polygon[i][1] > point[1]) != (polygon[0][1] > point[1]) && (polygon[i][0] < point[0] || polygon[0][0] < point[0]) ) result = !result;
+	
+	return result;
 }
 
 //Function to check collision between two polygons

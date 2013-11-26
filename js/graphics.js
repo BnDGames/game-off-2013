@@ -332,7 +332,7 @@ function drawStats ( unit ) {
 	
 	var text = [
 		["HP", Math.ceil(unit.health / game_playerDamageFactor) + "/" + Math.ceil(unit.maxHealth / game_playerDamageFactor)],
-		["REGEN", Math.ceil ( getStat (unit, stat_regen) * 10 ) / 10],
+		["REGEN", Math.ceil ( getStat (unit, stat_regen) * 1000 ) / 10],
 		["",""],
 		["ARMOR", Math.ceil(unit.armor * 10) / 10],
 		["",""],
