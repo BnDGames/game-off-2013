@@ -28,7 +28,7 @@
 			"reload": 75,
 			"projectiles": [
 				{
-					"range": 600,
+					"range": 60,
 					"position": [ 0, 24 ],
 					"speed": [ 0, 10 ],
 					"mass": 1,

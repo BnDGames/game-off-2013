@@ -224,9 +224,9 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 		}
 	}
 	
-	var g = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 1, canvas.width / 2, canvas.height / 2, canvas.width * 0.5)
+	var g = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 250, canvas.width / 2, canvas.height / 2, canvas.width * 0.75)
 	g.addColorStop ( 0, 'rgba(0,0,0,0)' );
-	g.addColorStop ( 1, 'rgba(0,0,0,0.5)' );
+	g.addColorStop ( 1, 'rgba(0,0,0,0.8)' );
 	context.fillStyle = g;
 	context.fillRect ( 0,0,canvas.width, canvas.height);
 	
@@ -330,21 +330,33 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 function drawStats ( unit ) {
 	$("#statsCanvas").fadeIn(400, "swing");
 	
+	var text = [
+		["HP", Math.ceil(unit.health / game_playerDamageFactor) + "/" + Math.ceil(unit.maxHealth / game_playerDamageFactor)],
+		["REGEN", Math.ceil ( getStat (unit, stat_regen) * 10 ) / 10],
+		["",""],
+		["ARMOR", Math.ceil(unit.armor * 10) / 10],
+		["",""],
+		["MASS", Math.ceil(unit.mass * 10) / 10],
+		["",""],
+		["ENGINE", getStat ( unit, stat_engine )],
+		["SPEED", Math.round(unit.maxSpeed * 10) / 10],
+		["ACCEL", Math.ceil( getStat (unit, stat_engine) / unit.mass * 100 )]
+	];
+	
+	var h = 20;
+	for ( var i = 0; i < text.length; i++ ){
+		if (text[i][0] != "" || text[i][1] != "") h += 24;
+		else h += 10;
+	}
+	statsCanvas.height = h;
+	centerCanvas();
+
 	statsContext.fillStyle = statsCanvas.style.backgroundColor;
 	statsContext.fillRect ( 0, 0, statsCanvas.width, statsCanvas.height );
 	
 	statsContext.font = "20px League Gothic";
 	statsContext.textBaseline = "top";
 	statsContext.fillStyle = "#FFFFFF";
-	
-	var text = [
-		["HP", Math.ceil(unit.health) + "/" + unit.maxHealth],
-		["ARMOR", unit.armor],
-		["MASS", unit.mass],
-		["ENGINE", getStat ( unit, stat_engine )],
-		["SPEED", Math.round(unit.maxSpeed)],
-		["ACCEL", Math.ceil( getStat (unit, stat_engine) / unit.mass * 100 )]
-	];
 	
 	var y = 10;
 	for ( var i = 0; i < text.length; i++ ){
@@ -354,7 +366,8 @@ function drawStats ( unit ) {
 		statsContext.textAlign = "right";
 		statsContext.fillText ( text[i][1], statsCanvas.width - 10, y );
 		
-		y += 24;
+		if (text[i][0] != "" || text[i][1] != "") y += 24;
+		else y += 10;
 	}
 }
 

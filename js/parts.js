@@ -156,7 +156,9 @@ function getPart ( id ) {
 				result.border = parts[i].border;
 			
 			for ( var l = 0; l < stats_total; l++)
-				result.stats[l] = parts[i].stats[l];
+				if (parts[i].stats[l])
+					result.stats[l] = parts[i].stats[l];
+				else result.stats[l] = 0;
 			
 			if (parts[i].draw != undefined)	
 				for ( var l = 0; l < parts[i].draw.length; l++ ) 

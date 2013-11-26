@@ -503,9 +503,11 @@ function initUI () {
 		window.onpartdrop = 0;
 	}
 	
-	shipEditor.exportShip = function (id) {
+	shipEditor.exportShip = function (id, score, cls) {
 		var u = new Unit();
 		u.id = id;
+		u.scoreValue = score;
+		u.cls = cls;
 		
 		for ( var i = 0; i < playerShip.parts.length; i++ ){
 			u.parts_static.push ( playerShip.parts[i] );
@@ -514,7 +516,7 @@ function initUI () {
 		var json = unitToJSON(u);
 		
 		var a = document.createElement('a');
-		a.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json)));
+		a.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json, 0, " ")));
 		a.setAttribute('download', id + ".json");
 		a.click();
 	}

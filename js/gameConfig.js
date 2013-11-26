@@ -10,6 +10,9 @@
 //and projectile mass and speed
 var game_enableRecoil = false;
 
+//Player damage factor
+var game_playerDamageFactor = 0.2;
+
 //Destruction speed
 //The module speed the individual parts gain when the unit gets destroyed
 var fx_destructionSpeed = 1;
@@ -20,7 +23,7 @@ var phys_dampingRot = 1500;
 
 //Optimal momentum
 //Turn momentum won't get higher than this
-var phys_optimalMomentum = 0.009;
+var phys_optimalMomentum = 0.008;
 
 //Maneuvrability coefficient
-var phys_manCoefficient = 1;
+var phys_manCoefficient = 1.5;

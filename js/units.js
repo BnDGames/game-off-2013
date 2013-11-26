@@ -6,18 +6,19 @@
 //-----------------------------------------------------------------
 
 //Unit stat indexes
-const stat_health = 0;
-const stat_armor = 1;
-const stat_mass = 2;
-const stat_engine = 3;
-const stat_maneuvrability = 4;
+var stat_health = 0;
+var stat_armor = 1;
+var stat_mass = 2;
+var stat_engine = 3;
+var stat_maneuvrability = 4;
+var stat_regen = 5;
 
-const stats_total = 5;
+var stats_total = 6;
 
 //Unit graphical modifiers
-const gfxMod_engineOn = 0;
+var gfxMod_engineOn = 0;
 
-const gfxMod_total = 1;
+var gfxMod_total = 1;
 
 //Unit object
 var Unit = function () {
@@ -67,6 +68,7 @@ var Unit = function () {
 	this.score = 0;
 	
 	//Misc
+	this.cls = 0;
 	this.scoreValue = 0;//Score given when destroying
 	
 	//Unit graphics
@@ -134,7 +136,7 @@ var Unit = function () {
 						
 						var speedComponent = vDot ( this.speed, vSetModule (pS, 1 ) );
 						
-						projectile.speed = vSum ( speedComponent > 0 ? vSetModule ( this.speed, speedComponent ) : [0,0], pS );
+						projectile.speed = vSum ( speedComponent > 0 ? vSetModule ( pS, speedComponent ) : [0,0], pS );
 						projectile.range = action.projectiles[m].range;
 						projectile.mass = action.projectiles[m].mass;
 						
@@ -413,6 +415,8 @@ function loadUnitFromJSON ( data, unit ) {
 	
 	if ( data.scoreValue ) unit.scoreValue = data.scoreValue;
 	
+	if ( data.cls ) unit.cls = data.cls;
+	
 	unit.parts_current = unit.parts_light;
 	
 	unit.calcStats();
@@ -482,6 +486,9 @@ function moveUnit ( unit, time ) {
 		
 	if ( unit.health <= 0 ) unit.printOpacity -= 0.01;
 	if ( unit.printOpacity <= 0){ unit.dead = true; unit.printOpacity = 0; }
+	
+	if ( unit.health + getStat (unit, stat_regen) * time < unit.maxHealth ) unit.health += getStat (unit, stat_regen) * time;
+	else unit.health = unit.maxHealth;
 }
 
 //Function to get the value of a stat of an unit
@@ -489,7 +496,8 @@ function getStat ( unit, stat ) {
 	var result = 0;
 	
 	for ( var i = 0; i < unit.parts.length; i++ )
-		result += unit.parts[i].stats[stat];
+		if (unit.parts[i].stats.length > stat)
+			result += unit.parts[i].stats[stat];
 	
 	return result;
 }
@@ -502,16 +510,17 @@ function pointInUnit ( point, a ) {
 		for (var n = 0; n < a.parts[i].vertices.length; n++){
 			v1.push ( vCopy ( a.parts[i].vertices[n] ) );
 			
+			v1[n] = vRotate ( v1[n], a.parts[i].angle );
+			
 			if ( a.parts[i].mirrorX ) v1[n][0] *= -1;
 			if ( a.parts[i].mirrorY ) v1[n][1] *= -1;
-			
-			v1[n] = vRotate ( v1[n], a.parts[i].angle );
+		
 			v1[n] = vSum ( v1[n], a.parts[i].position );
 			v1[n] = vRotate ( v1[n], a.angle );
 			v1[n] = vSum ( v1[n], a.position );
 		}
 		
-		if (pointInsidePoly ( point, v1 ) ) return true;
+		if ( pointInsidePoly ( point, v1 ) ) return true;
 	}
 	
 	return false;
@@ -578,6 +587,13 @@ function handleUnitCollision ( a, b, collision ) {
 
 //Function to control unit with AI
 function ai ( unit, target ) {
+	if (unit.health <= 0) {
+		for (var i = 0; i < unit.gfxModifiers.length; i++)
+			unit.gfxModifiers[i] = false;
+			
+		return;
+	}
+	
 	if (unit.aiFunction){
 		var dist = vSubt ( target.position, unit.position );
 		var dAngle = vAngle ( dist );
@@ -629,6 +645,8 @@ function unitToJSON ( unit ) {
 	var result = new Object();
 	
 	result.id = unit.id;
+	result.scoreValue = unit.scoreValue;
+	result.cls = unit.cls;
 	
 	result.parts_static = new Array();
 	for (var i = 0; i < unit.parts_static.length; i++)

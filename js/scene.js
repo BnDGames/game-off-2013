@@ -71,7 +71,7 @@ function sceneCheckProj ( scene ) {
 			
 			if (pointInUnit ( scene.projectiles[i].position, scene.units[j] ) ) {
 				scene.units[j].applyImpulse ( scene.projectiles[i].position, vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass ) );
-				scene.units[j].damage ( scene.projectiles[i].mass );
+				scene.units[j].damage ( scene.projectiles[i].mass * (scene.units[j] == inputBoundUnit ? game_playerDamageFactor : 1) );
 				scene.projectiles[i].dead = true;
 				
 				if (scene.units[j].health <= 0) scene.projectiles[i].owner.score += scene.units[j].scoreValue;
@@ -109,18 +109,20 @@ function sceneCheckDead ( scene ) {
 //Function to spawn a wave in scene
 function spawnWave ( scene, unit, minDistance, maxDistance, color ) {
 	var count = Math.ceil(Math.random() * 5 + scene.wave + 1);
+	var cls = 1 + Math.floor(Math.random() * 2);	
 	
 	for ( var i = 0; i < count; i++ ) {
 		var index = Math.floor(Math.random() * units.length);
+		while ( units[index].cls != cls ) index = Math.floor ( Math.random() * units.length );
 		
 		var u = new Unit(); loadUnitFromJSON ( units[ index ], u );
 		addUnitToScene ( u, scene );
-		u.position = vSum ( unit.position, [Math.random() * maxDistance / 1.414, Math.random() * maxDistance / 1.414] );
+		u.position = vSum ( unit.position, [- maxDistance / 1.414 + Math.random() * maxDistance / 1.414 * 2, - maxDistance / 1.414 + Math.random() * maxDistance / 1.414 * 2] );
 		u.colors.push ( color );
 		
 		var d = vModule ( vSubt ( u.position, unit.position ) );
 		while ( d < minDistance ){
-			u.position = vSum ( unit.position, [Math.random() * maxDistance / 1.414, Math.random() * maxDistance / 1.414] );
+			u.position = vSum ( unit.position, [- maxDistance / 1.414 + Math.random() * maxDistance / 1.414 * 2, - maxDistance / 1.414 + Math.random() * maxDistance / 1.414 * 2] );
 			d = vModule ( vSubt ( u.position, unit.position ) )
 		}
 		

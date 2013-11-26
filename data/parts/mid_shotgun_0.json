@@ -1,0 +1,72 @@
+{
+	"id": "mid_shotgun_0",
+	"cls": 2,
+	
+	"info": [
+		"shotgun mk1",
+		"shoots many shots in different directions - short range"
+	],
+
+	"vertices":	[
+					[ 7, 10 ],
+					[ 7, -10 ],
+					[ -7, -10 ],
+					[ -7, 10 ]
+				],
+				
+	"anchors_minus": [
+		[0,-10, 14]
+	],
+				
+	"stats" : [ 0, 0, 2.5, 0, 0 ],
+	
+	"fill": "#505050",
+	
+	"actions": [
+		{
+			"type": "shoot",
+			"reload": 300,
+			"projectiles": [
+				
+				{
+					"range": 30,
+					"position": [ 0, 14 ],
+					"speed": [ 5, 8 ],
+					"mass": 3,
+
+					"draw": [
+						[ "rect", -10, -4, 10, 8, [ "gradient", 10, 0, "#000000", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 4, [ "plain", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 3, [ "plain", "#D0D0D0" ] ]
+					]
+				},
+				
+				{
+					"range": 30,
+					"position": [ 0, 14 ],
+					"speed": [ -5, 8 ],
+					"mass": 3,
+
+					"draw": [
+						[ "rect", -10, -4, 10, 8, [ "gradient", 10, 0, "#000000", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 4, [ "plain", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 3, [ "plain", "#D0D0D0" ] ]
+					]
+				},
+								
+				{
+					"range": 30,
+					"position": [ 0, 14 ],
+					"speed": [ 0, 10 ],
+					"mass": 3,
+
+					"draw": [
+						[ "rect", -10, -4, 10, 8, [ "gradient", 10, 0, "#000000", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 4, [ "plain", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 3, [ "plain", "#D0D0D0" ] ]
+					]
+				}
+			]
+		}
+	]
+}

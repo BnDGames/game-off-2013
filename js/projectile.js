@@ -38,7 +38,7 @@ var Projectile = function () {
 //Function to move a projectile
 function moveProjectile ( projectile, time ) {
 	projectile.position = vSum ( projectile.position, vMult ( projectile.speed, time ) );
-	projectile.distance += vModule ( projectile.speed ) * time;
+	projectile.distance += time;
 	
 	if (projectile.distance > projectile.range) projectile.dead = true;
 }
