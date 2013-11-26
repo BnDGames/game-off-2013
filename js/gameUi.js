@@ -73,6 +73,13 @@ function initUI () {
 	}
 	
 	hud.print = function ( context ) {
+		if (this.blinkingRed){
+			context.fillStyle = colors_enemy;
+			context.globalAlpha = (this.blinkingRedOpacity < this.blinkingRedTarget ? this.blinkingRedOpacity : -this.blinkingRedOpacity + 2 * this.blinkingRedTarget);
+			context.fillRect ( 0, 0, canvas.width, canvas.height );
+			context.globalAlpha = 1;
+		}
+		
 		context.fillStyle = "#FFFFFF";
 		context.fillRect ( -1, 568, canvas.width + 2, 4 );
 		context.fillRect ( -1, 28, canvas.width + 2, 4 );
@@ -136,6 +143,12 @@ function initUI () {
 		this.overlaySubtitle = subtitle;
 	}
 	
+	hud.blinkingRedOpacity = 0;
+	hud.blinkRed = function (target) {
+		this.blinkingRed = true;
+		this.blinkingRedTarget = target;
+	}
+	
 	hud.animate = function ( time ) {
 		if (pause) return;
 		
@@ -158,6 +171,15 @@ function initUI () {
 		if ( this.overlayText && Date.now() - this.overlayTextBegin > this.overlayTextTime ){
 			this.overlayText = false;
 			if ( this.overlayTextDone ) this.overlayTextDone();
+		}
+		
+		if ( this.blinkingRed ){
+			this.blinkingRedOpacity += 0.2;
+			
+			if (this.blinkingRedOpacity > 2 * this.blinkingRedTarget){
+				this.blinkingRedOpacity = 0;
+				this.blinkingRed = false;
+			}
 		}
 	}
 	

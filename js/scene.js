@@ -74,6 +74,9 @@ function sceneCheckProj ( scene ) {
 				scene.units[j].damage ( scene.projectiles[i].mass * (scene.units[j] == inputBoundUnit ? game_playerDamageFactor : 1) );
 				scene.projectiles[i].dead = true;
 				
+				if (scene.units[j] == inputBoundUnit)
+					hud.blinkRed ( 0.15 + scene.projectiles[i].mass / 10 );
+				
 				if (scene.units[j].health <= 0) scene.projectiles[i].owner.score += scene.units[j].scoreValue;
 				
 			}
