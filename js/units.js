@@ -1,4 +1,4 @@
-//BnDGames
+//Buch415
 //Github Game Off 2013
 //-----------------------------------------------------------------
 //units.js
@@ -101,6 +101,8 @@ var Unit = function () {
 	this.shoot = function () {
 		if (!this.parent || this.health <= 0) return;
 		
+		var shot = false;
+		
 		for ( var i = 0; i < this.parts.length; i++ ) {
 			for ( var l = 0; l < this.parts[i].actions.length; l++ ) {
 				var action = this.parts[i].actions[l];
@@ -149,6 +151,8 @@ var Unit = function () {
 					}
 					
 					action.time = Date.now();
+					
+					shot = true;
 				}
 			}
 		}

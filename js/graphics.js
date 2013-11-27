@@ -1,4 +1,4 @@
-//BnDGames
+//Buch415
 //Github Game Off 2013
 //-----------------------------------------------------------------
 //graphics.js
@@ -95,9 +95,6 @@ function graphicsSetup () {
 	
 	$("#minimapCanvas").hide();
 	$("#statsCanvas").hide();
-	
-	context.lineCap = "round";
-	context.lineJoin = "round";
 	
 	centerCanvas();
 }
@@ -226,7 +223,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 	
 	var g = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 250, canvas.width / 2, canvas.height / 2, canvas.width * 0.75)
 	g.addColorStop ( 0, 'rgba(0,0,0,0)' );
-	g.addColorStop ( 1, 'rgba(0,0,0,0.8)' );
+	g.addColorStop ( 1, 'rgba(0,0,0,1)' );
 	context.fillStyle = g;
 	context.fillRect ( 0,0,canvas.width, canvas.height);
 	

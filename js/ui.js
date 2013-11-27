@@ -1,4 +1,4 @@
-//BnDGames
+//Buch415
 //Github Game Off 2013
 //-----------------------------------------------------------------
 //ui.js
@@ -103,6 +103,8 @@ function checkMouse ( control, event, offset ) {
 
 //Fillbar control
 var Fillbar = function () {
+	this.children = new Object();
+	
 	//Fillbar data
 	this.fill = 0;
 	this.shownFill = 0;
@@ -133,12 +135,16 @@ var Fillbar = function () {
 		var d = this.fill - this.shownFill;
 		
 		this.shownFill += d * time / 10;
+		
+		if (this.shownFill > 1) this.shownFill = 1;
 	}
 }
 Fillbar.prototype = new Control();
 
 //Label control
 var Label = function () {
+	this.children = new Object();
+	
 	//Label data
 	this.content = "";
 	
@@ -195,6 +201,8 @@ Label.prototype = new Control();
 
 //Numeric label
 var NumLabel = function () {
+	this.children = new Object();
+	
 	//Label data
 	this.value = 0;
 	this.shownValue = 0;
@@ -210,6 +218,8 @@ var NumLabel = function () {
 	this.digits = 5;
 	
 	this.fontStyle = "24px League Gothic";
+	
+	this.caption = "";
 	
 	//Drawing function
 	this.print = function ( context ) {
@@ -241,19 +251,26 @@ var NumLabel = function () {
 		context.textAlign = "center";
 		context.textBaseline = "middle";
 		context.fillStyle = this.textColor;
-		context.fillText ( this.shownValue.toString(), this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] / 2);
+		context.fillText ( this.caption + Math.ceil(this.shownValue).toString(), this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] / 2);
 	}
 	
 	//Animate function
 	this.animate = function ( time ) {
-		if (this.value != this.shownValue)
-			this.shownValue += this.value > this.shownValue ? 1 : -1;
+		if (this.value != this.shownValue){
+			var increment = (this.value - this.shownValue) / 10;
+			
+			if ((this.shownValue + increment - this.value < 0.5) == (this.shownValue - this.value < 0.5))
+				this.shownValue += increment;
+			else this.shownValue = this.value;
+		}
 	}
 }
 NumLabel.prototype = new Control();
 
 //Checkbox list
 var CheckBoxList = function () {
+	this.children = new Object();
+	
 	//Checkbox list data
 	this.length = 3;
 	this.checked = 0;
@@ -369,6 +386,8 @@ CheckBoxList.prototype = new Control();
 
 //Part viewer control
 var PartViewer = function () {
+	this.children = new Object();
+	
 	//Shown part
 	this.part = 0;
 	
@@ -491,6 +510,8 @@ var PartViewer = function () {
 	}
 	
 	this.onmousein = function () {
+		if (window.draggedPart){ this.status = 0; return; }
+		
 		if (!this.disabled) this.innerColor = "#001230";
 		
 		this.rotate = true;
@@ -510,6 +531,8 @@ PartViewer.prototype = new Control();
 
 //Stats viewer
 var StatViewer = function () {
+	this.children = new Object();
+	
 	this.stats = [0,0,0,0,0];
 	this.info = new Array();
 	
@@ -587,3 +610,306 @@ var StatViewer = function () {
 	}
 }
 StatViewer.prototype = new Control();
+
+//Scrollbar
+var Scrollbar = function () {
+	this.children = new Object();
+	
+	this.value = 0;
+	this.length = 2;
+	
+	this.arrowSize = 30;
+	
+	this.innerColor = "#303030";
+	this.arrowColor_up = "#606060";
+	this.arrowColor_down = "#606060";
+	
+	this.cursorColor = "#606060";
+	
+	this.arrowActive = colors_player;
+	this.arrowNormal = "#606060";
+	
+	this.borderSize = 4;
+	this.borderColor = "#FFFFFF";
+	
+	this.onchange = 0;
+	
+	//Print
+	this.print = function () {
+		context.beginPath();
+		context.moveTo ( this.area[0] + this.area[2] / 2, this.area[1] );
+		context.lineTo ( this.area[0], this.area[1] + this.area[2] / 2 );
+		context.lineTo ( this.area[0], this.area[1] + this.area[2] / 2 + this.arrowSize);
+		context.lineTo ( this.area[0] + this.area[2], this.area[1] + this.area[2] / 2 + this.arrowSize);
+		context.lineTo ( this.area[0] + this.area[2], this.area[1] + this.area[2] / 2);
+		context.closePath();
+		
+		context.fillStyle = this.arrowColor_up;
+		context.fill();
+		
+		context.strokeStyle = this.borderColor;
+		context.lineWidth = this.borderSize;
+		context.stroke();
+		
+		context.beginPath();
+		context.moveTo ( this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] );
+		context.lineTo ( this.area[0], this.area[1] + this.area[3] - this.area[2] / 2 );
+		context.lineTo ( this.area[0], this.area[1] + this.area[3] - this.area[2] / 2 - this.arrowSize);
+		context.lineTo ( this.area[0] + this.area[2], this.area[1] + this.area[3] - this.area[2] / 2 - this.arrowSize);
+		context.lineTo ( this.area[0] + this.area[2], this.area[1] + this.area[3] - this.area[2] / 2);
+		context.closePath();
+		
+		context.fillStyle = this.arrowColor_down;
+		context.fill();
+		
+		context.strokeStyle = this.borderColor;
+		context.lineWidth = this.borderSize;
+		context.stroke();
+		
+		context.beginPath();
+		context.rect ( this.area[0] + 8, this.area[1] + this.area[2] / 2 + this.arrowSize, this.area[2] - 16, this.area[3] - 2 * (this.area[2] / 2 + this.arrowSize) );
+		context.fillStyle = this.innerColor;
+		context.fill();
+		
+		context.stroke();
+		
+		context.beginPath();
+		context.rect ( 	this.area[0] + 6,
+						this.area[1] + this.area[2] / 2 + this.arrowSize + (this.area[3] - 2 * (this.area[2] / 2 + this.arrowSize) ) * this.value / this.length,
+						this.area[2] - 12,
+						(this.area[3] - 2 * (this.area[2] / 2 + this.arrowSize) ) / this.length );
+						
+		context.fillStyle = this.cursorColor;
+		context.fill();
+		context.stroke();
+		
+		context.lineWidth = 1;
+	}
+	
+	//On mouse down
+	this.onmousedown = function ( x, y ) {
+		var arrowUp = [
+			[ this.area[0] + this.area[2] / 2, this.area[1] ],
+			[ this.area[0], this.area[1] + this.area[2] / 2 ],
+			[ this.area[0], this.area[1] + this.area[2] / 2 + this.arrowSize ],
+			[ this.area[0] + this.area[2], this.area[1] + this.area[2] / 2 + this.arrowSize ],
+			[ this.area[0] + this.area[2], this.area[1] + this.area[2] / 2 ]
+		];
+		
+		var arrowDown = [
+			[ this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] ],
+			[ this.area[0], this.area[1] + this.area[3] - this.area[2] / 2 ],
+			[ this.area[0], this.area[1] + this.area[3] - this.area[2] / 2 - this.arrowSize ],
+			[ this.area[0] + this.area[2], this.area[1] + this.area[3] - this.area[2] / 2 - this.arrowSize ],
+			[ this.area[0] + this.area[2], this.area[1] + this.area[3] - this.area[2] / 2 ]
+		];
+		
+		if (pointInsidePoly ( [x + this.area[0],y + this.area[1]], arrowUp ) ){
+			this.arrowColor_up = this.arrowActive;
+		}
+		
+		if (pointInsidePoly ( [x + this.area[0],y + this.area[1]], arrowDown ) ) {
+			this.arrowColor_down = this.arrowActive;
+		}
+	}
+	
+	//On mouse up
+	this.onmouseup = function ( x, y ) {
+		var arrowUp = [
+			[ this.area[0] + this.area[2] / 2, this.area[1] ],
+			[ this.area[0], this.area[1] + this.area[2] / 2 ],
+			[ this.area[0], this.area[1] + this.area[2] / 2 + this.arrowSize ],
+			[ this.area[0] + this.area[2], this.area[1] + this.area[2] / 2 + this.arrowSize ],
+			[ this.area[0] + this.area[2], this.area[1] + this.area[2] / 2 ]
+		];
+		
+		var arrowDown = [
+			[ this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] ],
+			[ this.area[0], this.area[1] + this.area[3] - this.area[2] / 2 ],
+			[ this.area[0], this.area[1] + this.area[3] - this.area[2] / 2 - this.arrowSize ],
+			[ this.area[0] + this.area[2], this.area[1] + this.area[3] - this.area[2] / 2 - this.arrowSize ],
+			[ this.area[0] + this.area[2], this.area[1] + this.area[3] - this.area[2] / 2 ]
+		];
+		
+		if (pointInsidePoly ( [x + this.area[0],y + this.area[1]], arrowUp ) ){
+			this.value--;
+			if (this.value < 0) this.value = 0;
+			
+			if (this.onchange) this.onchange ( this.value );
+		}
+		
+		if (pointInsidePoly ( [x + this.area[0],y + this.area[1]], arrowDown ) ) {
+			this.value++;
+			if (this.value > this.length - 1) this.value = this.length - 1;
+			
+			if (this.onchange) this.onchange ( this.value );
+		}
+		
+		this.arrowColor_up = this.arrowNormal;
+		this.arrowColor_down = this.arrowNormal;
+	}
+	
+	this.onmouseout = function ( ) {
+		this.arrowColor_up = this.arrowNormal;
+		this.arrowColor_down = this.arrowNormal;
+	}
+}
+Scrollbar.prototype = new Control();
+
+//Upgrade viewer
+var UpgradeViewer = function () {
+	this.children = new Object();
+	
+	this.upgrade = new Upgrade();
+	
+	//Graphics
+	this.innerColor = "#606060";
+	
+	this.completeColor = "#303030";
+	this.completeFgColor = "#A0A0A0";
+	this.completeBorderColor = "#A0A0A0";
+	
+	this.disabledColor = "#303030";
+	this.borderSize = 4;
+	this.borderColor = "#FFFFFF";
+	
+	this.corner = 16;
+	
+	this.bigFontStyle = "32px League Gothic";
+	this.fontStyle = "20px League Gothic";
+	
+	this.children.upgradeButton = new Label();
+	this.children.upgradeButton.parent = this;
+	this.children.cost = new Label();
+	this.children.progress = new Fillbar(); this.children.progress.visible = false;
+	
+	//Setup function
+	this.setup = function (anim) {
+		this.children.upgradeButton.area = [ this.area[2] - 176 - this.corner, this.area[3] - 16, 160, 32 ];
+		if (this.upgrade && this.upgrade.value < this.upgrade.max ){
+			this.children.upgradeButton.content = "BUY UPGRADE";
+			this.children.upgradeButton.onmousein = labelOnMouseIn;
+			this.children.upgradeButton.onmouseout = labelOnMouseOut;
+			this.children.upgradeButton.onmousedown = function () {
+				if (playerScore >= this.parent.upgrade.cost + this.parent.upgrade.costFactor * this.parent.upgrade.value)
+					this.innerColor = colors_player;
+				else this.innerColor = colors_enemy;
+			};
+			this.children.upgradeButton.onmouseup = function () {
+				this.innerColor = colors_buttonHover;
+				
+				if (playerScore >= this.parent.upgrade.cost + this.parent.upgrade.costFactor * this.parent.upgrade.value){
+					playerScore -= this.parent.upgrade.cost + this.parent.upgrade.costFactor * this.parent.upgrade.value;
+					
+					applyUpgrade ( this.parent.upgrade );
+					this.parent.setup(true);
+				}
+			}
+			
+			this.children.upgradeButton.borderColor = this.borderColor;
+			this.children.upgradeButton.innerColor = this.innerColor;
+			this.children.upgradeButton.textColor = "#FFFFFF";
+			
+			this.children.cost.borderColor = this.borderColor;
+			this.children.cost.innerColor = this.innerColor;
+			this.children.cost.textColor = "#FFFFFF";
+			
+			this.children.progress.borderColor = this.borderColor;
+			this.children.progress.innerColor = colors_player;
+		}
+		
+		else if (this.upgrade) {
+			this.children.upgradeButton.content = "PURCHASED";
+			this.children.upgradeButton.borderColor = this.completeBorderColor;
+			this.children.upgradeButton.innerColor = this.completeColor;
+			this.children.upgradeButton.textColor = this.completeFgColor;
+			
+			this.children.upgradeButton.onmousein = 0;
+			this.children.upgradeButton.onmouseout = 0;
+			this.children.upgradeButton.onmousedown = 0;
+			this.children.upgradeButton.onmouseup = 0;
+			
+			this.children.cost.borderColor = this.completeBorderColor;
+			this.children.cost.innerColor = this.completeColor;
+			this.children.cost.textColor = this.completeFgColor;
+			
+			this.children.progress.borderColor = this.completeBorderColor;
+			this.children.progress.innerColor = this.completeColor;
+			
+			this.children.progress.borderColor = this.completeBorderColor;
+			this.children.progress.innerColor = colors[8];
+		}
+		
+		this.children.cost.area = this.children.upgradeButton.area.slice(0);
+		this.children.cost.area[3] = 26;
+		this.children.cost.area[2] = 160;
+		this.children.cost.area[1] += 3;
+		this.children.cost.area[0] = 16 + this.corner;
+		
+		if ( this.upgrade ) this.children.cost.content = "$ " + (this.upgrade.cost + this.upgrade.costFactor * this.upgrade.value);
+		else this.children.cost.content = "-";
+		
+		this.visible = true;
+		if ( !this.upgrade ) this.visible = false;
+		
+		if ( this.upgrade && this.upgrade.max > 1 ) {
+			this.children.progress.visible = true;
+			this.children.progress.area = [ this.corner, this.area[3] - 48, this.area[2] - 2 * this.corner, 16 ];
+			this.children.progress.fill = this.upgrade.value / this.upgrade.max;
+			if (!anim) this.children.progress.shownFill = this.children.progress.fill;
+		}
+		else this.children.progress.visible = false;
+	}
+	
+	//Print function
+	this.print = function ( context ) {
+		if (!this.upgrade) return;
+		
+		if (this.children.progress)
+			this.children.progress.fill = this.upgrade.value / this.upgrade.max;
+		
+		context.beginPath();
+		context.moveTo(this.area[0] + this.corner, this.area[1]);
+		context.lineTo(this.area[0] + this.area[2] - this.corner, this.area[1]);
+		context.lineTo(this.area[0] + this.area[2], this.area[1] + this.corner);
+		context.lineTo(this.area[0] + this.area[2], this.area[1] + this.area[3] - this.corner);
+		context.lineTo(this.area[0] + this.area[2] - this.corner, this.area[1] + this.area[3]);
+		context.lineTo(this.area[0] + this.corner, this.area[1] + this.area[3]);
+		context.lineTo(this.area[0], this.area[1] + this.area[3] - this.corner);
+		context.lineTo(this.area[0], this.area[1] + this.corner);
+		context.closePath();
+		
+		context.fillStyle = this.upgrade.value < this.upgrade.max ? this.innerColor : this.completeColor;
+		context.fill();
+		
+		context.strokeStyle = this.upgrade.value < this.upgrade.max ? this.borderColor : this.completeBorderColor;
+		context.lineWidth = this.borderSize;
+		context.stroke();
+		context.lineWidth = 1;
+		
+		context.font = this.fontStyle;
+		context.fillStyle = this.upgrade.value < this.upgrade.max ? "#FFFFFF" : this.completeFgColor;
+		context.textAlign = "left";
+		context.textBaseline = "top";
+		
+		context.textBaseline = "top";
+		context.textAlign = "left";
+		context.font = this.bigFontStyle;
+		
+		if (this.upgrade.info){
+			if (this.upgrade.info[0])
+				context.fillText ( this.upgrade.info[0].toUpperCase() + (this.upgrade.max > 1 ? "  (" + this.upgrade.value + "/" + this.upgrade.max + ")" : ""), this.area[0] + 20, this.area[1] + 20 );
+		
+			context.font = this.fontStyle;
+			
+			if (this.upgrade.info[1])
+				context.fillText ( this.upgrade.info[1].toUpperCase(), this.area[0] + 20, this.area[1] + 52 );
+		}
+	}
+}
+UpgradeViewer.prototype = new Control();
+
+//Label standard event functions
+function labelOnMouseIn () { this.innerColor = colors_buttonHover; }
+function labelOnMouseOut () { this.innerColor = colors_buttonStd; }
+function labelOnMouseDown () { this.innerColor = colors_buttonActive; }

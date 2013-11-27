@@ -1,4 +1,4 @@
-//BnDGames
+//Buch415
 //Github Game Off 2013
 //-----------------------------------------------------------------
 //main.js
@@ -18,6 +18,7 @@ function setup () {
 	
 	loadParts ();
 	loadUnits ();
+	loadUpgrades ();
 	
 	setInterval ( loop, 30 );
 	setInterval ( draw, 0 );
@@ -40,8 +41,9 @@ function loop () {
 			if (inputBoundUnit.health <= 0){
 				if (!hud.overlayText && !gameoverOverlay){
 					setTimeout ( function() {
-						hud.overlay ( "GAME OVER", 4000, function () { state_current = state_menu; currentUI = menu; gameoverOverlay = false; playerShip.reset(); }, inputBoundUnit.score + " POINTS" )
-						}, 300 ) ;
+						hud.overlay ( "GAME OVER", 4000, function () { state_current = state_menu; currentUI = menu; gameoverOverlay = false; playerShip.reset(); playerScore += playerShip.score; playerShip.score = 0;}, inputBoundUnit.score + " POINTS" )
+					}, 300 ) ;
+					
 					gameoverOverlay = true;
 				}
 			}

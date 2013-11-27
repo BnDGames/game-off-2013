@@ -1,3 +1,4 @@
+//Buch415
 //Github Game Off 2013
 //-----------------------------------------------------------------
 //gameUI.js
@@ -16,6 +17,9 @@ var hud = 0;
 //Ship editor control
 var shipEditor = 0;
 
+//Store control
+var store = 0;
+
 //Current UI root control
 var currentUI = 0;
 
@@ -25,7 +29,7 @@ function initUI () {
 	
 	hud.children.scoreLabel = new NumLabel();
 	hud.children.scoreLabel.area = [ 308, 554, 100, 32 ];
-	hud.children.scoreLabel.content = "00000";
+	hud.children.scoreLabel.caption = "$ ";
 	
 	hud.children.hpFillbar = new Fillbar();
 	hud.children.hpFillbar.area = [12, 562, 300, 16];
@@ -76,6 +80,13 @@ function initUI () {
 		if (this.blinkingRed){
 			context.fillStyle = colors_enemy;
 			context.globalAlpha = (this.blinkingRedOpacity < this.blinkingRedTarget ? this.blinkingRedOpacity : -this.blinkingRedOpacity + 2 * this.blinkingRedTarget);
+			context.fillRect ( 0, 0, canvas.width, canvas.height );
+			context.globalAlpha = 1;
+		}
+		
+		if (this.blinkingWhite){
+			context.fillStyle = colors_player;
+			context.globalAlpha = (this.blinkingWhiteOpacity < this.blinkingWhiteTarget ? this.blinkingWhiteOpacity : -this.blinkingWhiteOpacity + 2 * this.blinkingWhiteTarget);
 			context.fillRect ( 0, 0, canvas.width, canvas.height );
 			context.globalAlpha = 1;
 		}
@@ -149,6 +160,12 @@ function initUI () {
 		this.blinkingRedTarget = target;
 	}
 	
+	hud.blinkingWhiteOpacity = 0;
+	hud.blinkWhite = function (target) {
+		this.blinkingWhite = true;
+		this.blinkingWhiteTarget = target;
+	}
+	
 	hud.animate = function ( time ) {
 		if (pause) return;
 		
@@ -179,6 +196,15 @@ function initUI () {
 			if (this.blinkingRedOpacity > 2 * this.blinkingRedTarget){
 				this.blinkingRedOpacity = 0;
 				this.blinkingRed = false;
+			}
+		}
+		
+		if ( this.blinkingWhite ){
+			this.blinkingWhiteOpacity += 0.2;
+			
+			if (this.blinkingWhiteOpacity > 2 * this.blinkingWhiteTarget){
+				this.blinkingWhiteOpacity = 0;
+				this.blinkingWhite = false;
 			}
 		}
 	}
@@ -316,6 +342,9 @@ function initUI () {
 		playerShip.changeParts ( ["light", "mid", "heavy"][shipEditor.children.stateCheck.checked], true );
 		
 		window.onpartdrop = function ( part, position ) {
+			if (playerShip.parts.length >= playerPartsCount [ shipEditor.children.stateCheck.checked])
+				return;
+			
 			if ( position[0] > shipEditor.shipArea[0] && position[1] > shipEditor.shipArea[1] && position[0] < shipEditor.shipArea[0] + shipEditor.shipArea[2] && position[1] < shipEditor.shipArea[1] + shipEditor.shipArea[3]){
 				for ( var i = 0; i < playerShip.parts.length; i++ ){
 					for ( var l = 0; l < playerShip.parts[i].anchors_plus.length; l++ ){
@@ -344,6 +373,7 @@ function initUI () {
 								}
 								
 								playerShip.calcStats();
+								shipEditor.children.partsCount.content = playerShip.parts.length + "/" + playerPartsCount[shipEditor.children.stateCheck.checked];
 								
 								return;
 							}
@@ -352,6 +382,8 @@ function initUI () {
 				}
 			}
 		}
+		
+		shipEditor.children.partsCount.content = playerShip.parts.length + "/" + playerPartsCount[shipEditor.children.stateCheck.checked];
 	}
 	
 	menu.children.store = new Label();
@@ -360,6 +392,16 @@ function initUI () {
 	menu.children.store.onmousein = labelOnMouseIn;
 	menu.children.store.onmouseout = labelOnMouseOut;
 	menu.children.store.onmousedown = labelOnMouseDown;
+	menu.children.store.onmouseup = function () {
+		this.innerColor = colors_buttonHover;
+		
+		currentUI = store;
+		state_current = state_store;
+		
+		store.drawUpgrades(0);
+		store.children.scroll.value = 0;
+		store.children.scroll.length = upgrades.length - 1;
+	}
 	
 	menu.children.settings = new Label();
 	menu.children.settings.area = [300, 400, 200, 32];
@@ -447,6 +489,8 @@ function initUI () {
 				if ( pointInsidePoly ( p, v ) ){					
 					if ( playerShip.parts[i].id.substr(0,5) != "base_" )
 						detatchPart ( playerShip.parts[i] );
+						
+					shipEditor.children.partsCount.content = playerShip.parts.length + "/" + playerPartsCount[shipEditor.children.stateCheck.checked];
 					
 					return;
 				}
@@ -507,6 +551,8 @@ function initUI () {
 		if (i == 2) playerShip.changeParts("heavy", true);
 		
 		shipEditor.drawAvailableParts(i + 1);
+		
+		shipEditor.children.partsCount.content = playerShip.parts.length + "/" + playerPartsCount[i];
 	}
 	
 	shipEditor.children.ok = new Label();
@@ -526,6 +572,9 @@ function initUI () {
 		window.onpartdrop = 0;
 	}
 	
+	shipEditor.children.partsCount = new Label();
+	shipEditor.children.partsCount.area = [ 292, 84, 96, 32];
+	
 	shipEditor.exportShip = function (id, score, cls) {
 		var u = new Unit();
 		u.id = id;
@@ -542,6 +591,55 @@ function initUI () {
 		a.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json, 0, " ")));
 		a.setAttribute('download', id + ".json");
 		a.click();
+	}
+	
+	store = new Control();
+	
+	store.children.title = new Label();
+	store.children.title.area = [40, 34, 300, 48];
+	store.children.title.content = "UPGRADES STORE";
+	store.children.title.printFrame = true;
+	store.children.title.fontStyle = "48px League Gothic";
+	
+	store.children.scoreLabel = new NumLabel();
+	store.children.scoreLabel.area = [ 568, 42, 192, 32 ];
+	store.children.scoreLabel.caption = "$ ";
+	
+	store.children.scroll = new Scrollbar();
+	store.children.scroll.area = [ canvas.width - 72, 110, 32, canvas.height - 130 ];
+	store.children.scroll.onchange = function ( val ) {
+		store.drawUpgrades ( val );
+	}
+	
+	for ( var i = 0; i < 3; i++ ){
+		store.children["slot_" + i] = new UpgradeViewer();
+		store.children["slot_" + i].area = [ 40,  store.children.scroll.area[1] + i * 160, canvas.width - 100 - store.children.scroll.area[2], 130 ];
+		
+		store.children["slot_" + i].setup();
+	}
+	
+	store.print = function ( context ) {
+		store.children.scoreLabel.value = playerScore;
+		
+		context.fillStyle = "#FFFFFF";
+		context.fillRect ( store.children.title.area[0] + 2, store.children.title.area[1] + store.children.title.area[3] / 2 - 2, store.children.scoreLabel.area[0] - store.children.title.area[0], 4 );
+	}
+	
+	store.drawUpgrades = function ( offset ) {
+		store.children.slot_0.upgrade = upgrades[offset]; store.children.slot_0.setup();
+		store.children.slot_1.upgrade = upgrades[offset + 1]; store.children.slot_1.setup();
+		store.children.slot_2.upgrade = upgrades[offset + 2]; store.children.slot_2.setup();
+	}
+	
+	store.children.back = new Label();
+	store.children.back.area = [ 442, 42, 100, 32 ];
+	store.children.back.content = "BACK";
+	store.children.back.onmousein = labelOnMouseIn;
+	store.children.back.onmouseout = labelOnMouseOut;
+	store.children.back.onmousedown = labelOnMouseDown;
+	store.children.back.onmouseup = function () {
+		state_current = state_menu;
+		currentUI = menu;
 	}
 	
 	currentUI = loading;
@@ -567,8 +665,8 @@ function updateHud ( unit ) {
 
 //Function to update loading screen
 function updateLoading () {
-	var progressTot = partsCount + unitsCount;
-	var progressVal = partsLoaded + unitsLoaded;
+	var progressTot = partsCount + unitsCount + upgradesCount;
+	var progressVal = partsLoaded + unitsLoaded + upgradesLoaded;
 	
 	if (progressTot > 0) loading.children.progressBar.fill = progressVal / progressTot;
 	else loading.children.progressBar.fill = 0;
@@ -581,8 +679,3 @@ function uiCheckEvents ( event ) {
 	var rect = canvas.getBoundingClientRect();
 	if (currentUI) checkMouse ( currentUI, event, [rect.left, rect.top] );
 }
-
-//Label standard event functions
-function labelOnMouseIn () { this.innerColor = colors_buttonHover; }
-function labelOnMouseOut () { this.innerColor = colors_buttonStd; }
-function labelOnMouseDown () { this.innerColor = colors_buttonActive; }

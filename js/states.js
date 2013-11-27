@@ -1,4 +1,4 @@
-//BnDGames
+//Buch415
 //Github Game Off 2013
 //-----------------------------------------------------------------
 //states.js
@@ -10,5 +10,6 @@ var state_menu = 1;
 var state_game = 2;
 var state_shipedit = 3;
 var state_settings = 4;
+var state_store = 5;
 
 var state_current = state_loading;

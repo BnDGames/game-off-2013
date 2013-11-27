@@ -1,4 +1,4 @@
-//BnDGames
+//Buch415
 //Github Game Off 2013
 //-----------------------------------------------------------------
 //scene.js
@@ -74,10 +74,15 @@ function sceneCheckProj ( scene ) {
 				scene.units[j].damage ( scene.projectiles[i].mass * (scene.units[j] == inputBoundUnit ? game_playerDamageFactor : 1) );
 				scene.projectiles[i].dead = true;
 				
-				if (scene.units[j] == inputBoundUnit)
-					hud.blinkRed ( 0.15 + scene.projectiles[i].mass / 10 );
+				if (scene.units[j] == inputBoundUnit){
+					hud.blinkRed ( 0.25 + scene.projectiles[i].mass / 10 );
+				}
 				
-				if (scene.units[j].health <= 0) scene.projectiles[i].owner.score += scene.units[j].scoreValue;
+				else if (scene.units[j].health <= 0){
+					scene.projectiles[i].owner.score += scene.units[j].scoreValue;
+					
+					hud.blinkWhite ( 0.75 );
+				}
 			}
 		}
 	}
@@ -110,7 +115,7 @@ function sceneCheckDead ( scene ) {
 
 //Function to spawn a wave in scene
 function spawnWave ( scene, unit, minDistance, maxDistance, color ) {
-	var count = Math.ceil(Math.random() * 5 + scene.wave + 1);
+	var count = Math.ceil(Math.random() * 2 + scene.wave + 1);
 	var cls = 1 + Math.floor(Math.random() * 2);	
 	
 	for ( var i = 0; i < count; i++ ) {
