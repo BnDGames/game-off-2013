@@ -175,7 +175,7 @@ var Label = function () {
 				context.lineTo ( this.area[0] + this.area[2] - this.area[3]  * this.cornerFactor, this.area[1] + this.area[3] + this.borderSize );
 				context.lineTo ( this.area[0] + this.area[3]  * this.cornerFactor, this.area[1] + this.area[3] + this.borderSize );
 				context.closePath();		
-				context.fill();
+				context.fill();				
 			}
 		
 			context.fillStyle = this.innerColor;
@@ -188,6 +188,13 @@ var Label = function () {
 			context.lineTo ( this.area[0] + this.area[3]  * this.cornerFactor, this.area[1] + this.area[3] );
 			context.closePath();
 			context.fill();
+			
+			if (this.blinkingRed){
+				context.globalAlpha = (this.blinkingRedOpacity < this.blinkingRedTarget ? this.blinkingRedOpacity : -this.blinkingRedOpacity + 2 * this.blinkingRedTarget);
+				context.fillStyle = colors_enemy;
+				context.fill();
+				context.globalAlpha = 1;
+			}
 		}
 		
 		context.font = this.fontStyle;
@@ -195,7 +202,25 @@ var Label = function () {
 		context.textBaseline = "middle";
 		context.fillStyle = this.textColor;
 		context.fillText ( this.content, this.area[0] + this.area[2] / 2, this.area[1] + this.area[3] / 2);
-	}	
+	}
+	
+	//Red blink function
+	this.blinkingRedOpacity = 0;
+	this.blinkRed = function (target) {
+		this.blinkingRed = true;
+		this.blinkingRedTarget = target;
+	}
+	
+	this.animate = function ( time ) {
+		if ( this.blinkingRed ){
+			this.blinkingRedOpacity += 0.2;
+			
+			if (this.blinkingRedOpacity > 2 * this.blinkingRedTarget){
+				this.blinkingRedOpacity = 0;
+				this.blinkingRed = false;
+			}
+		}
+	}
 }
 Label.prototype = new Control();
 
@@ -246,6 +271,13 @@ var NumLabel = function () {
 		context.lineTo ( this.area[0] + this.area[3] / 2, this.area[1] + this.area[3] );
 		context.closePath();
 		context.fill();
+			
+		if (this.blinkingRed){
+			context.globalAlpha = (this.blinkingRedOpacity < this.blinkingRedTarget ? this.blinkingRedOpacity : -this.blinkingRedOpacity + 2 * this.blinkingRedTarget);
+			context.fillStyle = colors_enemy;
+			context.fill();
+			context.globalAlpha = 1;
+		}
 		
 		context.font = this.fontStyle;
 		context.textAlign = "center";
@@ -263,6 +295,22 @@ var NumLabel = function () {
 				this.shownValue += increment;
 			else this.shownValue = this.value;
 		}
+		
+		if ( this.blinkingRed ){
+			this.blinkingRedOpacity += 0.2;
+			
+			if (this.blinkingRedOpacity > 2 * this.blinkingRedTarget){
+				this.blinkingRedOpacity = 0;
+				this.blinkingRed = false;
+			}
+		}
+	}
+	
+	//Red blink function
+	this.blinkingRedOpacity = 0;
+	this.blinkRed = function (target) {
+		this.blinkingRed = true;
+		this.blinkingRedTarget = target;
 	}
 }
 NumLabel.prototype = new Control();
@@ -783,6 +831,8 @@ var UpgradeViewer = function () {
 	this.children.cost = new Label();
 	this.children.progress = new Fillbar(); this.children.progress.visible = false;
 	
+	this.scoreControl = 0;
+	
 	//Setup function
 	this.setup = function (anim) {
 		this.children.upgradeButton.area = [ this.area[2] - 176 - this.corner, this.area[3] - 16, 160, 32 ];
@@ -793,7 +843,10 @@ var UpgradeViewer = function () {
 			this.children.upgradeButton.onmousedown = function () {
 				if (playerScore >= this.parent.upgrade.cost + this.parent.upgrade.costFactor * this.parent.upgrade.value)
 					this.innerColor = colors_player;
-				else this.innerColor = colors_enemy;
+				else {
+					this.innerColor = colors_enemy;
+					if (this.parent.scoreControl) this.parent.scoreControl.blinkRed ( 1 );
+				}
 			};
 			this.children.upgradeButton.onmouseup = function () {
 				this.innerColor = colors_buttonHover;

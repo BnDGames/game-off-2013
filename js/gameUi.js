@@ -284,9 +284,6 @@ function initUI () {
 	
 	menu = new Control();
 	
-	menu.print = function ( context ) {
-	}
-	
 	menu.children.title = new Label();
 	menu.children.title.area = [0, 60, 800, 72];
 	menu.children.title.fontStyle = "72px League Gothic";
@@ -342,8 +339,7 @@ function initUI () {
 		playerShip.changeParts ( ["light", "mid", "heavy"][shipEditor.children.stateCheck.checked], true );
 		
 		window.onpartdrop = function ( part, position ) {
-			if (playerShip.parts.length >= playerPartsCount [ shipEditor.children.stateCheck.checked])
-				return;
+			
 			
 			if ( position[0] > shipEditor.shipArea[0] && position[1] > shipEditor.shipArea[1] && position[0] < shipEditor.shipArea[0] + shipEditor.shipArea[2] && position[1] < shipEditor.shipArea[1] + shipEditor.shipArea[3]){
 				for ( var i = 0; i < playerShip.parts.length; i++ ){
@@ -367,6 +363,11 @@ function initUI () {
 							aPoint = vSum ( aPoint, [shipEditor.shipArea[0] + shipEditor.shipArea[2] / 2, shipEditor.shipArea[1] + shipEditor.shipArea[3] / 2] );
 						
 							if (vModule ( vSubt ( vSum ( window.draggedPart.position, window.draggedSourcePos ), aPoint ) ) < 8){
+								if (playerShip.parts.length >= playerPartsCount [ shipEditor.children.stateCheck.checked]){
+									shipEditor.children.partsCount.blinkRed ( 1 );
+									return;
+								}
+								
 								var result = attachPart ( playerShip.parts[i], l, getPart ( window.draggedPart.id ), 0 );
 								
 								if (result.error && result.error == "occupied"){
@@ -614,6 +615,8 @@ function initUI () {
 	for ( var i = 0; i < 3; i++ ){
 		store.children["slot_" + i] = new UpgradeViewer();
 		store.children["slot_" + i].area = [ 40,  store.children.scroll.area[1] + i * 160, canvas.width - 100 - store.children.scroll.area[2], 130 ];
+		
+		store.children["slot_" + i].scoreControl = store.children.scoreLabel;
 		
 		store.children["slot_" + i].setup();
 	}
