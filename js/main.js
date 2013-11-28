@@ -49,8 +49,11 @@ function loop () {
 			}
 			
 			else if (gameScene.units.length == 1 && hud.blinkingTextContent == ""){
-				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, colors_enemy ); } ); } );
+				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, [colors_enemy, colors_enemy_dark] ); hud.children.waveLabel.blinkRed(1) } ) } );
 			}
+			
+			var s = vModule ( inputBoundUnit.speed );
+			sceneScale = fx_sceneScaleBase - (inputBoundUnit.maxSpeed != 0 ? s / inputBoundUnit.maxSpeed * fx_sceneScaleFactor : 0); 
 		}
 	}
 	

@@ -10,7 +10,7 @@ var canvas, context;
 var minimapCanvas, minimapContext;
 var statsCanvas, statsContext;
 
-var sceneScale = 0.5;
+var sceneScale = fx_sceneScaleBase;
 
 //Function to center the canvas on screen
 function centerCanvas () {
@@ -32,6 +32,8 @@ function setFill ( context, settings, colorset ) {
 	}
 		
 	if (settings[0] == "gradient"){
+		if (fx_level < 1) return false;
+		
 		var gradient = context.createLinearGradient ( 0, 0, settings[1], settings[2] );
 		
 		if (colorset && settings[3].charAt(0) == "$") gradient.addColorStop ( 0, colorset[ settings[3].substring(1) ] );
@@ -42,7 +44,8 @@ function setFill ( context, settings, colorset ) {
 		
 		context.fillStyle = gradient;
 	}
-		
+	
+	return true;
 }
 
 //Function to draw a primitive according to array
@@ -53,8 +56,8 @@ function drawPrimitive ( context, prim, colorset ) {
 		
 		context.beginPath();
 		context.arc ( 0, 0, prim[3], 0, Math.PI * 2 );
-		setFill ( context, prim[4], colorset );
-		context.fill();
+		if (setFill ( context, prim[4], colorset ))
+			context.fill();
 		
 		context.restore();
 	}
@@ -63,8 +66,8 @@ function drawPrimitive ( context, prim, colorset ) {
 		context.save();
 		context.translate ( prim[1], prim[2] );
 		
-		setFill ( context, prim[5], colorset );
-		context.fillRect ( 0, 0, prim[3], prim[4] );
+		if (setFill ( context, prim[5], colorset ))
+			context.fillRect ( 0, 0, prim[3], prim[4] );
 		
 		context.restore();
 	}
@@ -76,9 +79,8 @@ function drawPrimitive ( context, prim, colorset ) {
 		for ( var i = 2; i < prim.length - 1; i++ )
 			context.lineTo ( prim[i][0], prim[i][1] );
 		
-		setFill ( context, prim[i], colorset );
-		
-		context.fill();
+		if (setFill ( context, prim[i], colorset ))		
+			context.fill();
 	}
 }
 
@@ -97,6 +99,8 @@ function graphicsSetup () {
 	$("#statsCanvas").hide();
 	
 	centerCanvas();
+
+	setInterval ( blinkMmap, 1000 / fx_minimapBlinkRate );
 }
 
 //Function to draw a part on drawing context
@@ -140,7 +144,7 @@ function drawPart ( context, part, offset, modifiers, colorset, deco ) {
 			if ( modifiers[part.modifiers[i].which] )
 				drawPrimitive ( context, part.modifiers[i].draw, colorset );
 				
-	if ( part.parent.printOpacity < 1){
+	if ( part.parent.printOpacity < 1 && fx_level > 0){
 		context.beginPath();
 	
 		context.moveTo ( part.vertices[0][0], part.vertices[0][1] );
@@ -153,6 +157,7 @@ function drawPart ( context, part, offset, modifiers, colorset, deco ) {
 		context.fillStyle = canvas.style.backgroundColor;
 		context.globalAlpha = 1 - part.parent.printOpacity;
 		context.lineWidth = 2;
+		context.strokeStyle = canvas.style.backgroundColor;
 		context.stroke();
 		context.lineWidth = 1;
 		context.fill();
@@ -196,9 +201,12 @@ function drawProjectile ( context, projectile, offset ) {
 
 //Function to draw a scene
 function drawScene ( context, scene, offset, grid, gridInfo ) {
-	if (grid != undefined && grid){		
-		var oX = (offset[0] * sceneScale) % (gridInfo.squareSize);
-		var oY = (offset[1] * sceneScale) % (gridInfo.squareSize);
+	if (grid != undefined && grid && fx_grid){		
+		var oX = (offset[0]) % (gridInfo.squareSize);
+		var oY = (offset[1]) % (gridInfo.squareSize);
+				
+		context.save();
+		context.scale ( sceneScale, sceneScale );
 				
 		for (var i = -gridInfo.squareSize * 2; i <= canvas.height + gridInfo.squareSize * 2; i += gridInfo.squareSize / gridInfo.divisions){
 			if ((i / gridInfo.squareSize * gridInfo.divisions) % gridInfo.divisions == 0) context.strokeStyle = "#202020";
@@ -206,7 +214,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 			
 			context.beginPath();
 			context.moveTo ( 0, oY + i );
-			context.lineTo ( canvas.width, oY + i );
+			context.lineTo ( canvas.width / sceneScale, oY + i );
 			context.stroke();
 		}
 		
@@ -216,16 +224,20 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 			
 			context.beginPath();
 			context.moveTo ( oX + i, 0 );
-			context.lineTo ( oX + i, canvas.height );
+			context.lineTo ( oX + i, canvas.height / sceneScale );
 			context.stroke();
 		}
+		
+		context.restore();
 	}
 	
-	var g = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 250, canvas.width / 2, canvas.height / 2, canvas.width * 0.75)
-	g.addColorStop ( 0, 'rgba(0,0,0,0)' );
-	g.addColorStop ( 1, 'rgba(0,0,0,1)' );
-	context.fillStyle = g;
-	context.fillRect ( 0,0,canvas.width, canvas.height);
+	if ( fx_level > 0 ){
+		var g = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 250, canvas.width / 2, canvas.height / 2, canvas.width * 0.75)
+		g.addColorStop ( 0, 'rgba(0,0,0,0)' );
+		g.addColorStop ( 1, 'rgba(0,0,0,1)' );
+		context.fillStyle = g;
+		context.fillRect ( 0,0,canvas.width, canvas.height);
+	}
 	
 	context.save();
 	context.scale ( sceneScale, sceneScale );
@@ -272,6 +284,15 @@ function drawArrows ( scene, unit, viewport ) {
 	}
 }
 
+var minimapBlink = 0;
+
+//Function to blink minimap
+function blinkMmap () {
+	if (fx_minimapBlink)
+		minimapBlink = !minimapBlink;
+	else minimapBlink = 1;
+}
+
 //Function to draw minimap
 function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 	$("#minimapCanvas").fadeIn(400, "swing");
@@ -310,8 +331,8 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 		var centre = vSum ( vMult ( vSubt ( scene.units[i].position, unit.position ), scale ), [ minimapCanvas.width / 2, minimapCanvas.height / 2 ] );
 		
 		minimapContext.beginPath();
-		minimapContext.arc ( centre[0], centre[1], 2, 0, 2 * Math.PI );
-		minimapContext.fillStyle = scene.units[i].colors[0];
+		minimapContext.arc ( centre[0], centre[1], fx_minimapRadius, 0, 2 * Math.PI );
+		minimapContext.fillStyle = scene.units[i].colors[ minimapBlink ? 0 : 1 ];
 		minimapContext.fill();
 	}
 	

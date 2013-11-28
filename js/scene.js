@@ -114,7 +114,7 @@ function sceneCheckDead ( scene ) {
 }
 
 //Function to spawn a wave in scene
-function spawnWave ( scene, unit, minDistance, maxDistance, color ) {
+function spawnWave ( scene, unit, minDistance, maxDistance, colors ) {
 	var count = Math.ceil(Math.random() * 2 + scene.wave + 1);
 	var cls = 1 + Math.floor(Math.random() * 2);	
 	
@@ -125,7 +125,7 @@ function spawnWave ( scene, unit, minDistance, maxDistance, color ) {
 		var u = new Unit(); loadUnitFromJSON ( units[ index ], u );
 		addUnitToScene ( u, scene );
 		u.position = vSum ( unit.position, [- maxDistance / 1.414 + Math.random() * maxDistance / 1.414 * 2, - maxDistance / 1.414 + Math.random() * maxDistance / 1.414 * 2] );
-		u.colors.push ( color );
+		u.colors = colors.slice ( 0 );
 		
 		var d = vModule ( vSubt ( u.position, unit.position ) );
 		while ( d < minDistance ){

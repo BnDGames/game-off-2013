@@ -207,6 +207,8 @@ var Label = function () {
 	//Red blink function
 	this.blinkingRedOpacity = 0;
 	this.blinkRed = function (target) {
+		if ( fx_level < 1 ) return;
+		
 		this.blinkingRed = true;
 		this.blinkingRedTarget = target;
 	}
@@ -309,6 +311,8 @@ var NumLabel = function () {
 	//Red blink function
 	this.blinkingRedOpacity = 0;
 	this.blinkRed = function (target) {
+		if ( fx_level < 1 ) return;
+		
 		this.blinkingRed = true;
 		this.blinkingRedTarget = target;
 	}

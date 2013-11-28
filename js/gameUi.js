@@ -108,17 +108,20 @@ function initUI () {
 		}
 		
 		if ( this.overlayText ) {
+			if ( fx_level > 0 ) {
 			context.globalAlpha = 0.75;
+		
+				var g = context.createLinearGradient ( 0, canvas.height / 2 - 100, 0, canvas.height / 2 + 100 );
+				g.addColorStop ( 0, "transparent" );
+				g.addColorStop (0.3, "#000000" );
+				g.addColorStop (0.7, "#000000" );
+				g.addColorStop ( 1, "transparent" );
 			
-			var g = context.createLinearGradient ( 0, canvas.height / 2 - 100, 0, canvas.height / 2 + 100 );
-			g.addColorStop ( 0, "transparent" );
-			g.addColorStop (0.3, "#000000" );
-			g.addColorStop (0.7, "#000000" );
-			g.addColorStop ( 1, "transparent" );
+				context.fillStyle = g;
+				context.fillRect ( 0, canvas.height / 2 - 100, canvas.width, 200 );
+				context.globalAlpha = 1;
 			
-			context.fillStyle = g;
-			context.fillRect ( 0, canvas.height / 2 - 100, canvas.width, 200 );
-			context.globalAlpha = 1;
+			}
 						
 			context.fillStyle = "#FFFFFF";
 			context.textAlign = "center";
@@ -156,12 +159,16 @@ function initUI () {
 	
 	hud.blinkingRedOpacity = 0;
 	hud.blinkRed = function (target) {
+		if ( fx_level < 1 ) return;
+		
 		this.blinkingRed = true;
 		this.blinkingRedTarget = target;
 	}
 	
 	hud.blinkingWhiteOpacity = 0;
 	hud.blinkWhite = function (target) {
+		if ( fx_level < 1 ) return;
+		
 		this.blinkingWhite = true;
 		this.blinkingWhiteTarget = target;
 	}
@@ -213,6 +220,8 @@ function initUI () {
 	hud.children.pausemenu.visible = false;
 	
 	hud.children.pausemenu.print = function ( context ) {
+		if ( fx_level < 1 ) return;
+		
 		context.globalAlpha = 0.75;
 			
 		var g = context.createLinearGradient ( 0, canvas.height / 2 - 200, 0, canvas.height / 2 + 200 );
@@ -318,7 +327,7 @@ function initUI () {
 		hud.overlayText = "";
 		hud.blinkingTextContent = "";
 	
-		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, colors_enemy );
+		spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, [colors_enemy, colors_enemy_dark] );
 	}
 	
 	menu.children.editship = new Label();

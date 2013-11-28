@@ -15,12 +15,12 @@ var playerPartsCount = [5,6,7];
 function loadPlayerData () {
 	if (localStorage && localStorage.playerShip){
 		playerShip = new Unit();
-		try { loadUnitFromJSON ( JSON.parse(localStorage.playerShip), playerShip ); playerShip.colors.push(colors_player) }
-		catch (e) {	playerShip = loadUnit ( "data/units/default.json", function (data) { localStorage.playerShip = JSON.stringify(data); playerShip.colors.push ( colors_player ) } ); }
+		try { loadUnitFromJSON ( JSON.parse(localStorage.playerShip), playerShip ); playerShip.colors.push(colors_player); playerShip.colors.push ( colors_player_dark ) }
+		catch (e) {	playerShip = loadUnit ( "data/units/default.json", function (data) { localStorage.playerShip = JSON.stringify(data); playerShip.colors.push ( colors_player ); playerShip.colors.push ( colors_player_dark ) } ); }
 	}
 	
 	else {
-		playerShip = loadUnit ( "data/units/default.json", function (data) { localStorage.playerShip = JSON.stringify(data); playerShip.colors.push ( colors_player )	} );
+		playerShip = loadUnit ( "data/units/default.json", function (data) { localStorage.playerShip = JSON.stringify(data); playerShip.colors.push ( colors_player ); playerShip.colors.push ( colors_player_dark )	} );
 		playerShip.colors.push(colors_player);
 	}
 	
@@ -47,6 +47,6 @@ function resetPlayerData () {
 		playerPartsCount = [5,6,7];
 		playerParts = parts;
 		playerScore = 0;
-		playerShip = loadUnit ( "data/units/default.json", function (data) { savePlayerData(); playerShip.colors.push ( colors_player ) } );
+		playerShip = loadUnit ( "data/units/default.json", function (data) { savePlayerData(); playerShip.colors.push ( colors_player ); playerShip.colors.push ( colors_player_dark ) } );
 	}
 }
