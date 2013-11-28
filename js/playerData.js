@@ -5,7 +5,11 @@
 //Player progress data
 //-----------------------------------------------------------------
 
+var loadingPlayerData = 0;
+var loadedPlayerData = 0;
+
 var playerShip = 0;
+var playerPartsIds = [ "light_wing_0", "light_engine_0", "light_machinegun_0" ];
 var playerParts = new Array ();
 var playerScore = 0;
 
@@ -13,6 +17,8 @@ var playerPartsCount = [5,6,7];
 
 //Function to load player data from local storage
 function loadPlayerData () {
+	loadingPlayerData = 1;
+	
 	if (localStorage && localStorage.playerShip){
 		playerShip = new Unit();
 		try { loadUnitFromJSON ( JSON.parse(localStorage.playerShip), playerShip ); playerShip.colors.push(colors_player); playerShip.colors.push ( colors_player_dark ) }
@@ -29,14 +35,20 @@ function loadPlayerData () {
 		if (localStorage.playerPartsCount) playerPartsCount = JSON.parse ( localStorage.playerPartsCount );
 	}
 	
-	if (localStorage) {
-		for ( var i = 0; i < upgrades.length; i++ ){
-			if ( localStorage["upg_" + upgrades[i].id] )
-				upgrades[i].value = localStorage["upg_" + upgrades[i].id];
+	if (localStorage) {		
+		if ( localStorage.playerPartsIds )
+			playerPartsIds = JSON.parse ( localStorage.playerPartsIds );
+		else localStorage.playerPartsIds = JSON.stringify(playerPartsIds);
+		
+		playerParts.splice(0, playerParts.length);
+		
+		for ( var i = 0; i < playerPartsIds.length; i++ ) {
+			var p = getPart ( playerPartsIds[i] );
+			if ( p ) playerParts.push ( p );
 		}
 	}
-		
-	playerParts = parts.slice(0);
+	
+	loadedPlayerData = 1;
 }
 
 //Function to save player data to local storage
@@ -48,6 +60,8 @@ function savePlayerData () {
 		
 		for ( var i = 0; i < upgrades.length; i++ )
 			localStorage["upg_" + upgrades[i].id] = upgrades[i].value;
+			
+		localStorage.playerPartsIds = JSON.stringify ( playerPartsIds );
 	}
 }
 
@@ -56,7 +70,13 @@ function resetPlayerData () {
 	if ( confirm ( "Are you sure you want to reset player data?" ) ) {
 		playerPartsCount = [5,6,7];
 		playerParts = parts;
+		playerPartsIds = [ "light_wing_0", "light_engine_0", "light_machinegun_0" ];
 		playerScore = 0;
 		playerShip = loadUnit ( "data/units/default.json", function (data) { savePlayerData(); playerShip.colors.push ( colors_player ); playerShip.colors.push ( colors_player_dark ) } );
+		
+		delete localStorage.upgrades;
+		
+		for (var i = 0; i < upgrades.length; i++)
+			upgrades[i].value = 0;
 	}
 }

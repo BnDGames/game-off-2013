@@ -39,7 +39,7 @@ var fx_sceneScaleBase = 0.75;
 var fx_sceneScaleFactor = 0.4;
 
 //Damage alert blink
-var fx_damageAlert = true;
+var fx_damageAlert = false;
 var fx_damageAlertThreshold = 0.2;
 
 //Grid

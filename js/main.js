@@ -18,7 +18,6 @@ function setup () {
 	
 	loadParts ();
 	loadUnits ();
-	loadUpgrades ();
 	
 	setInterval ( loop, 30 );
 	setInterval ( draw, 0 );
@@ -36,7 +35,7 @@ function loop () {
 		if (!pause){
 			applyInput();
 			
-			var targetScale = fx_sceneScaleBase - ( inputBoundUnit.gfxModifiers[gfxMod_engineOn] ? fx_sceneScaleFactor : 0 );
+			var targetScale = fx_sceneScaleBase - ( inputBoundUnit.gfxModifiers[gfxMod_engineOn] && getStat(inputBoundUnit, stat_engine) ? fx_sceneScaleFactor : 0 );
 			if (targetScale - sceneScale > 0.01) sceneScale += 0.01;
 			else if ( sceneScale - targetScale > 0.01) sceneScale -= 0.01;
 			else sceneScale = targetScale;
@@ -60,7 +59,7 @@ function loop () {
 				hud.blinkText ( "WAVE CLEARED", 3, function () { hud.blinkText ( "NEXT WAVE", 3, function () { spawnWave ( gameScene, inputBoundUnit, canvas.width / sceneScale, canvas.width * 2 / sceneScale, [colors_enemy, colors_enemy_dark] ); hud.children.waveLabel.blinkRed(1) } ) } );
 			}
 			
-			if ( inputBoundUnit.health / inputBoundUnit.maxHealth < fx_damageAlertThreshold && fx_level > 0 && !alert){
+			if ( fx_damageAlert && inputBoundUnit.health / inputBoundUnit.maxHealth < fx_damageAlertThreshold && fx_level > 0 && !alert){
 				alert = true;
 				var interval = 3 / (fx_damageAlertThreshold - inputBoundUnit.health / inputBoundUnit.maxHealth) / fx_damageAlertThreshold;
 				setTimeout ( function () { hud.blinkRed ( 0.75 ); alert = false }, interval );
@@ -71,7 +70,13 @@ function loop () {
 	if (state_current == state_loading){
 		updateLoading ();
 		
-		if (partsCount > 0 && partsLoaded >= partsCount && unitsLoaded >= unitsCount && loading.children.progressBar.shownFill > 0.99) {
+		if (partsCount > 0 && partsLoaded >= partsCount && !loadingPlayerData)
+			loadPlayerData();
+		
+		if (partsCount > 0 && partsLoaded >= partsCount && !loadingUpgrades && loadedPlayerData)
+			loadUpgrades();
+		
+		if (partsCount > 0 && partsLoaded >= partsCount && unitsLoaded >= unitsCount && upgradesLoaded >= upgradesCount && loading.children.progressBar.shownFill > 0.99) {
 			loadPlayerData();
 			
 			state_current = state_menu;

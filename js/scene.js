@@ -115,10 +115,10 @@ function sceneCheckDead ( scene ) {
 
 //Function to spawn a wave in scene
 function spawnWave ( scene, unit, minDistance, maxDistance, colors ) {
-	var count = Math.ceil(Math.random() * 2 + scene.wave + 1);
 	var cls = 1 + Math.floor(Math.random() * 2);	
+	var count = 0;
 	
-	for ( var i = 0; i < count; i++ ) {
+	while (true) {
 		var index = Math.floor(Math.random() * units.length);
 		while ( units[index].cls != cls ) index = Math.floor ( Math.random() * units.length );
 		
@@ -136,6 +136,10 @@ function spawnWave ( scene, unit, minDistance, maxDistance, colors ) {
 		u.angle = vAngle(vSubt(u.position, unit.position));
 		u.ai = true;
 		u.team = "ai";
+		
+		count++;
+		
+		if ( Math.random() * (100 + scene.wave * 2) > u.amountFactor ) break;
 	}
 	
 	scene.spawnCount = count;

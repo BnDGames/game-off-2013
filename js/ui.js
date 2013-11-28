@@ -55,6 +55,8 @@ function printControl ( context, control, offset ) {
 
 //Printafter for controls
 function printAfterControl ( context, control, offset ) {
+	if (!control.visible) return;
+	
 	context.save();
 	context.translate ( offset[0], offset[1] );
 	
@@ -833,7 +835,8 @@ var UpgradeViewer = function () {
 	this.children.upgradeButton = new Label();
 	this.children.upgradeButton.parent = this;
 	this.children.cost = new Label();
-	this.children.progress = new Fillbar(); this.children.progress.visible = false;
+	this.children.progress = new Fillbar();
+	this.children.part = new PartViewer();
 	
 	this.scoreControl = 0;
 	
@@ -845,7 +848,7 @@ var UpgradeViewer = function () {
 			this.children.upgradeButton.onmousein = labelOnMouseIn;
 			this.children.upgradeButton.onmouseout = labelOnMouseOut;
 			this.children.upgradeButton.onmousedown = function () {
-				if (playerScore >= this.parent.upgrade.cost + this.parent.upgrade.costFactor * this.parent.upgrade.value)
+				if (playerScore >= this.parent.upgrade.cost + (this.parent.upgrade.costFactor ? this.parent.upgrade.costFactor * this.parent.upgrade.value : 0))
 					this.innerColor = colors_player;
 				else {
 					this.innerColor = colors_enemy;
@@ -855,8 +858,8 @@ var UpgradeViewer = function () {
 			this.children.upgradeButton.onmouseup = function () {
 				this.innerColor = colors_buttonHover;
 				
-				if (playerScore >= this.parent.upgrade.cost + this.parent.upgrade.costFactor * this.parent.upgrade.value){
-					playerScore -= this.parent.upgrade.cost + this.parent.upgrade.costFactor * this.parent.upgrade.value;
+				if (playerScore >= this.parent.upgrade.cost + (this.parent.upgrade.costFactor ? this.parent.upgrade.costFactor * this.parent.upgrade.value : 0)){
+					playerScore -= this.parent.upgrade.cost + (this.parent.upgrade.costFactor ? this.parent.upgrade.costFactor * this.parent.upgrade.value : 0);
 					
 					applyUpgrade ( this.parent.upgrade );
 					this.parent.setup(true);
@@ -873,6 +876,9 @@ var UpgradeViewer = function () {
 			
 			this.children.progress.borderColor = this.borderColor;
 			this.children.progress.innerColor = colors_player;
+			
+			this.children.part.disabled = false;
+			this.children.part.rotate = true;
 		}
 		
 		else if (this.upgrade) {
@@ -895,6 +901,10 @@ var UpgradeViewer = function () {
 			
 			this.children.progress.borderColor = this.completeBorderColor;
 			this.children.progress.innerColor = colors[8];
+			
+			this.children.part.borderColor = this.completeBorderColor;
+			this.children.part.disabled = true;
+			this.children.part.rotate = false;
 		}
 		
 		this.children.cost.area = this.children.upgradeButton.area.slice(0);
@@ -903,7 +913,7 @@ var UpgradeViewer = function () {
 		this.children.cost.area[1] += 3;
 		this.children.cost.area[0] = 16 + this.corner;
 		
-		if ( this.upgrade ) this.children.cost.content = "$ " + (this.upgrade.cost + this.upgrade.costFactor * this.upgrade.value);
+		if ( this.upgrade ) this.children.cost.content = "$ " + (this.upgrade.cost + (this.upgrade.costFactor ? this.upgrade.costFactor * this.upgrade.value : 0));
 		else this.children.cost.content = "-";
 		
 		this.visible = true;
@@ -916,6 +926,24 @@ var UpgradeViewer = function () {
 			if (!anim) this.children.progress.shownFill = this.children.progress.fill;
 		}
 		else this.children.progress.visible = false;
+		
+		if ( this.upgrade && this.upgrade.data.action == "unlockPart" ) {
+			this.children.part.part = getPart ( this.upgrade.data.part );
+			
+			this.children.part.area = [ this.area[2] - 102, 12, 90, 90 ];
+			this.children.part.innerColor = "#404040";
+			this.children.part.onmousein = 0;
+			this.children.part.onmouseout = 0;
+			this.children.part.onmousedown = 0;
+			this.children.part.onmouseup = 0;
+			this.children.part.rotate = true;
+			
+			this.children.part.visible = true;
+			
+		}
+		
+		else 
+			this.children.part.visible = false;
 	}
 	
 	//Print function

@@ -70,6 +70,7 @@ var Unit = function () {
 	//Misc
 	this.cls = 0;
 	this.scoreValue = 0;//Score given when destroying
+	this.amountFactor = 50;
 	
 	//Unit graphics
 	this.colors = new Array();
@@ -420,6 +421,8 @@ function loadUnitFromJSON ( data, unit ) {
 	if ( data.scoreValue ) unit.scoreValue = data.scoreValue;
 	
 	if ( data.cls ) unit.cls = data.cls;
+	
+	if ( data.amountFactor ) unit.amountFactor = data.amountFactor;
 	
 	unit.parts_current = unit.parts_light;
 	

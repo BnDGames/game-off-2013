@@ -1,6 +1,7 @@
 {
  "id": "scorpion",
- "scoreValue": 10,
+ "scoreValue": 25,
+ "amountFactor":50,
  "cls": 2,
  "parts_static": [
   {

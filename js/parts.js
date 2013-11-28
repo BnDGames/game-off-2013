@@ -13,6 +13,8 @@ var Part = function () {
 	this.uid = totParts;
 	totParts++;
 	
+	this.cls = 0;
+	
 	//Part parent unit
 	this.parent = 0;
 	
@@ -57,6 +59,8 @@ var Part = function () {
 	this.allowMiddle = true;
 	
 	this.symmetric = -1;
+	
+	this.unlockCost = 0;
 
 	//Unit statistics belong to its parts
 	//and are calculated summing the stats
@@ -136,6 +140,7 @@ function getPart ( id ) {
 			
 			result.id = parts[i].id;
 			result.uid;
+			result.cls = parts[i].cls;
 			
 			for ( var l = 0; l < parts[i].vertices.length; l++)
 				result.vertices.push ( parts[i].vertices[l].slice (0) );
@@ -188,6 +193,10 @@ function getPart ( id ) {
 				
 			if (parts[i].info != undefined)
 				result.info = parts[i].info;
+				
+			if (parts[i].unlockCost != undefined)
+				result.unlockCost = parts[i].unlockCost;
+			else result.unlockCost = 0;
 			
 			return result;
 		}

@@ -101,5 +101,6 @@
  ],
  
  "scoreValue":10,
+ "amountFactor":80,
  "cls": 1
 }
