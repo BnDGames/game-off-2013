@@ -636,8 +636,8 @@ function ai ( unit, target ) {
 		while (angle > Math.PI) angle -= Math.PI * 2;
 		while (angle < -Math.PI) angle += Math.PI * 2;
 	
-		if (angle > 0) unit.applyMomentum ( -turn );
-		else unit.applyMomentum ( turn );
+		if (angle > ai_angleTolerance) unit.applyMomentum ( -turn );
+		else if ( angle < -ai_angleTolerance) unit.applyMomentum ( turn );
 	
 		if ( angle > -Math.PI / 6 && angle < Math.PI / 6 ){
 			unit.applyForce ( unit.position, vRotate ( [force,0], unit.angle ) );

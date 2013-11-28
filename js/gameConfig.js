@@ -12,8 +12,16 @@
 //and projectile mass and speed
 var game_enableRecoil = false;
 
+//Projectile bump factor
+//Impulse of projectile collision on unit is multiplied by this
+var game_projectileBumpFactor = 1;
+var game_projectileBumpFactorEnemy = 3;
+
 //Player damage factor
 var game_playerDamageFactor = 0.2;
+
+//Game speed
+var game_speed = 2;
 
 //GRAPHICS and EFFECTS///////////////////////////////////
 
@@ -35,8 +43,8 @@ var fx_minimapBlinkRate = 4;
 var fx_minimapBlinkSpeed = 1;
 
 //Scene scaling
-var fx_sceneScaleBase = 0.75;
-var fx_sceneScaleFactor = 0.4;
+var fx_sceneScaleBase = 0.5;
+var fx_sceneScaleFactor = 0.1;
 
 //Damage alert blink
 var fx_damageAlert = false;
@@ -48,12 +56,17 @@ var fx_grid = 1;
 //PHYSICS////////////////////////////////////////////////
 
 //Damping factors
-var phys_dampingTr = 0.45;
+var phys_dampingTr = 0.60;
 var phys_dampingRot = 1500;
 
 //Optimal momentum
 //Turn momentum won't get higher than this
-var phys_optimalMomentum = 0.008;
+var phys_optimalMomentum = 0.007;
 
 //Maneuvrability coefficient
-var phys_manCoefficient = 1.5;
+var phys_manCoefficient = 1;
+
+//AI/////////////////////////////////////////////////////
+
+//Angle tolerance
+var ai_angleTolerance = Math.PI / 8;

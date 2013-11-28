@@ -1,0 +1,40 @@
+{
+	"id":"heavy_engine_0",
+	"cls":3,
+	
+	"info": [
+		"heavy engine mk1",
+		"powerful engine suitable for heavy ships"
+	],
+	
+	"unlockCost":100,
+	
+	"vertices": [
+		[-27.5,-20],
+		[-20,-20],
+		[-20,-25],
+		[20,-25],
+		[20,-20],
+		[27.5,-20],
+		[27.5,5],
+		[15, 25],
+		[-15, 25],
+		[-27.5,5]
+	],
+	
+	"anchors_minus": [
+		[0,-25,40]
+	],
+	
+	"fill":"#A0A0A0",
+	
+	"stats": [ 0, 0.2, 20, 7.5, 150 ],
+	
+	"draw" : [
+		[ "rect", -20, -25, 40, 5, [ "plain", "#505050" ] ]
+	],
+	
+	"modifiers": [
+                { "which": 0, "draw": ["rect", -8, 28, 16, 40, [ "gradient", 0, 35, "#E4EEF0", "#000000" ] ] }
+        ]
+}

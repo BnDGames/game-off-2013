@@ -504,6 +504,8 @@ function initUI () {
 						
 					shipEditor.children.partsCount.content = playerShip.parts.length + "/" + playerPartsCount[shipEditor.children.stateCheck.checked];
 					
+					playerShip.calcStats();
+					
 					return;
 				}
 			}

@@ -1,0 +1,45 @@
+{
+	"id": "heavy_cannon_0",
+	"cls": 3,
+	
+	"info": [
+		"heavy cannon mk1",
+		"the heavy cannon - very low firerate but high damage"
+	],
+
+	"vertices":	[
+					[ 14, 10 ],
+					[ 14, -10 ],
+					[ -14, -10 ],
+					[ -14, 10 ]
+				],
+				
+	"anchors_minus": [
+		[0,-10, 14]
+	],
+				
+	"stats" : [ 0, 0, 5, 0, 0 ],
+	
+	"fill": "#505050",
+	
+	"actions": [
+		{
+			"type": "shoot",
+			"reload": 1500,
+			"projectiles": [
+				{
+					"range": 150,
+					"position": [ 0, 14 ],
+					"speed": [ 0, 10 ],
+					"mass": 20,
+
+					"draw": [
+						[ "rect", -30, -12, 30, 24, [ "gradient", 30, 0, "#000000", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 12, [ "plain", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 9, [ "plain", "#D0D0D0" ] ]
+					]
+				}
+			]
+		}
+	]
+}

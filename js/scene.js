@@ -70,7 +70,10 @@ function sceneCheckProj ( scene ) {
 			if ( vModule ( dist ) > scene.units[j].r) continue;
 			
 			if ( pointInUnit ( scene.projectiles[i].position, scene.units[j] ) ) {
-				scene.units[j].applyImpulse ( scene.projectiles[i].position, vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass ) );
+				var impulse = vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass * game_projectileBumpFactor );
+				if ( scene.units[j] != inputBoundUnit ) impulse = vMult ( impulse, game_projectileBumpFactorEnemy );
+				
+				scene.units[j].applyImpulse ( scene.projectiles[i].position, impulse );
 				scene.units[j].damage ( scene.projectiles[i].mass * (scene.units[j] == inputBoundUnit ? game_playerDamageFactor : 1) );
 				scene.projectiles[i].dead = true;
 				

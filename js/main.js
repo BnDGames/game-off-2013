@@ -23,10 +23,8 @@ function setup () {
 	setInterval ( draw, 0 );
 }
 
-var speed = 1.5;
 var pause = false;
 var gameoverOverlay = false;
-
 var alert = false;
 
 //Loop function
@@ -40,7 +38,7 @@ function loop () {
 			else if ( sceneScale - targetScale > 0.0025) sceneScale -= 0.0025;
 			else sceneScale = targetScale;
 			
-			moveScene ( gameScene, speed );
+			moveScene ( gameScene, game_speed );
 			sceneAi ( gameScene, inputBoundUnit );
 			
 			updateHud( inputBoundUnit );
@@ -84,5 +82,5 @@ function loop () {
 		}
 	}
 	
-	if (currentUI) animateControl ( currentUI, speed );
+	if (currentUI) animateControl ( currentUI, 1 );
 }
