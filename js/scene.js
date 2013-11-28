@@ -139,7 +139,7 @@ function spawnWave ( scene, unit, minDistance, maxDistance, colors ) {
 		
 		count++;
 		
-		if ( Math.random() * (100 + scene.wave * 2) > u.amountFactor ) break;
+		if ( (Math.random() * (100 + scene.wave * 10) > u.amountFactor || count >= 5 * scene.wave) && count > scene.wave) break;
 	}
 	
 	scene.spawnCount = count;

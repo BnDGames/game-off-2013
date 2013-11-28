@@ -36,8 +36,8 @@ function loop () {
 			applyInput();
 			
 			var targetScale = fx_sceneScaleBase - ( inputBoundUnit.gfxModifiers[gfxMod_engineOn] && getStat(inputBoundUnit, stat_engine) ? fx_sceneScaleFactor : 0 );
-			if (targetScale - sceneScale > 0.01) sceneScale += 0.01;
-			else if ( sceneScale - targetScale > 0.01) sceneScale -= 0.01;
+			if (targetScale - sceneScale > 0.0025) sceneScale += 0.0025;
+			else if ( sceneScale - targetScale > 0.0025) sceneScale -= 0.0025;
 			else sceneScale = targetScale;
 			
 			moveScene ( gameScene, speed );

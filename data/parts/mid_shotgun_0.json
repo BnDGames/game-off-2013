@@ -25,7 +25,7 @@
 	"actions": [
 		{
 			"type": "shoot",
-			"reload": 300,
+			"reload": 800,
 			"projectiles": [
 				
 				{

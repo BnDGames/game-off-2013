@@ -64,6 +64,9 @@ var Unit = function () {
 
 	this.dead = false;
 	
+	this.statsFactor = new Array();
+	for ( var i = 0; i < stats_total; i++) this.statsFactor[i] = 0;
+	
 	//Player specific information
 	this.score = 0;
 	
@@ -424,6 +427,8 @@ function loadUnitFromJSON ( data, unit ) {
 	
 	if ( data.amountFactor ) unit.amountFactor = data.amountFactor;
 	
+	if ( data.statsFactor ) unit.statsFactor = data.statsFactor.slice ( 0 );
+	
 	unit.parts_current = unit.parts_light;
 	
 	unit.calcStats();
@@ -505,6 +510,8 @@ function getStat ( unit, stat ) {
 	for ( var i = 0; i < unit.parts.length; i++ )
 		if (unit.parts[i].stats.length > stat)
 			result += unit.parts[i].stats[stat];
+	
+	result *= 1 + unit.statsFactor[stat];
 	
 	return result;
 }
