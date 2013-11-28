@@ -25,11 +25,18 @@ function loadPlayerData () {
 	}
 	
 	if (localStorage) {
-		if (localStorage.playerScore) playerScore = localStorage.playerScore;
+		if (localStorage.playerScore) playerScore = parseInt(localStorage.playerScore);
 		if (localStorage.playerPartsCount) playerPartsCount = JSON.parse ( localStorage.playerPartsCount );
 	}
 	
-	playerParts = parts;
+	if (localStorage) {
+		for ( var i = 0; i < upgrades.length; i++ ){
+			if ( localStorage["upg_" + upgrades[i].id] )
+				upgrades[i].value = localStorage["upg_" + upgrades[i].id];
+		}
+	}
+		
+	playerParts = parts.slice(0);
 }
 
 //Function to save player data to local storage
@@ -38,6 +45,9 @@ function savePlayerData () {
 		localStorage.playerShip = JSON.stringify(unitToJSON(playerShip), 0, " ");
 		localStorage.playerScore = playerScore;
 		localStorage.playerPartsCount = JSON.stringify(playerPartsCount);
+		
+		for ( var i = 0; i < upgrades.length; i++ )
+			localStorage["upg_" + upgrades[i].id] = upgrades[i].value;
 	}
 }
 

@@ -273,6 +273,8 @@ function initUI () {
 		hud.children.pause.onmouseout = labelOnMouseOut;
 		pause = false;
 		
+		playerShip.score = 0;
+		
 		currentUI = menu;
 		state_current = state_menu;
 	}
@@ -491,7 +493,7 @@ function initUI () {
 		if (mX > this.shipArea[0] && mX < this.shipArea[0] + this.shipArea[2] && mY > this.shipArea[1] && mY < this.shipArea[1] + this.shipArea[3]){
 			var p = vSubt ( [mX, mY], [this.shipArea[0] + this.shipArea[2] / 2, this.shipArea[1] + this.shipArea[3] / 2] );
 			
-			for ( var i = 0; i < playerShip.parts.length; i++ ) {
+			for ( var i = playerShip.parts.length - 1; i >= 0; i-- ) {
 				var v = new Array();
 				for (var l = 0; l < playerShip.parts[i].vertices.length; l++)
 					v.push ( vSum (playerShip.parts[i].vertices[l], playerShip.parts[i].position) );

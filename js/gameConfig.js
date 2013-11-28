@@ -35,10 +35,14 @@ var fx_minimapBlinkRate = 4;
 var fx_minimapBlinkSpeed = 1;
 
 //Scene scaling
-var fx_sceneScaleBase = 0.5;
-var fx_sceneScaleFactor = 0;
+var fx_sceneScaleBase = 0.75;
+var fx_sceneScaleFactor = 0.4;
 
-///Grid
+//Damage alert blink
+var fx_damageAlert = true;
+var fx_damageAlertThreshold = 0.2;
+
+//Grid
 var fx_grid = 1;
 
 //PHYSICS////////////////////////////////////////////////
