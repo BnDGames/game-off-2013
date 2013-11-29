@@ -256,7 +256,7 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 //Function to draw indicators for enemy units
 function drawArrows ( scene, unit, viewport ) {
 	for ( var i = 0; i < scene.units.length; i++ ){
-		if ( scene.units[i] == unit || scene.units[i].health <= 0 ) continue;
+		if ( scene.units[i] == unit || scene.units[i].destroying ) continue;
 		
 		var distance = vSubt ( scene.units[i].position, unit.position );
 		
@@ -326,7 +326,7 @@ function drawMinimap ( scene, unit, scale, grid, gridInfo ) {
 	}
 	
 	for (var i = 0; i < scene.units.length; i++){
-		if (scene.units[i].health <= 0) continue;
+		if (scene.units[i].destroying) continue;
 		
 		var centre = vSum ( vMult ( vSubt ( scene.units[i].position, unit.position ), scale ), [ minimapCanvas.width / 2, minimapCanvas.height / 2 ] );
 		

@@ -64,7 +64,7 @@ function sceneCheckProj ( scene ) {
 	for ( var i = 0; i < scene.projectiles.length; i++ ){
 		for ( var j = 0; j < scene.units.length; j++ ){
 			if ( scene.projectiles[i].owner == scene.units[j] ) continue;
-			if ( scene.units[j].dead || scene.units[j].health <= 0 || scene.projectiles[i].owner.team == scene.units[j].team ) continue;
+			if ( scene.units[j].dead || scene.units[j].destroying || scene.projectiles[i].owner.team == scene.units[j].team ) continue;
 			
 			var dist = vSubt ( scene.units[j].position, scene.projectiles[i].position );
 			if ( vModule ( dist ) > scene.units[j].r) continue;
@@ -81,7 +81,7 @@ function sceneCheckProj ( scene ) {
 					hud.blinkRed ( 0.25 + scene.projectiles[i].mass / 10 );
 				}
 				
-				else if (scene.units[j].health <= 0){
+				else if (scene.units[j].destroying){
 					scene.projectiles[i].owner.score += scene.units[j].scoreValue;
 					
 					hud.blinkWhite ( 0.75 );
@@ -97,7 +97,7 @@ function sceneCheckProj ( scene ) {
 //Function to check for collisions in scene
 function sceneCheckCollisions ( scene ) {
 	for ( var i = 0; i + 1 < scene.units.length; i++ ){
-		if ( scene.units[i].dead || scene.units[i].health <= 0 ) continue;
+		if ( scene.units[i].dead || scene.units[i].destroying ) continue;
 		
 		for ( var j = i + 1; j < scene.units.length; j++ ){
 			if ( scene.units[j].dead || scene.units[j].health <= 0 ) continue;

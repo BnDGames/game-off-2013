@@ -43,8 +43,8 @@ var fx_minimapBlinkRate = 4;
 var fx_minimapBlinkSpeed = 1;
 
 //Scene scaling
-var fx_sceneScaleBase = 0.5;
-var fx_sceneScaleFactor = 0.1;
+var fx_sceneScaleBase = 0.75;
+var fx_sceneScaleFactor = 0.25;
 
 //Damage alert blink
 var fx_damageAlert = false;
@@ -61,7 +61,7 @@ var phys_dampingRot = 1500;
 
 //Optimal momentum
 //Turn momentum won't get higher than this
-var phys_optimalMomentum = 0.007;
+var phys_optimalMomentum = 0.005;
 
 //Maneuvrability coefficient
 var phys_manCoefficient = 1;

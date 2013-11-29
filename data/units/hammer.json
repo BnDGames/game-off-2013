@@ -2,7 +2,7 @@
  "id": "hammer",
  "scoreValue": 30,
  "cls": 2,
- "statsFactor":[0,0,0,0,-0.8],
+ "statsFactor":[0,0,0,0,-0.8,0],
  "amountFactor":30,
  "parts_static": [
   {

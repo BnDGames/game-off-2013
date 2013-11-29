@@ -224,15 +224,20 @@ var Unit = function () {
 	//Function to damage the unit
 	this.damage = function ( damage ) {
 		this.health -= damage / this.armor;
+		console.log("RECEIVING DAMAGE: " + (damage / this.armor) + " -> " + this.health );
 		if (this.health <= 0) this.destroy();
 	}
 	
 	//Function to destroy the unit
 	this.destroy = function () {
 		this.health = 0;
+		this.destroying = 1;
+		this.printOpacity = 1;
+		
+		console.log("DESTROYING!");
 		
 		for ( var i = 0; i < this.parts.length; i++ ) {
-			this.parts[i].originalPos = this.parts[i].position;
+			if ( !this.parts[i].oldPos ) this.parts[i].oldPos = this.parts[i].position;
 			this.parts[i].omega = 0;
 			this.parts[i].speed = vSetModule ( this.parts[i].position, Math.sqrt(fx_destructionSpeed * vModule(this.parts[i].position) / 100) );
 			this.parts[i].moveToTarget = false;
@@ -240,7 +245,7 @@ var Unit = function () {
 	}
 	
 	//Function to put off parts
-	this.putOffParts = function ( which, immediate ) {		
+	this.putOffParts = function ( which, immediate ) {	
 		if ( which == "heavy" ) this.putOff = this.parts_heavy;
 		if ( which == "mid" ) this.putOff = this.parts_mid;
 		if ( which == "light" ) this.putOff = this.parts_light;
@@ -309,14 +314,12 @@ var Unit = function () {
 		this.changeParts ( "light", true );
 		this.health = this.maxHealth;
 		this.calcStats();
+		this.destroying = 0;
 		
 		this.printOpacity = 1;
 		this.dead = false;
 		
-		for (var i = 0; i < this.parts.length; i++){
-			if (this.parts[i].originalPos != undefined)
-				this.parts[i].position = this.parts[i].originalPos.slice(0);
-				
+		for (var i = 0; i < this.parts.length; i++){				
 			this.parts[i].speed = [0,0];
 			this.parts[i].omega = 0;
 		}
@@ -496,7 +499,7 @@ function moveUnit ( unit, time ) {
 		if (i == unit.putOff.length - 1) unit.putOff = 0;
 	}
 		
-	if ( unit.health <= 0 ) unit.printOpacity -= 0.01;
+	if ( unit.destroying ) unit.printOpacity -= 0.01;
 	if ( unit.printOpacity <= 0){ unit.dead = true; unit.printOpacity = 0; }
 	
 	if ( unit.health + getStat (unit, stat_regen) * time < unit.maxHealth ) unit.health += getStat (unit, stat_regen) * time;
@@ -511,7 +514,8 @@ function getStat ( unit, stat ) {
 		if (unit.parts[i].stats.length > stat)
 			result += unit.parts[i].stats[stat];
 	
-	result *= 1 + unit.statsFactor[stat];
+	if (unit.statsFactor[stat])
+		result *= 1 + unit.statsFactor[stat];
 	
 	return result;
 }
@@ -601,7 +605,7 @@ function handleUnitCollision ( a, b, collision ) {
 
 //Function to control unit with AI
 function ai ( unit, target ) {
-	if (unit.health <= 0) {
+	if (unit.destroying) {
 		for (var i = 0; i < unit.gfxModifiers.length; i++)
 			unit.gfxModifiers[i] = false;
 			

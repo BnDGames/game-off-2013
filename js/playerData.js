@@ -54,6 +54,8 @@ function loadPlayerData () {
 //Function to save player data to local storage
 function savePlayerData () {
 	if (localStorage){
+		playerShip.reset();
+		
 		localStorage.playerShip = JSON.stringify(unitToJSON(playerShip), 0, " ");
 		localStorage.playerScore = playerScore;
 		localStorage.playerPartsCount = JSON.stringify(playerPartsCount);
@@ -69,14 +71,20 @@ function savePlayerData () {
 function resetPlayerData () {
 	if ( confirm ( "Are you sure you want to reset player data?" ) ) {
 		playerPartsCount = [5,6,7];
-		playerParts = parts;
 		playerPartsIds = [ "light_wing_0", "light_engine_0", "light_machinegun_0" ];
 		playerScore = 0;
 		playerShip = loadUnit ( "data/units/default.json", function (data) { savePlayerData(); playerShip.colors.push ( colors_player ); playerShip.colors.push ( colors_player_dark ) } );
 		
-		delete localStorage.upgrades;
-		
 		for (var i = 0; i < upgrades.length; i++)
 			upgrades[i].value = 0;
+			
+		savePlayerData();
+		
+		playerParts.splice(0, playerParts.length);
+		
+		for ( var i = 0; i < playerPartsIds.length; i++ ) {
+			var p = getPart ( playerPartsIds[i] );
+			if ( p ) playerParts.push ( p );
+		}
 	}
 }
