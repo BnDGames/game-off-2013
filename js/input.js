@@ -11,16 +11,17 @@ var keyStates = [ false, false, false, false, false, false, false, false ];
 
 //Key codes for keys
 var keyCodes = [ 87, 65, 83, 68, 32, 66, 78, 77 ];
+var keyCodes_alt = [ 38, 37, 40, 39, 0, 0, 0, 0 ];
 
 //Functions to handle key events
 document.onkeydown = function ( event ) {
 	for (var i = 0; i < keyStates.length; i++)
-		if (event.keyCode == keyCodes[i]) keyStates[i] = true;
+		if (event.keyCode == keyCodes[i] || event.keyCode == keyCodes_alt[i]) keyStates[i] = true;
 }
 
 document.onkeyup = function ( event ) {
 	for (var i = 0; i < keyStates.length; i++)
-		if (event.keyCode == keyCodes[i]) keyStates[i] = false;
+		if (event.keyCode == keyCodes[i] || event.keyCode == keyCodes_alt[i]) keyStates[i] = false;
 }
 
 //Unit to which keyboard input is sent
