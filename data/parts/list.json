@@ -2,6 +2,7 @@
 	"data/parts/base_0.json",
 	
 	"data/parts/light_wing_0.json",
+	"data/parts/light_wing_1.json",
 	"data/parts/mid_wing_0.json",
 	
 	"data/parts/light_engine_0.json",
@@ -9,7 +10,9 @@
 	"data/parts/heavy_engine_0.json",
 	
 	"data/parts/light_machinegun_0.json",
+	"data/parts/light_machinegun_1.json",
 	"data/parts/light_flamethrower_0.json",
+	"data/parts/light_flamethrower_1.json",
 	"data/parts/mid_cannon_0.json",
 	"data/parts/mid_shotgun_0.json",
 	"data/parts/heavy_cannon_0.json",

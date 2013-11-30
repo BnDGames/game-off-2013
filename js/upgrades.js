@@ -52,7 +52,7 @@ function loadUpgrades () {
 		while ( partsLoaded < partsCount || partsCount == 0 ) { }
 		
 		for ( var i = 0; i < parts.length; i++ ) {
-			if ( playerPartsIds.indexOf ( parts[i].id ) < 0 && parts[i].id.substr(0,5) != "base_"){
+			if ( parts[i].id.substr(0,5) != "base_"){
 				var u = new Upgrade();
 				u.id = "unlock_" + parts[i].id;
 				u.info = parts[i].info.slice(0);
@@ -61,8 +61,9 @@ function loadUpgrades () {
 				u.data.action = "unlockPart";
 				u.data.part = parts[i].id;
 				u.value = 0;
+				if ( playerPartsIds.indexOf ( parts[i].id ) >= 0 ) u.value = 1;
 				u.max = 1;
-				
+								
 				upgrades.push(u);
 			}
 		}

@@ -7,6 +7,8 @@
 		"a great amount of projectiles in a very short range"
 	],
 
+	"unlockCost":500,
+
 	"vertices":	[
 					[-9, -15],
 					[9, -15],

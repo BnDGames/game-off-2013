@@ -14,11 +14,19 @@ var game_enableRecoil = false;
 
 //Projectile bump factor
 //Impulse of projectile collision on unit is multiplied by this
-var game_projectileBumpFactor = 1;
+var game_projectileBumpFactorPlayer = 0.5;
 var game_projectileBumpFactorEnemy = 3;
 
-//Player damage factor
-var game_playerDamageFactor = 0.2;
+//Damage factor
+var game_playerDamageFactor = 0.1;
+var game_enemyDamageFactor = 2;
+
+//Regeneration
+var game_regenFactor = 0.5;
+
+//Enemies amount
+var game_enemiesAmountMinFactor = 2;
+var game_enemiesAmountMaxFactor = 7;
 
 //Game speed
 var game_speed = 2;
@@ -44,7 +52,7 @@ var fx_minimapBlinkSpeed = 1;
 
 //Scene scaling
 var fx_sceneScaleBase = 0.75;
-var fx_sceneScaleFactor = 0.25;
+var fx_sceneScaleFactor = 0.5;
 
 //Damage alert blink
 var fx_damageAlert = false;

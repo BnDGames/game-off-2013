@@ -9,7 +9,7 @@ var loadingPlayerData = 0;
 var loadedPlayerData = 0;
 
 var playerShip = 0;
-var playerPartsIds = [ "light_wing_0", "light_engine_0", "light_machinegun_0" ];
+var playerPartsIds = [ "light_engine_0", "light_machinegun_0", "mid_engine_0", "mid_cannon_0", "heavy_engine_0", "heavy_cannon_0" ];
 var playerParts = new Array ();
 var playerScore = 0;
 
@@ -71,20 +71,16 @@ function savePlayerData () {
 function resetPlayerData () {
 	if ( confirm ( "Are you sure you want to reset player data?" ) ) {
 		playerPartsCount = [5,6,7];
-		playerPartsIds = [ "light_wing_0", "light_engine_0", "light_machinegun_0" ];
+		playerPartsIds = [ "light_engine_0", "light_machinegun_0", "mid_engine_0", "mid_cannon_0", "heavy_engine_0", "heavy_cannon_0" ];
 		playerScore = 0;
-		playerShip = loadUnit ( "data/units/default.json", function (data) { savePlayerData(); playerShip.colors.push ( colors_player ); playerShip.colors.push ( colors_player_dark ) } );
 		
 		for (var i = 0; i < upgrades.length; i++)
-			upgrades[i].value = 0;
+			if ( upgrades[i].data.action == "unlockPart" && playerPartsIds.indexOf ( upgrades[i].data.part ) >= 0 ) upgrades[i].value = 1;
+			else upgrades[i].value = 0;
 			
-		savePlayerData();
-		
-		playerParts.splice(0, playerParts.length);
-		
-		for ( var i = 0; i < playerPartsIds.length; i++ ) {
-			var p = getPart ( playerPartsIds[i] );
-			if ( p ) playerParts.push ( p );
-		}
+		for ( p in localStorage )
+			if ( p.substr ( 0, 4 ) == "upg_" ) delete localStorage[p];
+			
+		playerShip = loadUnit ( "data/units/default.json", function (data) { savePlayerData(); playerShip.colors.push ( colors_player ); playerShip.colors.push ( colors_player_dark ); location.reload() } );
 	}
 }

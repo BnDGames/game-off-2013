@@ -234,15 +234,11 @@ function movePart ( part, time ) {
 //Function to attach a part to an anchor on another part
 //Positions the part if anchor is free
 function attachPart ( to, toIndex, what, whatIndex, force ) {
-	console.log("TRYING TO ATTACH PART " + what.uid + " TO " + to.uid);
-	
 	if ( to.anchors_plus[toIndex].attachedPart && to.anchors_plus[toIndex].attachedPart[to.parent.status] != undefined && to.anchors_plus[toIndex].attachedPart[to.parent.status] >= 0 ){
-		console.warn("ATTACH REFUSED: anchor already in use (" + to.anchors_plus[toIndex].attachedPart[to.parent.status] + ")");
 		return false;
 	};
 	
 	if ( to.anchors_plus[toIndex][6] > 0 && to.anchors_plus[toIndex][6] < what.anchors_minus[whatIndex][2] ) {
-		console.warn("ATTACH REFUSED: part too big");
 		return false;
 	}
 	
@@ -333,7 +329,6 @@ function attachPart ( to, toIndex, what, whatIndex, force ) {
 		}
 		
 		if ( polyCollide ( v1, v2 ) ) {
-			console.warn("ATTACH REFUSED: another part is occupying space (" + to.parent.parts[i].uid + ")");		
 			return { error:"occupied", part:to.parent.parts[i].uid };
 		}
 	}
@@ -351,7 +346,6 @@ function attachPart ( to, toIndex, what, whatIndex, force ) {
 	
 	what.attachedStatus = to.parent.status;
 	
-	console.log("ATTACH SUCCESSFUL (" + what.uid + ")");
 	return true;
 }
 

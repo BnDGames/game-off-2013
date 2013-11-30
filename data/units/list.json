@@ -1,5 +1,7 @@
 [
 	"data/units/mosquito.json",
 	"data/units/scorpion.json",
-	"data/units/hammer.json"
+	"data/units/hammer.json",
+	"data/units/t-fighter.json",
+	"data/units/h-fighter.json"
 ]

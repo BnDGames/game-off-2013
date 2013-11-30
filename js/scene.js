@@ -70,11 +70,12 @@ function sceneCheckProj ( scene ) {
 			if ( vModule ( dist ) > scene.units[j].r) continue;
 			
 			if ( pointInUnit ( scene.projectiles[i].position, scene.units[j] ) ) {
-				var impulse = vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass * game_projectileBumpFactor );
+				var impulse = vMult ( scene.projectiles[i].speed, scene.projectiles[i].mass);
 				if ( scene.units[j] != inputBoundUnit ) impulse = vMult ( impulse, game_projectileBumpFactorEnemy );
+				else impulse = vMult ( impulse, game_projectileBumpFactorPlayer );
 				
 				scene.units[j].applyImpulse ( scene.projectiles[i].position, impulse );
-				scene.units[j].damage ( scene.projectiles[i].mass * (scene.units[j] == inputBoundUnit ? game_playerDamageFactor : 1) );
+				scene.units[j].damage ( scene.projectiles[i].mass * (scene.units[j] == inputBoundUnit ? game_playerDamageFactor : game_enemyDamageFactor) );
 				scene.projectiles[i].dead = true;
 				
 				if (scene.units[j] == inputBoundUnit){
@@ -100,7 +101,7 @@ function sceneCheckCollisions ( scene ) {
 		if ( scene.units[i].dead || scene.units[i].destroying ) continue;
 		
 		for ( var j = i + 1; j < scene.units.length; j++ ){
-			if ( scene.units[j].dead || scene.units[j].health <= 0 ) continue;
+			if ( scene.units[j].dead || scene.units[j].destroying ) continue;
 			if ( vModule ( vSubt ( scene.units[j].position, scene.units[i].position ) ) > scene.units[j].r + scene.units[i].r ) continue;
 			
 			var collision = unitsCollide ( scene.units[i], scene.units[j] );
@@ -118,8 +119,10 @@ function sceneCheckDead ( scene ) {
 
 //Function to spawn a wave in scene
 function spawnWave ( scene, unit, minDistance, maxDistance, colors ) {
-	var cls = 1 + Math.floor(Math.random() * 2);	
+	var cls = 1 + Math.round(Math.random() * 1);	
 	var count = 0;
+	
+	scene.wave++;
 	
 	while (true) {
 		var index = Math.floor(Math.random() * units.length);
@@ -142,11 +145,10 @@ function spawnWave ( scene, unit, minDistance, maxDistance, colors ) {
 		
 		count++;
 		
-		if ( (Math.random() * (100 + scene.wave * 10) > u.amountFactor || count >= 5 * scene.wave) && count > scene.wave) break;
+		if ( (Math.random() * (100 + scene.wave * 10) > u.amountFactor || count >= game_enemiesAmountMaxFactor * scene.wave) && count > game_enemiesAmountMinFactor * scene.wave) break;
 	}
 	
 	scene.spawnCount = count;
-	scene.wave++;
 }
 
 //Function to control all AI units in scene

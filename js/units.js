@@ -142,7 +142,7 @@ var Unit = function () {
 						
 						var speedComponent = vDot ( this.speed, vSetModule (pS, 1 ) );
 						
-						projectile.speed = vSum ( speedComponent > 0 ? vSetModule ( pS, speedComponent ) : [0,0], pS );
+						projectile.speed = vSum ( speedComponent > 0 ? this.speed : [0,0], pS );
 						projectile.range = action.projectiles[m].range;
 						projectile.mass = action.projectiles[m].mass;
 						
@@ -224,7 +224,6 @@ var Unit = function () {
 	//Function to damage the unit
 	this.damage = function ( damage ) {
 		this.health -= damage / this.armor;
-		console.log("RECEIVING DAMAGE: " + (damage / this.armor) + " -> " + this.health );
 		if (this.health <= 0) this.destroy();
 	}
 	
@@ -233,8 +232,6 @@ var Unit = function () {
 		this.health = 0;
 		this.destroying = 1;
 		this.printOpacity = 1;
-		
-		console.log("DESTROYING!");
 		
 		for ( var i = 0; i < this.parts.length; i++ ) {
 			if ( !this.parts[i].oldPos ) this.parts[i].oldPos = this.parts[i].position;
@@ -502,8 +499,10 @@ function moveUnit ( unit, time ) {
 	if ( unit.destroying ) unit.printOpacity -= 0.01;
 	if ( unit.printOpacity <= 0){ unit.dead = true; unit.printOpacity = 0; }
 	
-	if ( unit.health + getStat (unit, stat_regen) * time < unit.maxHealth ) unit.health += getStat (unit, stat_regen) * time;
-	else unit.health = unit.maxHealth;
+	if (!unit.destroying){
+		if ( unit.health + getStat (unit, stat_regen) * time * game_regenFactor < unit.maxHealth ) unit.health += getStat (unit, stat_regen) * time * game_regenFactor;
+		else unit.health = unit.maxHealth;
+	}
 }
 
 //Function to get the value of a stat of an unit

@@ -451,7 +451,7 @@ function initUI () {
 				for (var l = 0; l < playerShip.parts[i].anchors_plus.length; l++){
 					var anchor = playerShip.parts[i].anchors_plus[l];
 					
-					if (!anchor.attachedPart || !anchor.attachedPart[playerShip.status] || anchor.attachedPart[playerShip.status] < 0){
+					if ((!anchor.attachedPart || !anchor.attachedPart[playerShip.status] || anchor.attachedPart[playerShip.status] < 0) && anchor[6] >= window.draggedPart.anchors_minus[0][2]){
 						var aPoint = vCopy(anchor);
 						var partAngle = playerShip.parts[i].angle;
 						
