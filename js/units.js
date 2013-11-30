@@ -143,7 +143,7 @@ var Unit = function () {
 						
 						var speedComponent = vDot ( this.speed, vSetModule (pS, 1 ) );
 						
-						projectile.speed = vSum ( speedComponent > 0 ? this.speed : [0,0], pS );
+						projectile.speed = vSum ( speedComponent > 0 ? vSetModule(pS, speedComponent) : [0,0], pS );
 						projectile.range = action.projectiles[m].range;
 						projectile.mass = action.projectiles[m].mass;
 						

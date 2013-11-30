@@ -1,0 +1,153 @@
+{
+ "id": "angryBird",
+ "scoreValue": 30,
+ "cls": 1,
+ "difficulty": 3,
+ "parts_static": [
+  {
+   "source": "light_machinegun_1",
+   "translate": [
+    40,
+    6.123031769111886e-16
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 1,
+   "mirrorY": 0,
+   "uid": 2283,
+   "symmetric": -1,
+   "attachedStatus": "light",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "light": 2195
+     },
+     "attachedAnchor": {
+      "light": 2
+     }
+    }
+   ]
+  },
+  {
+   "source": "light_wing_1",
+   "translate": [
+    -2.5,
+    -57.5
+   ],
+   "angle": 0,
+   "mirrorX": 0,
+   "mirrorY": 1,
+   "uid": 2302,
+   "symmetric": -1,
+   "attachedStatus": "light",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "light": 2195
+     },
+     "attachedAnchor": {
+      "light": 0
+     }
+    }
+   ]
+  },
+  {
+   "source": "light_wing_1",
+   "translate": [
+    -2.5,
+    57.5
+   ],
+   "angle": 0,
+   "mirrorX": 0,
+   "mirrorY": 0,
+   "uid": 2303,
+   "symmetric": -1,
+   "attachedStatus": "light",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "light": 2195
+     },
+     "attachedAnchor": {
+      "light": 1
+     }
+    }
+   ]
+  },
+  {
+   "source": "light_engine_0",
+   "translate": [
+    -38,
+    4.898425415289509e-16
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 0,
+   "mirrorY": 0,
+   "uid": 2304,
+   "symmetric": -1,
+   "attachedStatus": "light",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "light": 2195
+     },
+     "attachedAnchor": {
+      "light": 3
+     }
+    }
+   ]
+  },
+  {
+   "source": "base_0",
+   "translate": [
+    0,
+    0
+   ],
+   "angle": 0,
+   "mirrorX": false,
+   "mirrorY": false,
+   "uid": 2195,
+   "anchors_plus": [
+    {
+     "attachedPart": {
+      "light": 2302
+     },
+     "attachedAnchor": {
+      "light": 0
+     }
+    },
+    {
+     "attachedPart": {
+      "light": 2303
+     },
+     "attachedAnchor": {
+      "light": 0
+     }
+    },
+    {
+     "attachedPart": {
+      "light": 2283
+     },
+     "attachedAnchor": {
+      "light": 0
+     }
+    },
+    {
+     "attachedPart": {
+      "light": 2304
+     },
+     "attachedAnchor": {
+      "light": 0
+     }
+    }
+   ],
+   "anchors_minus": []
+  }
+ ],
+ "parts_light": [],
+ "parts_mid": [],
+ "parts_heavy": []
+}

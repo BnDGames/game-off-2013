@@ -3,5 +3,12 @@
 	"data/units/scorpion.json",
 	"data/units/hammer.json",
 	"data/units/t-fighter.json",
-	"data/units/h-fighter.json"
+	"data/units/h-fighter.json",
+	"data/units/angryBird.json",
+	"data/units/dragonfly.json",
+	"data/units/doubleMosquito.json",
+	"data/units/batSomething.json",
+	"data/units/batSomethingAgain.json",
+	"data/units/boobleTank.json",
+	"data/units/cross.json"
 ]

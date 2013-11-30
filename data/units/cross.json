@@ -1,0 +1,382 @@
+{
+ "id": "cross",
+ "scoreValue": 55,
+ "cls": 3,
+ "difficulty": 5,
+ "amountFactor": 55,
+ "parts_static": [
+  {
+   "source": "heavy_repair_0",
+   "translate": [
+    0,
+    60
+   ],
+   "angle": 0,
+   "mirrorX": 0,
+   "mirrorY": 0,
+   "uid": 2257,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [
+    {
+     "attachedPart": {},
+     "attachedAnchor": {}
+    },
+    {
+     "attachedPart": {
+      "heavy": 2268
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    },
+    {
+     "attachedPart": {
+      "heavy": 2263
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    }
+   ],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2195
+     },
+     "attachedAnchor": {
+      "heavy": 1
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_repair_0",
+   "translate": [
+    60,
+    1.836909530733566e-15
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 1,
+   "mirrorY": 0,
+   "uid": 2258,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [
+    {
+     "attachedPart": {
+      "heavy": 2267
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    },
+    {
+     "attachedPart": {},
+     "attachedAnchor": {}
+    },
+    {
+     "attachedPart": {},
+     "attachedAnchor": {}
+    }
+   ],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2195
+     },
+     "attachedAnchor": {
+      "heavy": 2
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_repair_0",
+   "translate": [
+    0,
+    -60
+   ],
+   "angle": 0,
+   "mirrorX": 0,
+   "mirrorY": 1,
+   "uid": 2259,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [
+    {
+     "attachedPart": {},
+     "attachedAnchor": {}
+    },
+    {
+     "attachedPart": {
+      "heavy": 2266
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    },
+    {
+     "attachedPart": {
+      "heavy": 2261
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    }
+   ],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2195
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_repair_0",
+   "translate": [
+    -60,
+    1.836909530733566e-15
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 0,
+   "mirrorY": 0,
+   "uid": 2260,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [
+    {
+     "attachedPart": {
+      "heavy": 2262
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    },
+    {
+     "attachedPart": {},
+     "attachedAnchor": {}
+    },
+    {
+     "attachedPart": {},
+     "attachedAnchor": {}
+    }
+   ],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2195
+     },
+     "attachedAnchor": {
+      "heavy": 3
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_engine_0",
+   "translate": [
+    -52.5,
+    -62.5
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 0,
+   "mirrorY": 1,
+   "uid": 2261,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2259
+     },
+     "attachedAnchor": {
+      "heavy": 2
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_engine_0",
+   "translate": [
+    -115,
+    5.204577003745103e-15
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 0,
+   "mirrorY": 0,
+   "uid": 2262,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2260
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_engine_0",
+   "translate": [
+    -52.5,
+    62.5
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 0,
+   "mirrorY": 0,
+   "uid": 2263,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2257
+     },
+     "attachedAnchor": {
+      "heavy": 2
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_cannon_0",
+   "translate": [
+    37.5,
+    -62.5
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 1,
+   "mirrorY": 1,
+   "uid": 2266,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2259
+     },
+     "attachedAnchor": {
+      "heavy": 1
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_cannon_0",
+   "translate": [
+    100,
+    4.2861222383783204e-15
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 1,
+   "mirrorY": 0,
+   "uid": 2267,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2258
+     },
+     "attachedAnchor": {
+      "heavy": 0
+     }
+    }
+   ]
+  },
+  {
+   "source": "heavy_cannon_0",
+   "translate": [
+    37.5,
+    62.5
+   ],
+   "angle": 1.5707963267948966,
+   "mirrorX": 1,
+   "mirrorY": 0,
+   "uid": 2268,
+   "symmetric": -1,
+   "attachedStatus": "heavy",
+   "anchors_plus": [],
+   "anchors_minus": [
+    {
+     "attachedPart": {
+      "heavy": 2257
+     },
+     "attachedAnchor": {
+      "heavy": 1
+     }
+    }
+   ]
+  },
+  {
+   "source": "base_0",
+   "translate": [
+    0,
+    0
+   ],
+   "angle": 0,
+   "mirrorX": false,
+   "mirrorY": false,
+   "uid": 2195,
+   "anchors_plus": [
+    {
+     "attachedPart": {
+      "mid": -2,
+      "heavy": 2259
+     },
+     "attachedAnchor": {
+      "mid": -2,
+      "heavy": 0
+     }
+    },
+    {
+     "attachedPart": {
+      "mid": -2,
+      "heavy": 2257
+     },
+     "attachedAnchor": {
+      "mid": -2,
+      "heavy": 0
+     }
+    },
+    {
+     "attachedPart": {
+      "mid": -2,
+      "heavy": 2258
+     },
+     "attachedAnchor": {
+      "mid": -2,
+      "heavy": 0
+     }
+    },
+    {
+     "attachedPart": {
+      "mid": 2243,
+      "heavy": 2260
+     },
+     "attachedAnchor": {
+      "mid": 0,
+      "heavy": 0
+     }
+    }
+   ],
+   "anchors_minus": []
+  }
+ ],
+ "parts_light": [],
+ "parts_mid": [],
+ "parts_heavy": []
+}

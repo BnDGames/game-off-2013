@@ -247,7 +247,11 @@ function drawScene ( context, scene, offset, grid, gridInfo ) {
 		drawProjectile ( context, scene.projectiles[i], [0, 0] );
 	
 	for ( var i = 0; i < scene.units.length; i++)
-		if (scene.units[i].loaded)
+		if (scene.units[i].loaded && scene.units[i].destroying)
+			drawUnit ( context, scene.units[i], [0, 0] );
+	
+	for ( var i = 0; i < scene.units.length; i++)
+		if (scene.units[i].loaded && !scene.units[i].destroying)
 			drawUnit ( context, scene.units[i], [0, 0] );
 	
 	context.restore();

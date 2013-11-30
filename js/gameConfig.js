@@ -18,8 +18,8 @@ var game_projectileBumpFactorPlayer = 0.5;
 var game_projectileBumpFactorEnemy = 3;
 
 //Damage factor
-var game_playerDamageFactor = 0.1;
-var game_enemyDamageFactor = 2;
+var game_playerDamageFactor = 0.125;
+var game_enemyDamageFactor = 1.5;
 
 //Regeneration
 var game_regenFactor = 0.5;

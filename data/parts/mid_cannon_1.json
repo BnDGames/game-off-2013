@@ -1,0 +1,67 @@
+{
+	"id": "mid_cannon_1",
+	"cls": 2,
+	"unlockCost":900,
+	
+	"info": [
+		"medium cannon mk2",
+		"double medium cannon - average firerate and average damage"
+	],
+
+	"vertices":	[
+					[-20,-10],
+					[20,-10],
+					[20,-5],
+					[16,-5],
+					[16,10],
+					[3,10],
+					[3,-5],
+					[-3,-5],
+					[-3,10],
+					[-16,10],
+					[-16,-5],
+					[-20,-5]
+				],
+				
+	"anchors_minus": [
+		[0,-10, 40]
+	],
+				
+	"stats" : [ 0, 0, 5, 0, 0 ],
+	
+	"fill": "#505050",
+	
+	"actions": [
+		{
+			"type": "shoot",
+			"reload": 500,
+			"projectiles": [
+				{
+					"range": 50,
+					"position": [ 11, 24 ],
+					"speed": [ 0, 8 ],
+					"mass": 5,
+
+					"draw": [
+						[ "rect", -30, -6, 30, 12, [ "gradient", 30, 0, "#000000", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 6, [ "plain", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 3, [ "plain", "#D0D0D0" ] ]
+					]
+				},
+				
+				{
+					"range": 50,
+					"position": [ -11, 24 ],
+					"speed": [ 0, 8 ],
+					"mass": 2,
+
+					"draw": [
+						[ "rect", -30, -6, 30, 12, [ "gradient", 30, 0, "#000000", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 6, [ "plain", "#A0A0A0" ] ],
+						[ "circle", 0, 0, 3, [ "plain", "#D0D0D0" ] ]
+					]
+				}
+			]
+		}
+	]
+}

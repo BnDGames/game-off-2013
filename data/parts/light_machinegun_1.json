@@ -1,6 +1,7 @@
 {
 	"id": "light_machinegun_1",
 	"cls": 1,
+	"unlockCost":1200,
 	
 	"info": [
 		"light machinegun mk2",
@@ -28,7 +29,7 @@
 		[0,-10, 40]
 	],
 				
-	"stats" : [ 0, 0, 1, 0, 0 ],
+	"stats" : [ 0, 0, 3, 0, 0 ],
 	
 	"fill": "#505050",
 	

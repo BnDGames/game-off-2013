@@ -1,0 +1,36 @@
+{
+	"id": "heavy_wing_0",
+	"cls": 3,
+	
+	"info": [
+		"heavy wing mk1",
+		"the basic wing for heavy ships - slightly enhances maneuvrability"
+	],
+	
+	"vertices": [
+		[ -40, 25 ],
+		[ -40, -20 ],
+		[ -30, -20 ],
+		[ -30, -25 ],
+		[ 0, -25 ],
+		[ 0, -20 ],
+		[ 40, -20 ],
+		[ 35, 20 ]
+	],
+	
+	"anchors_minus": [
+		[-15,-25, 30]
+	],
+	
+	"allowMiddle": false,
+	
+	"stats": [ 0, 0.1, 5, 0, 120 ],
+	
+	"fill": "#A0A0A0",
+	
+	"draw": [
+		[ "rect", -30, -25, 30, 5, [ "plain", "#505050" ] ],
+		[ "poly", [-40,0], [37.5,0], [37, 4], [-40,4], [ "plain", "#FFFFFF" ] ],
+		[ "poly", [-40,-20], [40,-20], [37.5,0], [-40,0], [ "plain", "$0" ] ]
+	]
+}

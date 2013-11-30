@@ -1,0 +1,38 @@
+{
+	"id": "light_engine_1",
+	"cls": 1,
+	"unlockCost":900,
+	
+	"info": [
+		"light engine mk2",
+		"a double engine for light ships"
+	],
+
+	"vertices":	[
+					[-20, -10],
+					[20, -10],
+					[20, -5],
+					[18, -5],
+					[15, 10],
+					[7, 10],
+					[3, 5],
+					[-3, 5],
+					[-7, 10],
+					[-15, 10],
+					[-18, -5],
+					[-20, -5]
+				],
+				
+	"anchors_minus": [
+		[0, -10, 40]
+	],
+				
+	"stats" : [ 0, 0, 2, 15, 250 ],
+	
+	"fill": "#505050",
+	
+	"modifiers": [
+                { "which": 0, "draw": ["rect", -14.5, 17, 7, 40, [ "gradient", 0, 35, "#E4EEF0", "#000000" ] ] },
+                { "which": 0, "draw": ["rect", 7.5, 17, 7, 40, [ "gradient", 0, 35, "#E4EEF0", "#000000" ] ] }
+        ]
+}

@@ -1,25 +1,5 @@
 [
 	{
-		"id":"partSlot_light",
-		
-		"info": [
-			"LIGHT PART SLOT",
-			"ALLOWS AN EXTRA PART IN LIGHT CLASS"
-		],
-		
-		"value":0,
-		"max":10,
-		
-		"cost":500,
-		"costFactor":100,
-	
-		"data": {
-			"action":"partSlot",
-			"cls":1
-		}
-	},
-	
-	{
 		"id":"partSlot_mid",
 		
 		"info": [
