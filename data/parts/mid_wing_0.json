@@ -1,6 +1,7 @@
 {
 	"id": "mid_wing_0",
 	"cls": 2,
+	"unlockCost": 500,
 	
 	"info": [
 		"medium wing mk1",

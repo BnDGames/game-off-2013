@@ -1,6 +1,7 @@
 {
 	"id": "mid_shotgun_0",
 	"cls": 2,
+	"unlockCost": 700,
 	
 	"info": [
 		"medium shotgun mk1",

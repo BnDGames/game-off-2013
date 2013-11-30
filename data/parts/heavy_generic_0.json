@@ -1,6 +1,7 @@
 {
 	"id":"heavy_generic_0",
 	"cls":3,
+	"unlockCost": 800,
 	
 	"info": [
 		"heavy metal block mk1",

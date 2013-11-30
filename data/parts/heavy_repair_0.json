@@ -1,6 +1,7 @@
 {
 	"id":"heavy_repair_0",
 	"cls":3,
+	"unlockCost": 2000,
 	
 	"info": [
 		"heavy repair module mk1",

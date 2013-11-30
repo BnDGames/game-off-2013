@@ -1,6 +1,7 @@
 {
 	"id": "heavy_wing_0",
 	"cls": 3,
+	"unlockCost": 500,
 	
 	"info": [
 		"heavy wing mk1",

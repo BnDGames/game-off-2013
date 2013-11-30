@@ -1,6 +1,7 @@
 {
 	"id": "light_wing_1",
 	"cls": 1,
+	"unlockCost": 2000,
 	
 	"info": [
 		"light wing mk2",
