@@ -23,6 +23,9 @@ var store = 0;
 //Settings
 var settings = 0;
 
+//Credits
+var credits = 0;
+
 //Current UI root control
 var currentUI = 0;
 
@@ -326,6 +329,8 @@ function initUI () {
 		playerShip.reset();
 		playerShip.team = "player";
 		
+		sceneScale = fx_sceneScaleBase;
+		
 		inputBoundUnit = addUnitToScene(playerShip, gameScene);
 		inputBoundUnit.position = [ 500, 500 ];
 	
@@ -429,6 +434,9 @@ function initUI () {
 		
 		currentUI = settings;
 		state_current = state_settings;
+		
+		settings.children.fxLevelCheck.checked = fx_level;
+		settings.children.fxLevelCheck.checkedOffset = fx_level * settings.children.fxLevelCheck.area[2] / 2;
 	}
 	
 	menu.children.credits = new Label();
@@ -437,6 +445,12 @@ function initUI () {
 	menu.children.credits.onmousein = labelOnMouseIn;
 	menu.children.credits.onmouseout = labelOnMouseOut;
 	menu.children.credits.onmousedown = labelOnMouseDown;
+	menu.children.credits.onmouseup = function () {
+		this.innerColor = colors_buttonHover;
+		
+		currentUI = credits;
+		state_current = state_credits;
+	}
 	
 	shipEditor = new Control();
 	shipEditor.area = [0,0, canvas.width, canvas.height];
@@ -714,9 +728,7 @@ function initUI () {
 		context.textBaseline = "middle";
 		context.fillText ( "ON", 0, 0 );
 	}
-	settings.children.fxLevelCheck.checked = fx_level;
-	settings.children.fxLevelCheck.checkedOffset = fx_level * settings.children.fxLevelCheck.area[2] / 2;
-	settings.children.fxLevelCheck.oncheck = function ( n ) { fx_level = n; }
+	settings.children.fxLevelCheck.oncheck = function ( n ) { fx_level = n; savePlayerData() }
 	
 	settings.children.reset = new Label();
 	settings.children.reset.area = [ 272, 280, 256, 32 ];
@@ -729,6 +741,61 @@ function initUI () {
 		resetPlayerData();
 	}
 	
+	credits = new Control();
+	
+	credits.children.title = new Label();
+	credits.children.title.area = [40, 34, 300, 48];
+	credits.children.title.content = "CREDITS";
+	credits.children.title.printFrame = true;
+	credits.children.title.fontStyle = "48px League Gothic";
+	
+	credits.children.back = new Label();
+	credits.children.back.area = [ 660, 42, 100, 32 ];
+	credits.children.back.content = "BACK";
+	credits.children.back.onmousein = labelOnMouseIn;
+	credits.children.back.onmouseout = labelOnMouseOut;
+	credits.children.back.onmousedown = labelOnMouseDown;
+	credits.children.back.onmouseup = function () {
+		state_current = state_menu;
+		currentUI = menu;
+	}
+	
+	credits.print = function ( context ) {		
+		context.fillStyle = "#FFFFFF";
+		context.fillRect ( credits.children.title.area[0] + 2, credits.children.title.area[1] + credits.children.title.area[3] / 2 - 2, credits.children.back.area[0] - credits.children.title.area[0], 4 );
+	}
+	
+	credits.children.buch = new Label();
+	credits.children.buch.area = [ 144, 264, 512, 32];
+	credits.children.buch.content = 'design and code :  MICHELE "BUCH" BUCELLI';
+	credits.children.buch.printFrame = false;
+	credits.children.buch.onmousein = function () { this.textColor = colors_player; }
+	credits.children.buch.onmouseout = function () { this.textColor = "#FFFFFF"; }
+	credits.children.buch.onmousedown = function () { this.textColor = colors_player_dark; }
+	credits.children.buch.onmouseup = function () {
+		this.textColor = colors_player;
+		
+		var a = document.createElement("a");
+		a.href = "http://blog-buch.rhcloud.com";
+		a.target = "_blank";
+		a.click();
+	}
+	
+	credits.children.font = new Label();
+	credits.children.font.area = [ 144, 312, 512, 32];
+	credits.children.font.content = 'font "League Gothic" :  THE LEAGUE OF MOVEABLE TYPE';
+	credits.children.font.printFrame = false;
+	credits.children.font.onmousein = function () { this.textColor = colors_player; }
+	credits.children.font.onmouseout = function () { this.textColor = "#FFFFFF"; }
+	credits.children.font.onmousedown = function () { this.textColor = colors_player_dark; }
+	credits.children.font.onmouseup = function () {
+		this.textColor = colors_player;
+		
+		var a = document.createElement("a");
+		a.href = "https://www.theleagueofmoveabletype.com/league-gothic";
+		a.target = "_blank";
+		a.click();
+	}
 	
 	currentUI = loading;
 }

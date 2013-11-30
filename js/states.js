@@ -12,5 +12,6 @@ var state_shipedit = 3;
 var state_settings = 4;
 var state_store = 5;
 var state_settings = 6;
+var state_credits = 7;
 
 var state_current = state_loading;

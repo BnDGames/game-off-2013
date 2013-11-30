@@ -33,6 +33,7 @@ function loadPlayerData () {
 	if (localStorage) {
 		if (localStorage.playerScore) playerScore = parseInt(localStorage.playerScore);
 		if (localStorage.playerPartsCount) playerPartsCount = JSON.parse ( localStorage.playerPartsCount );
+		if (localStorage.fx_level) fx_level = parseInt(localStorage.fx_level);
 	}
 	
 	if (localStorage) {		
@@ -64,15 +65,17 @@ function savePlayerData () {
 			localStorage["upg_" + upgrades[i].id] = upgrades[i].value;
 			
 		localStorage.playerPartsIds = JSON.stringify ( playerPartsIds );
+		localStorage.fx_level = fx_level;
 	}
 }
 
 //Function to reset player data (debug)
 function resetPlayerData () {
-	if ( confirm ( "Are you sure you want to reset player data? This will reset your settings, your ship, your score and the uprades you have unlocked" ) ) {
+	if ( confirm ( "Are you sure you want to reset player data?\n\nThis will reset your settings, your ship, your score and the uprades and parts you have unlocked." ) ) {
 		playerPartsCount = [5,6,7];
 		playerPartsIds = [ "light_engine_0", "light_machinegun_0", "mid_engine_0", "mid_cannon_0", "heavy_engine_0", "heavy_cannon_0" ];
 		playerScore = 0;
+		fx_level = 1;
 		
 		for (var i = 0; i < upgrades.length; i++)
 			if ( upgrades[i].data.action == "unlockPart" && playerPartsIds.indexOf ( upgrades[i].data.part ) >= 0 ) upgrades[i].value = 1;
