@@ -119,7 +119,7 @@ function sceneCheckDead ( scene ) {
 
 //Function to spawn a wave in scene
 function spawnWave ( scene, unit, minDistance, maxDistance, colors ) {
-	var cls = 1 + Math.round(Math.random() * 1);	
+	var cls = 1 + Math.round(Math.random() * 2);	
 	var count = 0;
 	
 	scene.wave++;

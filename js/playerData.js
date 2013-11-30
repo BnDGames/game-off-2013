@@ -69,7 +69,7 @@ function savePlayerData () {
 
 //Function to reset player data (debug)
 function resetPlayerData () {
-	if ( confirm ( "Are you sure you want to reset player data?" ) ) {
+	if ( confirm ( "Are you sure you want to reset player data? This will reset your settings, your ship, your score and the uprades you have unlocked" ) ) {
 		playerPartsCount = [5,6,7];
 		playerPartsIds = [ "light_engine_0", "light_machinegun_0", "mid_engine_0", "mid_cannon_0", "heavy_engine_0", "heavy_cannon_0" ];
 		playerScore = 0;

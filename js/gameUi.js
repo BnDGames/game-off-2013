@@ -20,6 +20,9 @@ var shipEditor = 0;
 //Store control
 var store = 0;
 
+//Settings
+var settings = 0;
+
 //Current UI root control
 var currentUI = 0;
 
@@ -421,6 +424,12 @@ function initUI () {
 	menu.children.settings.onmousein = labelOnMouseIn;
 	menu.children.settings.onmouseout = labelOnMouseOut;
 	menu.children.settings.onmousedown = labelOnMouseDown;
+	menu.children.settings.onmouseup = function () {
+		this.innerColor = colors_buttonHover;
+		
+		currentUI = settings;
+		state_current = state_settings;
+	}
 	
 	menu.children.credits = new Label();
 	menu.children.credits.area = [300, 450, 200, 32];
@@ -657,6 +666,69 @@ function initUI () {
 		state_current = state_menu;
 		currentUI = menu;
 	}
+	
+	settings = new Control ();
+	
+	settings.print = function ( context ) {		
+		context.fillStyle = "#FFFFFF";
+		context.fillRect ( settings.children.title.area[0] + 2, settings.children.title.area[1] + settings.children.title.area[3] / 2 - 2, settings.children.back.area[0] - settings.children.title.area[0], 4 );
+	}
+	
+	settings.children.title = new Label();
+	settings.children.title.area = [40, 34, 300, 48];
+	settings.children.title.content = "SETTINGS";
+	settings.children.title.printFrame = true;
+	settings.children.title.fontStyle = "48px League Gothic";
+	
+	settings.children.back = new Label();
+	settings.children.back.area = [ 660, 42, 100, 32 ];
+	settings.children.back.content = "BACK";
+	settings.children.back.onmousein = labelOnMouseIn;
+	settings.children.back.onmouseout = labelOnMouseOut;
+	settings.children.back.onmousedown = labelOnMouseDown;
+	settings.children.back.onmouseup = function () {
+		state_current = state_menu;
+		currentUI = menu;
+	}
+	
+	settings.children.fxLevelLabel = new Label();
+	settings.children.fxLevelLabel.area = [ 224, 228, 224, 24 ];
+	settings.children.fxLevelLabel.content = "GRAPHIC EFFECTS:";
+	settings.children.fxLevelLabel.printFrame = true;
+	
+	settings.children.fxLevelCheck = new CheckBoxList();
+	settings.children.fxLevelCheck.length = 2;
+	settings.children.fxLevelCheck.area = [ 424, 224, 160, 32 ];
+	settings.children.fxLevelCheck.checkedColor = colors_player;
+	settings.children.fxLevelCheck.prints [0] = function ( context ) {
+		context.font = "24px League Gothic";
+		context.fillStyle = "#FFFFFF";
+		context.textAlign = "center";
+		context.textBaseline = "middle";
+		context.fillText ( "OFF", 0, 0 );
+	}
+	settings.children.fxLevelCheck.prints [1] = function ( context ) {
+		context.font = "24px League Gothic";
+		context.fillStyle = "#FFFFFF";
+		context.textAlign = "center";
+		context.textBaseline = "middle";
+		context.fillText ( "ON", 0, 0 );
+	}
+	settings.children.fxLevelCheck.checked = fx_level;
+	settings.children.fxLevelCheck.checkedOffset = fx_level * settings.children.fxLevelCheck.area[2] / 2;
+	settings.children.fxLevelCheck.oncheck = function ( n ) { fx_level = n; }
+	
+	settings.children.reset = new Label();
+	settings.children.reset.area = [ 272, 280, 256, 32 ];
+	settings.children.reset.content = "RESET GAME DATA";
+	settings.children.reset.onmousein = labelOnMouseIn;
+	settings.children.reset.onmouseout = labelOnMouseOut;
+	settings.children.reset.onmousedown = labelOnMouseDown;
+	settings.children.reset.onmouseup = function () {
+		this.innerColor = colors_buttonHover;
+		resetPlayerData();
+	}
+	
 	
 	currentUI = loading;
 }
