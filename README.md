@@ -7,6 +7,7 @@ Battle with your ship against angry mobs, wave after wave in this fast-paced bul
 ----------------------
 
 [PLAY IT HERE](http://buch415.github.io/game-off-2013)<br>
+[ALL CODE IS ON gh-pages BRANCH](http://github.com/buch415/tree/gh-pages)
 
 ----------------------
 
@@ -29,3 +30,9 @@ When you lose, you can use your score to buy new parts in the store and build a 
 Drag the parts from the slots on the right onto your ship to add them. To remove a part from the ship, just click on it. To change ship state, click on the state buttons below the ship. Hover over a part to see its description in the box below.
 
 ![screenshot_editor](http://blog-buch.rhcloud.com/wp-content/uploads/2013/11/sshot_editor.jpg)
+
+----------------------
+
+##### HELP, SUPPORT, REPORTING BUGS and all that boring stuff
+
+If you have questions, need help and/or want to report a bug, just open an issue here on GitHub. In the remote chance I don't answer you within a week or two, you can also mail me at michelebucelli415[at]gmail[dot]com.
