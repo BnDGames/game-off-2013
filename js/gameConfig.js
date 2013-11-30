@@ -52,7 +52,7 @@ var fx_minimapBlinkSpeed = 1;
 
 //Scene scaling
 var fx_sceneScaleBase = 0.75;
-var fx_sceneScaleFactor = 0.5;
+var fx_sceneScaleFactor = 0.35;
 
 //Damage alert blink
 var fx_damageAlert = false;

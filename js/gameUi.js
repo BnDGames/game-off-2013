@@ -612,11 +612,13 @@ function initUI () {
 	shipEditor.children.partsCount = new Label();
 	shipEditor.children.partsCount.area = [ 292, 84, 96, 32];
 	
-	shipEditor.exportShip = function (id, score, cls) {
+	shipEditor.exportShip = function (id, score, cls, amount, diff) {
 		var u = new Unit();
 		u.id = id;
 		u.scoreValue = score;
 		u.cls = cls;
+		u.amountFactor = amount;
+		u.difficulty = diff;
 		
 		for ( var i = 0; i < playerShip.parts.length; i++ ){
 			u.parts_static.push ( playerShip.parts[i] );

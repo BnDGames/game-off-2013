@@ -3,6 +3,7 @@
  "scoreValue": 10,
  "cls": 1,
  "amountFactor": 80,
+ "difficulty": 0,
  "statsFactor": [-0.5,0,0,-0.2,0,0],
  "parts_static": [
   {

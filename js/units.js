@@ -74,6 +74,7 @@ var Unit = function () {
 	this.cls = 0;
 	this.scoreValue = 0;//Score given when destroying
 	this.amountFactor = 50;
+	this.difficulty = 0;
 	
 	//Unit graphics
 	this.colors = new Array();
@@ -429,6 +430,8 @@ function loadUnitFromJSON ( data, unit ) {
 	
 	if ( data.statsFactor ) unit.statsFactor = data.statsFactor.slice ( 0 );
 	
+	if ( data.difficulty ) unit.difficulty = data.difficulty;
+	
 	unit.parts_current = unit.parts_light;
 	
 	unit.calcStats();
@@ -664,6 +667,8 @@ function unitToJSON ( unit ) {
 	result.id = unit.id;
 	result.scoreValue = unit.scoreValue;
 	result.cls = unit.cls;
+	result.difficulty = unit.difficulty;
+	result.amountFactor = unit.amountFactor;
 	
 	result.parts_static = new Array();
 	for (var i = 0; i < unit.parts_static.length; i++)

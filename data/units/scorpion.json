@@ -3,6 +3,7 @@
  "scoreValue": 25,
  "amountFactor":50,
  "cls": 2,
+ "difficulty": 2,
  "parts_static": [
   {
    "source": "generic_0",

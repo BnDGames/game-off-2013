@@ -2,7 +2,8 @@
  "id": "h-fighter",
  "scoreValue": 35,
  "cls": 3,
- "amountFactor": 40,
+ "amountFactor": 20,
+ "difficulty": 5,
  "statsFactor":[0.5,1,0,0,0,0],
  "parts_static": [
   {
