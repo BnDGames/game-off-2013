@@ -7,7 +7,7 @@ Battle with your ship against angry mobs, wave after wave in this fast-paced bul
 ----------------------
 
 [PLAY IT HERE](http://buch415.github.io/game-off-2013)<br>
-[ALL CODE IS ON gh-pages BRANCH](http://github.com/buch415/tree/gh-pages)
+[ALL CODE IS ON gh-pages BRANCH](http://github.com/buch415/game-off-2013/tree/gh-pages)
 
 ----------------------
 
